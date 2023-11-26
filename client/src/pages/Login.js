@@ -15,7 +15,7 @@ import { useState } from "react"
 import { useLogin } from '../hooks/useLogin'
 
 export default function Login() {
-  const { login, error, isLoading } = useLogin()
+  const { login } = useLogin()
   const [formData, setFormData] = useState({
     email: '',
     password: ''

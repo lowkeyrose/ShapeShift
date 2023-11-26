@@ -4,17 +4,6 @@ const jwt = require('jsonwebtoken')
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
 }
-// login status
-const loginStatus = (req, res) => {
-  const { authorization } = req.headers
-  if (!authorization) {
-    return res.status(401).json({ error: 'Authorization token required' })
-  }
-  const token = authorization.split(' ')[1]
-
-  const user = jwt.verify(token, process.env.SECRET);
-  res.send(user)
-}
 
 // login user
 const loginUser = async (req, res) => {
@@ -49,4 +38,4 @@ const signupUser = async (req, res) => {
   }
 }
 
-module.exports = { loginUser, signupUser, loginStatus }
+module.exports = { loginUser, signupUser }

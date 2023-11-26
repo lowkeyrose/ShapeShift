@@ -6,6 +6,7 @@ import Snackbar from './components/Snackbar';
 import Router from './routers/Router';
 import AuthRouter from './routers/AuthRouter';
 import { useNavigate } from 'react-router-dom';
+// import { useNavigate, useLocation } from 'react-router-dom';
 
 export const GeneralContext = createContext();
 
@@ -13,6 +14,7 @@ export default function App() {
   const { user, dispatch } = useAuthContext()
   const [snackbarText, setSnackbarText] = useState('')
   const navigate = useNavigate()
+  // const location = useLocation()
 
   const snackbar = text => {
     setSnackbarText(text);
@@ -31,11 +33,16 @@ export default function App() {
             }
           })
 
+          // response always fails
+          console.log(response)
+          // this line below makes it not send a response
           const data = await response.json()
-
+          
           if (response.ok) {
+            console.log("response ok")
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
           } else {
+            console.log("response failed")
             snackbar('User not logged in')
             dispatch({ type: ACTIONS.LOGOUT })
           }
@@ -46,6 +53,7 @@ export default function App() {
       loginstatus()
     }
   }, [dispatch])
+  // }, [dispatch, location.pathname])
 
   return (
     <GeneralContext.Provider value={{ snackbar, navigate }}>

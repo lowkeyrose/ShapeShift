@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useAuthContext } from './useAuthContext'
 import { ACTIONS } from '../context/Actions'
+import { GeneralContext } from '../App'
 
 export const useLogin = () => {
+  const { navigate, snackbar } = useContext(GeneralContext)
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(null)
   const { dispatch } = useAuthContext()
@@ -28,6 +30,10 @@ export const useLogin = () => {
 
       // update the auth context
       dispatch({ type: ACTIONS.LOGIN, payload: json })
+      // Popup message for UX
+      snackbar("Login successful")
+      // Navigate home
+      navigate('/')
 
       // update loading state
       setIsLoading(false)
