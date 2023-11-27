@@ -46,7 +46,7 @@ const createWorkout = async (req, res) => {
   if (!imgUrl) {
     emptyFields.push('imgUrl')
   }
-  if (!exercises) {
+  if (!exercises || exercises.length === 0) {
     emptyFields.push('exercises')
   }
 
@@ -57,6 +57,7 @@ const createWorkout = async (req, res) => {
   // add doc to db
   try {
     const user_id = req.user._id
+    
     const workout = await Workout.create({ title, imgUrl, exercises, Private, user_id })
     res.status(200).json(workout)
   } catch (error) {

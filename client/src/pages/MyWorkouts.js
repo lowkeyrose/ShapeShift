@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 import { ACTIONS } from '../context/Actions'
@@ -9,10 +9,12 @@ import '../components/style/WorkoutDetails.css'
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
-import { GeneralContext } from '../App'
+import { useGeneralContext } from '../hooks/useGeneralContext'
+
 
 export default function MyWorkouts() {
-    const { navigate } = useContext(GeneralContext)
+  const { navigate } = useGeneralContext
+
     const { workouts, dispatch } = useWorkoutContext()
     const { user } = useAuthContext()
 

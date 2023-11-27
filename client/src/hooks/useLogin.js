@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
 import { ACTIONS } from '../context/Actions'
-import { GeneralContext } from '../App'
+import { useGeneralContext } from './useGeneralContext'
 
 export const useLogin = () => {
-  const { navigate, snackbar } = useContext(GeneralContext)
+  const { navigate, snackbar } = useGeneralContext()
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(null)
   const { dispatch } = useAuthContext()
@@ -27,14 +27,12 @@ export const useLogin = () => {
     if (response.ok) {
       // save the user to local storage
       localStorage.setItem('user', JSON.stringify(json))
-
       // update the auth context
       dispatch({ type: ACTIONS.LOGIN, payload: json })
       // Popup message for UX
       snackbar("Login successful")
       // Navigate home
       navigate('/')
-
       // update loading state
       setIsLoading(false)
     }

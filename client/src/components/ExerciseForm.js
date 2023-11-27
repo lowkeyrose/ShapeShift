@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -12,15 +12,15 @@ import Joi from 'joi'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { useAuthContext } from '../hooks/useAuthContext'
 import { ACTIONS } from "../context/Actions"
-import { GeneralContext } from '../App'
 import './style/ExerciseModal.css'
+import { useGeneralContext } from '../hooks/useGeneralContext'
 
 
-export default function ExerciseForm() {
+export default function ExerciseForm({ onAddExercise }) {
   const [modal, setModal] = useState(false)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
-  const { snackbar } = useContext(GeneralContext)
+  const { snackbar } =  useGeneralContext()
   const { dispatch } = useWorkoutContext()
   const { user } = useAuthContext()
 
@@ -80,6 +80,7 @@ export default function ExerciseForm() {
       toggleModal()
       snackbar('Exercise added to workout', json)
       dispatch({ type: ACTIONS.CREATE_EXERCISE, payload: json })
+      onAddExercise(json)
     }
   }
 

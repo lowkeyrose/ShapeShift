@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -14,21 +14,20 @@ import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { useAuthContext } from '../hooks/useAuthContext'
 import { ACTIONS } from "../context/Actions"
 import { Checkbox } from '@mui/material'
-import { GeneralContext } from '../App'
 import ExerciseForm from './ExerciseForm'
+import { useGeneralContext } from '../hooks/useGeneralContext'
 
 
 export default function WorkoutForm() {
-    const { snackbar, navigate } = useContext(GeneralContext)
+    const { navigate, snackbar } = useGeneralContext()
     const { dispatch } = useWorkoutContext()
     const { user } = useAuthContext()
     const [errors, setErrors] = useState({});
     const [isValid, setIsValid] = useState(false);
-
     const [formData, setFormData] = useState({
         title: '',
         imgUrl: '',
-        exercises: '',
+        exercises: [],
         Private: false,
     })
 
@@ -45,6 +44,14 @@ export default function WorkoutForm() {
         Private: Joi.boolean().default(false)
     });
 
+    const handleAddExercise = (exercise) => {
+        // Update exercises array in the WorkoutForm state
+        setFormData({
+          ...formData,
+          exercises: [...formData.exercises, exercise],
+        });
+      };
+
     const handleSubmit = async (ev) => {
         ev.preventDefault()
 
@@ -58,7 +65,7 @@ export default function WorkoutForm() {
 
         const response = await fetch('/api/workouts/myworkouts/new', {
             method: 'POST',
-            body: JSON.stringify(formData),
+            body: JSON.stringify(...formData ,formData.exercises),
 
             // body: JSON.stringify(workoutData)
             // workoutData = 
@@ -157,7 +164,7 @@ export default function WorkoutForm() {
                         }
 
 
-                        <ExerciseForm />
+                        <ExerciseForm onAddExercise={handleAddExercise} />
 
 
 
