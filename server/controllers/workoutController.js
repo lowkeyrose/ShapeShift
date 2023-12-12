@@ -1,5 +1,6 @@
 const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
+const Exercise = require('../models/exerciseModel');
 
 // Get all workouts
 const getAllWorkouts = async (req, res) => {
@@ -36,34 +37,58 @@ const getWorkout = async (req, res) => {
 
 // Create new workout
 const createWorkout = async (req, res) => {
-  const { title, imgUrl, exercises, Private } = req.body
-
-  let emptyFields = []
-
-  if (!title) {
-    emptyFields.push('title')
-  }
-  if (!imgUrl) {
-    emptyFields.push('imgUrl')
-  }
-  if (!exercises || exercises.length === 0) {
-    emptyFields.push('exercises')
-  }
-
-  if (emptyFields.length) {
-    return res.status(400).json({ error: 'Please fill in all fields', emptyFields })
-  }
-
-  // add doc to db
   try {
-    const user_id = req.user._id
-    
-    const workout = await Workout.create({ title, imgUrl, exercises, Private, user_id })
-    res.status(200).json(workout)
+    // Extract workout and exercises data from the request body
+    const workoutData = req.body
+    let exercisesData = req.body.exercises
+    workoutData.user_id = req.user._id
+    exercisesData = exercisesData.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
+
+    // Create a new workout
+    const newWorkout = await Workout.create(workoutData)
+
+    // Update the workout's exercises field with the created exercise
+    const createdExercises = await Exercise.create(exercisesData.map(exercises => ({ ...exercises, workout_id: newWorkout._id })))
+
+    // Update the workout document with the IDs of the created exercises
+    newWorkout.exercises = createdExercises.map(exercise => exercise._id)
+    await newWorkout.save()
+
+    res.status(201).json({ success: true, workout: newWorkout })
+
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    console.error(error);
+    res.status(500).json({ success: false, error: error.message });
   }
 }
+//   const { title, imgUrl, exercises, Private } = req.body
+
+//   console.log('recieved data: ', req.body);
+
+//   let emptyFields = []
+
+//   if (!title) {
+//     emptyFields.push('title')
+//   }
+//   if (!exercises || !Array.isArray(exercises) || exercises.length === 0) {
+//     return res.status(400).json({ error: 'Please provide at least one exercise' })
+//   }
+
+//   if (emptyFields.length) {
+//     return res.status(400).json({ error: 'Please fill in all fields', emptyFields })
+//   }
+
+//   // add doc to db
+//   try {
+//     const user_id = req.user._id
+
+//     const workout = await Workout.create({ title, imgUrl, exercises, Private, user_id })
+
+//     res.status(200).json(workout)
+//   } catch (error) {
+//     res.status(400).json({ error: error.message })
+//   }
+// }
 
 // Delete a workout
 const deleteWorkout = async (req, res) => {
@@ -73,13 +98,22 @@ const deleteWorkout = async (req, res) => {
     return res.status(404).json({ error: 'Workout not found' })
   }
 
-  const workout = await Workout.findOneAndDelete({ _id: id })
+  try {
+    // Find the workout and store its ID
+    const workout = await Workout.findOneAndDelete({ _id: id })
 
-  if (!workout) {
-    return res.status(404).json({ error: 'Workout not found' })
+    if (!workout) {
+      return res.status(404).json({ error: 'Workout not found' })
+    }
+
+    // Delete all exercises with the corresponding workout_id
+    await Exercise.deleteMany({ workout_id: workout._id })
+
+    res.status(200).json(workout)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: error.message });
   }
-
-  res.status(200).json(workout)
 }
 
 // Update a workout

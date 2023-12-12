@@ -33,6 +33,13 @@ app.use('/api/workouts', workoutRoutes)
 app.use('/api/exercises', exerciseRoutes)
 app.use('/api/user', userRoutes)
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.message)
+  console.error(err.stack)
+  res.status(500).send('Something went wrong!')
+})
+
 // listen for requests
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}...`)

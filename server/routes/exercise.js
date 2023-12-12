@@ -2,7 +2,7 @@ const express = require('express')
 const {
   getAllExercises,
   getExercise,
-  createExercise,
+  // createExercise,
   deleteExercise,
   updateExercise
 } = require('../controllers/exerciseController')
@@ -17,7 +17,7 @@ router.get('/', getAllExercises)
 router.get('/:id', requireAuth, getExercise)
 
 // POST a new exercise
-router.post('/new', requireAuth, createExercise)
+// router.post('/new', requireAuth, createExercise)
 
 // DELETE an exercise
 router.delete('/:id', requireAuth, deleteExercise)

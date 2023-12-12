@@ -2,7 +2,16 @@ const User = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 
 const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4s' })
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
+}
+// login status
+const loginStatus = async (req, res) => {
+  try {
+    res.status(200).json(req.user)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
 }
 
 // login user
@@ -38,4 +47,4 @@ const signupUser = async (req, res) => {
   }
 }
 
-module.exports = { loginUser, signupUser }
+module.exports = { loginUser, signupUser, loginStatus }

@@ -12,7 +12,7 @@ import { Typography } from '@mui/material'
 
 export default function Home() {
     const { workouts, dispatch } = useWorkoutContext()
-    // const { user } = useAuthContext()
+    // const user = JSON.parse(localStorage.getItem('user'))
 
     useEffect(() => {
         const fetchWorkouts = async () => {

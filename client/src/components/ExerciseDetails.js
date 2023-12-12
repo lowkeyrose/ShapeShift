@@ -8,7 +8,7 @@
 // export default function WorkoutDetails({ workout }) {
 
 //   const { dispatch } = useWorkoutContext()
-//   const { user } = useAuthContext()
+//   const user = JSON.parse(localStorage.getItem('user'))
 
 //   const handleClick = async () => {
 //     const response = await fetch(`/api/workouts/${workout._id}`, {

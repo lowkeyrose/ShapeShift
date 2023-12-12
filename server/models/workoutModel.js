@@ -10,12 +10,16 @@ const workoutSchema = new Schema({
   imgUrl: {
     type: String
   },
-  exercises: [Exercise.schema],
+  exercises: [{
+    type: Object,
+    ref: 'Exercise',
+  }],
   Private: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   user_id: {
-    type: String,
+    type: Object,
     required: true
   }
 }, { timestamps: true })

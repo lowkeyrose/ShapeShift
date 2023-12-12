@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
-import { useAuthContext } from '../hooks/useAuthContext'
 import { ACTIONS } from '../context/Actions'
 import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -11,30 +10,36 @@ import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGeneralContext } from '../hooks/useGeneralContext'
 
-
 export default function MyWorkouts() {
-  const { navigate } = useGeneralContext
-
+    const { navigate } = useGeneralContext()
     const { workouts, dispatch } = useWorkoutContext()
-    const { user } = useAuthContext()
-
+    
     useEffect(() => {
-        const fetchWorkouts = async () => {
-            const response = await fetch('/api/workouts/myworkouts', {
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                }
-            })
-            const data = await response.json()
-
-            if (response.ok) {
-                dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
-            }
-        }
+        const user = JSON.parse(localStorage.getItem('user'))
         if (user) {
+            const fetchWorkouts = async () => {
+                try {
+                    const response = await fetch('/api/workouts/myworkouts', {
+                        headers: {
+                            'Authorization': `Bearer ${user.token}`
+                        }
+                    })
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch workouts: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json()
+
+                    dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
+
+                } catch (error) {
+                    console.error('Error fetching workouts:', error);
+                }
+            }
             fetchWorkouts()
         }
-    }, [dispatch, user])
+    }, [dispatch])
 
     return (
         <div className='home'>

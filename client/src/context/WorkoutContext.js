@@ -11,7 +11,7 @@ export const workoutReducer = (state, action) => {
       }
     case ACTIONS.CREATE_WORKOUT:
       return {
-        workouts: [action.payload, ...state.workouts]
+        workouts: [action.payload, state.workouts]
       }
     case ACTIONS.DELETE_WORKOUT:
       return {

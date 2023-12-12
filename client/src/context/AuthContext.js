@@ -10,7 +10,6 @@ export const authReducer = (state, action) => {
     case ACTIONS.LOGIN:
       return { user: action.payload }
     case ACTIONS.LOGOUT:
-      // remove user from storage
       localStorage.removeItem('user')
       return { user: null }
     default:
@@ -24,10 +23,10 @@ export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, {
     user: null
   })
-
+  
   useEffect(() => {
-    if (localStorage.getItem('user')) {
-      const user = JSON.parse(localStorage.getItem('user'))
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
       const loginstatus = async () => {
         try {
           const response = await fetch('/api/user/loginstatus', {
@@ -46,7 +45,7 @@ export const AuthContextProvider = ({ children }) => {
             dispatch({ type: ACTIONS.LOGOUT })
           }
         } catch (error) {
-          console.log("The Promise is rejected!", error)
+          snackbar("The Promise is rejected!", error)
         }
       }
       loginstatus()

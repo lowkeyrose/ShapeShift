@@ -8,7 +8,8 @@ const exerciseSchema = new Schema({
     required: true
   },
   imgUrl: {
-    type: String
+    type: String,
+    default: 'https://hdwallsource.com/img/2019/8/dwayne-johnson-gym-hd-wallpaper-67004-69300-hd-wallpapers.jpg'
   },
   videoUrl: {
     type: String
@@ -28,11 +29,11 @@ const exerciseSchema = new Schema({
     required: true
   },
   workout_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   user_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   }
 }, { timestamps: true })

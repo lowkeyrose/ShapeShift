@@ -9,20 +9,12 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Joi from 'joi'
-import { useWorkoutContext } from "../hooks/useWorkoutContext"
-import { useAuthContext } from '../hooks/useAuthContext'
-import { ACTIONS } from "../context/Actions"
 import './style/ExerciseModal.css'
-import { useGeneralContext } from '../hooks/useGeneralContext'
-
 
 export default function ExerciseForm({ onAddExercise }) {
   const [modal, setModal] = useState(false)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
-  const { snackbar } =  useGeneralContext()
-  const { dispatch } = useWorkoutContext()
-  const { user } = useAuthContext()
 
   const [formData, setFormData] = useState({
     title: '',
@@ -44,8 +36,8 @@ export default function ExerciseForm({ onAddExercise }) {
 
   const userSchema = Joi.object({
     title: Joi.string().min(3).max(20).required(),
-    imgUrl: Joi.string().min(0).max(2000),
-    videoUrl: Joi.string().min(0).max(2000),
+    imgUrl: Joi.string().min(0).max(2000).optional(),
+    videoUrl: Joi.string().min(0).max(2000).optional(),
     sets: Joi.number().min(1).max(20).required(),
     weight: Joi.number().min(0).max(20).required(),
     reps: Joi.number().min(1).max(20).required()
@@ -53,35 +45,9 @@ export default function ExerciseForm({ onAddExercise }) {
 
   const handleSubmit = async (ev) => {
     ev.preventDefault()
-
-    if (!user) {
-      snackbar('You must be logged in')
-      return
-    }
-    if (!formData.imgUrl) {
-      formData.imgUrl = 'https://hdwallsource.com/img/2019/8/dwayne-johnson-gym-hd-wallpaper-67004-69300-hd-wallpapers.jpg'
-    }
-
-    // save to json, then when Add workout is clicked send all the jsons to server and update db
-
-    const response = await fetch('/api/exercises/new', {
-      method: 'POST',
-      body: JSON.stringify(formData),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${user.token}`
-      }
-    })
-    const json = await response.json()
-    if (!response.ok) {
-      snackbar("Something went wrong")
-    }
-    if (response.ok) {
-      toggleModal()
-      snackbar('Exercise added to workout', json)
-      dispatch({ type: ACTIONS.CREATE_EXERCISE, payload: json })
-      onAddExercise(json)
-    }
+    onAddExercise(formData)
+    toggleModal()
+    setFormData('')
   }
 
   const handleInput = ev => {
@@ -91,7 +57,7 @@ export default function ExerciseForm({ onAddExercise }) {
       [id]: value,
     }
 
-    console.log(obj);
+    // console.log(obj);
 
     const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
     const err = { ...errors, [id]: undefined };
@@ -105,7 +71,7 @@ export default function ExerciseForm({ onAddExercise }) {
       setIsValid(true);
     }
     setFormData(obj);
-    console.log(schema.error);
+    // console.log(schema.error);
     setErrors(err);
   };
 
@@ -162,6 +128,7 @@ export default function ExerciseForm({ onAddExercise }) {
                 </Grid>
                 <Button
                   disabled={!isValid}
+                  onClick={handleSubmit}
                   type="submit"
                   fullWidth
                   variant="contained"
