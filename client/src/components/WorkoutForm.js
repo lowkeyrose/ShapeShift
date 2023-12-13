@@ -21,7 +21,7 @@ export default function WorkoutForm() {
     const { navigate, snackbar } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     // const { dispatch: exerciseDispatch } = useExerciseContext()
-    const user = JSON.parse(localStorage.getItem('user'))
+    const token = JSON.parse(localStorage.getItem('token'))
     const [errors, setErrors] = useState({});
     const [isValid, setIsValid] = useState(false);
     const [formData, setFormData] = useState({
@@ -61,7 +61,7 @@ export default function WorkoutForm() {
     const handleSubmit = async (ev) => {
         ev.preventDefault()
 
-        if (!user) {
+        if (!token) {
             snackbar('You must be logged in')
             return
         }
@@ -71,7 +71,7 @@ export default function WorkoutForm() {
                 body: JSON.stringify(formData),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
+                    'Authorization': `Bearer ${token}`
                 }
             })
             console.log('formdata1', formData)

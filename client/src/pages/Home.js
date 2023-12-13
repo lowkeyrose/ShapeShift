@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
-// import { useAuthContext } from '../hooks/useAuthContext'
 import { ACTIONS } from '../context/Actions'
 import logo from '../assets/spaceman.jpg'
 import './style/Home.css'
@@ -12,7 +11,6 @@ import { Typography } from '@mui/material'
 
 export default function Home() {
     const { workouts, dispatch } = useWorkoutContext()
-    // const user = JSON.parse(localStorage.getItem('user'))
 
     useEffect(() => {
         const fetchWorkouts = async () => {

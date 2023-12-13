@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
 import { ACTIONS } from '../context/Actions'
 import { useGeneralContext } from './useGeneralContext'
+import { RoleTypes } from '../components/Navbar-config'
 
 export const useLogin = () => {
-  const { navigate, snackbar } = useGeneralContext()
+  const { navigate, snackbar, setRoleType } = useGeneralContext()
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(null)
   const { dispatch } = useAuthContext()
@@ -25,10 +26,24 @@ export const useLogin = () => {
       setError(json.error)
     }
     if (response.ok) {
+      console.log('json', json);
       // save the user to local storage
-      localStorage.setItem('user', JSON.stringify(json))
+      localStorage.setItem('token', JSON.stringify(json.token))
       // update the auth context
       dispatch({ type: ACTIONS.LOGIN, payload: json })
+      // set user roleType
+      if (json.user.roleType === 'admin') {
+        setRoleType(RoleTypes.admin)
+      } else if (json.user.roleType === 'master') {
+        setRoleType(RoleTypes.master)
+      } else {
+        setRoleType(RoleTypes.user)
+      }
+
+      // try to make it one function below
+      // setRoleType(RoleTypes[json.user.roleType])
+      // console.log(roleType)
+
       // Popup message for UX
       snackbar("Login successful")
       // Navigate home

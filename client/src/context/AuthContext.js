@@ -2,6 +2,7 @@ import { createContext, useEffect, useReducer } from 'react'
 import { ACTIONS } from "./Actions"
 import { useLocation } from 'react-router-dom';
 import { useGeneralContext } from '../hooks/useGeneralContext';
+import { RoleTypes } from '../components/Navbar-config';
 
 export const AuthContext = createContext()
 
@@ -10,7 +11,6 @@ export const authReducer = (state, action) => {
     case ACTIONS.LOGIN:
       return { user: action.payload }
     case ACTIONS.LOGOUT:
-      localStorage.removeItem('user')
       return { user: null }
     default:
       return state
@@ -18,21 +18,20 @@ export const authReducer = (state, action) => {
 }
 
 export const AuthContextProvider = ({ children }) => {
-  const { snackbar } = useGeneralContext()
+  const { snackbar, setRoleType } = useGeneralContext()
   const location = useLocation()
   const [state, dispatch] = useReducer(authReducer, {
     user: null
   })
   
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user) {
+    const token = JSON.parse(localStorage.getItem('token'))
+    if (token) {
       const loginstatus = async () => {
         try {
           const response = await fetch('/api/user/loginstatus', {
-            method: 'POST',
             headers: {
-              'Authorization': `Bearer ${user.token}`
+              'Authorization': `Bearer ${token}`
             }
           })
 
@@ -50,6 +49,7 @@ export const AuthContextProvider = ({ children }) => {
       }
       loginstatus()
     }
+    
   }, [dispatch, location.pathname, snackbar])
 
   console.log('AuthContext state: ', state)

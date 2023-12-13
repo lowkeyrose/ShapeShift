@@ -14,22 +14,12 @@ import MenuItem from '@mui/material/MenuItem'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
 import { Link } from 'react-router-dom'
 import { useLogout } from '../hooks/useLogout'
+import { checkPermissions, pages, settings } from './Navbar-config'
+import { useGeneralContext } from '../hooks/useGeneralContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 
-const pages = [
-  { route: '/workouts', title: 'Workouts' },
-  { route: '/about', title: 'About' },
-  { route: '/workouts/favorite', title: 'Favorite Workouts' },
-  { route: '/workouts/myworkouts', title: 'My Workouts' },
-  { route: '/login', title: 'Login' },
-  { route: '/signup', title: 'Signup' }
-];
-const settings = [
-  { route: '/profile', title: 'Profile' },
-  { route: '/account', title: 'Account' },
-];
-
-function ResponsiveAppBar() {
+export default function ResponsiveAppBar() {
+  const { roleType } = useGeneralContext()
   const { user } = useAuthContext()
   const { logout } = useLogout()
   const handleLogout = () => {
@@ -105,7 +95,7 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
                 <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: "black" }}>
                   <MenuItem onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page.title}</Typography>
@@ -135,7 +125,7 @@ function ResponsiveAppBar() {
             ShapeShift
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
               <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
                 <Button
                   key={page.route}
@@ -152,10 +142,11 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <p>{roleType}</p>
 
                   {/* Add profile pic here >> */}
                   {/* This sends the error nati@parnes.com:1  GET http://localhost:3000/nati@parnes.com 404 (Not Found)  */}
-                  <Avatar alt={user.email} src={user.email} />
+                  <Avatar alt={user.profilePic} src={user.email} />
 
                 </IconButton>
               </Tooltip>
@@ -175,7 +166,7 @@ function ResponsiveAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
+                {settings.filter(s => !s.permissions || checkPermissions(s.permissions, roleType)).map((setting) => (
                   <Link to={setting.route} key={setting.route} style={{ textDecoration: 'none', color: 'black' }} >
                     <MenuItem onClick={handleCloseUserMenu}>
                       <Typography textAlign="center">{setting.title}</Typography>
@@ -195,4 +186,3 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
-export default ResponsiveAppBar

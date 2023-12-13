@@ -15,13 +15,13 @@ export default function MyWorkouts() {
     const { workouts, dispatch } = useWorkoutContext()
     
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'))
-        if (user) {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if (token) {
             const fetchWorkouts = async () => {
                 try {
                     const response = await fetch('/api/workouts/myworkouts', {
                         headers: {
-                            'Authorization': `Bearer ${user.token}`
+                            'Authorization': `Bearer ${token}`
                         }
                     })
 
