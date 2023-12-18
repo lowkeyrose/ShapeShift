@@ -1,5 +1,6 @@
 import { ACTIONS } from "../context/Actions"
 import { useAuthContext } from '../hooks/useAuthContext'
+import { useGeneralContext } from '../hooks/useGeneralContext'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
 
 // date fns
@@ -8,13 +9,14 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 export default function WorkoutDetails({ workout }) {
   const { user } = useAuthContext()
   const { dispatch } = useWorkoutContext()
+  const { location } = useGeneralContext()
   
   const handleClick = async () => {
     const token = JSON.parse(localStorage.getItem('token'))
     const response = await fetch(`/api/workouts/myworkouts/${workout._id}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': token
       }
     })
     const json = await response.json()
@@ -32,7 +34,7 @@ export default function WorkoutDetails({ workout }) {
       {/* Uncaught Error: Objects are not valid as a React child (found: object with keys {_id}). If you meant to render a collection of children, use an array instead. line below */}
       <p><strong>Exercises: </strong>{[workout.exercises].length}</p>
 
-      <p><strong>Private: </strong>{workout.Private}</p>
+      {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
       {/* <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p> */}
       {user && <span className="material-symbols-outlined" onClick={handleClick}>delete</span>}
     </div>

@@ -24,7 +24,7 @@ export default function ErrorPage() {
               width={250} height={100}
             />
           </Grid>
-            <Typography variant="h6">
+            <Typography variant="h6" sx={{textAlign: 'center'}}>
               The page you’re looking for doesn’t exist.
             </Typography>
             <Button sx={{m: 1}} onClick={() => navigate('/')} variant="contained">Back Home</Button>

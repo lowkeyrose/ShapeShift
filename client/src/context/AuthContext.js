@@ -1,6 +1,5 @@
 import { createContext, useEffect, useReducer } from 'react'
 import { ACTIONS } from "./Actions"
-import { useLocation } from 'react-router-dom';
 import { useGeneralContext } from '../hooks/useGeneralContext';
 import { RoleTypes } from '../components/Navbar-config';
 
@@ -8,6 +7,8 @@ export const AuthContext = createContext()
 
 export const authReducer = (state, action) => {
   switch (action.type) {
+    case ACTIONS.AUTH:
+      return { user: action.payload }
     case ACTIONS.LOGIN:
       return { user: action.payload }
     case ACTIONS.LOGOUT:
@@ -19,8 +20,7 @@ export const authReducer = (state, action) => {
 }
 
 export const AuthContextProvider = ({ children }) => {
-  const { snackbar, setRoleType } = useGeneralContext()
-  const location = useLocation()
+  const { snackbar, setRoleType, location } = useGeneralContext()
   const [state, dispatch] = useReducer(authReducer, {
     user: null
   })
@@ -29,7 +29,7 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('token'))
     if (token) {
-      console.log('loginstatus with token');
+      // console.log('loginstatus with token');
       const loginstatus = async () => {
         try {
           const response = await fetch('/api/user/authenticate', {
@@ -44,28 +44,26 @@ export const AuthContextProvider = ({ children }) => {
           console.log('data', json);
 
           if (response.ok) {
-            dispatch({ type: ACTIONS.LOGIN, payload: json })
-            const userRoleType = json.user.roleType
+            dispatch({ type: ACTIONS.AUTH, payload: json })
+            const userRoleType = json.roleType
             const mappedRoleType = RoleTypes[userRoleType]
             setRoleType(mappedRoleType)
-            console.log("response ok");
+            // console.log("response ok");
           }
           if (response.status === 401) {
-            console.log('loginstatus if 401');
+            // console.log('loginstatus if 401');
             // } else {
             snackbar('Session expired')
             dispatch({ type: ACTIONS.LOGOUT })
-
-            // check if this is needed! 
             setRoleType(RoleTypes.none)
 
           } else if (response.status !== 200) {
-            console.log('loginstatus else if');
+            // console.log('loginstatus else if');
             throw new Error(`Unexpected response status, response status: ${response.status}`)
           }
         } catch (error) {
-          console.log("The Promise is rejected!", error)
-          console.log('loginstatus catch');
+          snackbar("The Promise is rejected!", error)
+          // console.log('loginstatus catch');
         }
       }
       loginstatus()
@@ -73,7 +71,7 @@ export const AuthContextProvider = ({ children }) => {
       console.log('loginstatus without token');
     }
 
-  }, [dispatch, location.pathname,])
+  }, [dispatch, location.pathname, setRoleType, snackbar])
 
   console.log('AuthContext state: ', state)
 

@@ -21,7 +21,6 @@ export default function WorkoutForm() {
     const { navigate, snackbar } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     // const { dispatch: exerciseDispatch } = useExerciseContext()
-    const token = JSON.parse(localStorage.getItem('token'))
     const [errors, setErrors] = useState({});
     const [isValid, setIsValid] = useState(false);
     const [formData, setFormData] = useState({
@@ -60,6 +59,7 @@ export default function WorkoutForm() {
 
     const handleSubmit = async (ev) => {
         ev.preventDefault()
+        const token = JSON.parse(localStorage.getItem('token'))
 
         if (!token) {
             snackbar('You must be logged in')
@@ -71,7 +71,7 @@ export default function WorkoutForm() {
                 body: JSON.stringify(formData),
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': token
                 }
             })
             console.log('formdata1', formData)
@@ -92,7 +92,7 @@ export default function WorkoutForm() {
                 exerciseArray.forEach(exercise => {
                     exercise.workout_id = workoutId
                 })
-                navigate('/')
+                navigate('/workouts/myworkouts')
                 snackbar('New workout added successfully', workoutData)
             } else {
                 snackbar('Failed to create workout');
@@ -186,7 +186,7 @@ export default function WorkoutForm() {
                             {/* <Typography variant="subtitle1">Exercises Preview:</Typography> */}
                         </Grid>
 
-                        <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise}/>
+                        <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} />
 
                         <Grid item xs={12} sx={{ mt: -1 }}>
                             <FormControlLabel

@@ -5,13 +5,12 @@ const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
 }
 
-// login status
-// const loginStatus = async (req, res) => {
-//   const data = jwt.decode(req.headers.authorization, process.env.SECRET)
-//   console.log('req.user: ', req.user)
-//   const user = req.user
-//   res.status(200).json({user})
-// }
+// authenticate
+const authenticate = async (req, res) => {
+  // const data = jwt.decode(req.headers.authorization, process.env.SECRET)
+  const user = req.user
+  res.status(200).json(user)
+}
 
 // login user
 const loginUser = async (req, res) => {
@@ -47,5 +46,4 @@ const signupUser = async (req, res) => {
   }
 }
 
-module.exports = { loginUser, signupUser }
-// module.exports = { loginUser, signupUser, loginStatus }
+module.exports = { loginUser, signupUser, authenticate }

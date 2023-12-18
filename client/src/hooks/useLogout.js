@@ -10,8 +10,8 @@ export const useLogout = () => {
   const logout = () => {
     // dispatch logout action
     dispatch({ type: ACTIONS.LOGOUT })
-    snackbar('user logged out')
     setRoleType(RoleTypes.none)
+    snackbar('user logged out')
   }
 
   return { logout }

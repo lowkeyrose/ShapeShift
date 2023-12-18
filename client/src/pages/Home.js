@@ -26,17 +26,22 @@ export default function Home() {
 
     return (
         <div className='home'>
-            <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 20px 0", paddingBottom: "10px", textAlign: 'center' }}>
+            <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 Your Personal Workout Buddy
-                <Typography component="p" sx={{ fontWeight: 600, fontSize: 16 }}>
-                    <br />
-                    {workouts ? "Here you can find all the workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
-                </Typography>
+            </Typography>
+            <Typography component="p" sx={{ fontWeight: 600, fontSize: 16,  paddingBottom: "10px", textAlign: 'center' }}>
+                <br />
+                {workouts && workouts.length > 0 ? "Here you can find all the workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
             <div className="workouts">
-                {workouts && workouts.map((workout) => (
-                    <WorkoutDetails key={workout._id} workout={workout} />
-                ))}
+                {workouts && workouts.map((workout) => {
+                    if (!workout.Private) {
+                        return <WorkoutDetails key={workout._id} workout={workout} />
+                    } else {
+                        return null
+                    }
+                }
+                )}
             </div>
             <img className='robot' src={logo} alt="logo" />
         </div>

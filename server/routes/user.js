@@ -1,13 +1,13 @@
 const express = require('express')
 
 // controller functions
-const { loginUser, signupUser, loginStatus } = require('../controllers/userController')
+const { loginUser, signupUser, authenticate } = require('../controllers/userController')
 const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router()
 
-// login status
-router.post('/authenticate', requireAuth)
+// authenticate
+router.post('/authenticate', requireAuth, authenticate)
 
 // login route
 router.post('/login', loginUser)

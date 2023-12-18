@@ -13,7 +13,7 @@ import { useGeneralContext } from '../hooks/useGeneralContext'
 export default function MyWorkouts() {
     const { navigate } = useGeneralContext()
     const { workouts, dispatch } = useWorkoutContext()
-    
+
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('token'))
         if (token) {
@@ -21,14 +21,14 @@ export default function MyWorkouts() {
                 try {
                     const response = await fetch('/api/workouts/myworkouts', {
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': token
                         }
                     })
 
                     if (!response.ok) {
                         throw new Error(`Failed to fetch workouts: ${response.statusText}`);
                     }
-                    
+
                     const data = await response.json()
 
                     dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
@@ -44,12 +44,12 @@ export default function MyWorkouts() {
     return (
         <div className='home'>
             <div className="workouts">
-                <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 20px 0", paddingBottom: "10px", textAlign: 'center' }}>
+                <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                     My Workouts
-                    <Typography component="p" sx={{ fontWeight: 600, fontSize: 16 }}>
-                        <br />
-                        {workouts ? "Here are your awesome workouts" : "You current have no available workouts, Add your first one today!"}
-                    </Typography>
+                </Typography>
+                <Typography component="p" sx={{ fontWeight: 600, fontSize: 16,  paddingBottom: "10px", textAlign: 'center' }}>
+                    <br />
+                    {workouts && workouts.length > 0 ? "Here are your awesome workouts" : "You current have no available workouts, Add your first one today!"}
                 </Typography>
 
                 {workouts && workouts.map((workout) => (

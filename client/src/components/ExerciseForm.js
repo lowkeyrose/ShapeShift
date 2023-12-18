@@ -48,7 +48,6 @@ export default function ExerciseForm({ onAddExercise }) {
     onAddExercise(formData)
     toggleModal()
     setFormData('')
-    console.log(ev);
   }
 
   const handleInput = ev => {
@@ -104,7 +103,7 @@ export default function ExerciseForm({ onAddExercise }) {
               <Typography component="h1" variant="h5">
                 Add Exercise
               </Typography>
-              <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <Box component="div" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                   {
                     structure.map(item =>

@@ -142,11 +142,9 @@ export default function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <p>{roleType}</p>
-
-                  {/* Add profile pic here >> */}
-                  {/* This sends the error nati@parnes.com:1  GET http://localhost:3000/nati@parnes.com 404 (Not Found)  */}
-                  <Avatar alt={user.profilePic} src={user.email} />
+                  <span>{roleType},</span>
+                  <span>{user.username}</span>
+                  <Avatar alt={user.profilePic} src={user.profilePic} />
 
                 </IconButton>
               </Tooltip>
