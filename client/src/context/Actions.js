@@ -7,7 +7,6 @@ export const ACTIONS = {
   SET_SINGLE_EXERCISE: 'set-single-exercise',
   CREATE_EXERCISE: 'create-exercise',
   DELETE_EXERCISE: 'delete-exercise',
-  LOGIN: 'login',
-  AUTH: 'authenticate',
+  SET_USER: 'set-user',
   LOGOUT: 'logout'
 }

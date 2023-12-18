@@ -7,7 +7,6 @@ const createToken = (_id) => {
 
 // authenticate
 const authenticate = async (req, res) => {
-  // const data = jwt.decode(req.headers.authorization, process.env.SECRET)
   const user = req.user
   res.status(200).json(user)
 }

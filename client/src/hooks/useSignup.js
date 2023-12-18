@@ -27,7 +27,7 @@ export const useSignup = () => {
       localStorage.setItem('user', JSON.stringify(json))
 
       // update the auth context
-      dispatch({ type: ACTIONS.LOGIN, payload: json })
+      dispatch({ type: ACTIONS.SET_USER, payload: json })
 
       // update loading state
       setIsLoading(false)

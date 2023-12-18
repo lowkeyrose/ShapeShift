@@ -30,7 +30,7 @@ export const useLogin = () => {
       // save the user to local storage
       localStorage.setItem('token', JSON.stringify(json.token))
       // update the auth context
-      dispatch({ type: ACTIONS.LOGIN, payload: json })
+      dispatch({ type: ACTIONS.SET_USER, payload: json })
       // set user roleType
       const userRoleType = json.user.roleType
       const mappedRoleType = RoleTypes[userRoleType]

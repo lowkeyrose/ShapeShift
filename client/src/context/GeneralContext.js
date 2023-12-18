@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react';
 import Snackbar from '../components/Snackbar';
+// import Loader from '../components/Loader';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { RoleTypes } from '../components/Navbar-config';
@@ -13,6 +14,7 @@ export const GeneralContextProvider = ({ children }) => {
   const location = useLocation()
 
   const [snackbarText, setSnackbarText] = useState('')
+  // const [loading, setLoading] = useState(true)
 
   const [roleType, setRoleType] = useState(RoleTypes.none)
 
@@ -23,6 +25,7 @@ export const GeneralContextProvider = ({ children }) => {
 
   return (
     <GeneralContext.Provider value={{ snackbar, navigate, roleType, setRoleType, location }}>
+    {/* <GeneralContext.Provider value={{ snackbar, navigate, roleType, setRoleType, location, setLoading }}> */}
       {snackbarText && <Snackbar text={snackbarText} />}
       {/* {loading && <Loader />} */}
       {children}

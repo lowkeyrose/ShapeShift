@@ -8,20 +8,24 @@ import '../components/style/WorkoutDetails.css'
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
+// import { useGeneralContext } from '../hooks/useGeneralContext'
 
 export default function Home() {
     const { workouts, dispatch } = useWorkoutContext()
+    // const { setLoading } = useGeneralContext()
 
     useEffect(() => {
+        // setLoading(true)
         const fetchWorkouts = async () => {
             const response = await fetch('/api/workouts')
             const json = await response.json()
-
+            
             if (response.ok) {
                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
             }
         }
         fetchWorkouts()
+        // setLoading(false)
     }, [dispatch])
 
     return (

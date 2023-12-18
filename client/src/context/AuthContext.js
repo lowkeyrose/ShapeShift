@@ -7,9 +7,7 @@ export const AuthContext = createContext()
 
 export const authReducer = (state, action) => {
   switch (action.type) {
-    case ACTIONS.AUTH:
-      return { user: action.payload }
-    case ACTIONS.LOGIN:
+    case ACTIONS.SET_USER:
       return { user: action.payload }
     case ACTIONS.LOGOUT:
       localStorage.removeItem('token')
@@ -44,25 +42,18 @@ export const AuthContextProvider = ({ children }) => {
           console.log('data', json);
 
           if (response.ok) {
-            dispatch({ type: ACTIONS.AUTH, payload: json })
+            dispatch({ type: ACTIONS.SET_USER, payload: json })
             const userRoleType = json.roleType
             const mappedRoleType = RoleTypes[userRoleType]
             setRoleType(mappedRoleType)
             // console.log("response ok");
-          }
-          if (response.status === 401) {
-            // console.log('loginstatus if 401');
-            // } else {
+          } else {
             snackbar('Session expired')
             dispatch({ type: ACTIONS.LOGOUT })
             setRoleType(RoleTypes.none)
-
-          } else if (response.status !== 200) {
-            // console.log('loginstatus else if');
-            throw new Error(`Unexpected response status, response status: ${response.status}`)
           }
         } catch (error) {
-          snackbar("The Promise is rejected!", error)
+          console.log("The Promise is rejected!", error)
           // console.log('loginstatus catch');
         }
       }
