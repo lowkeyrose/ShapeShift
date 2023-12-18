@@ -1,32 +1,24 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const User = require('../models/userModel')
 
-const requireAuth = async (req, res, next) => {
-
-  // verify authentication
-  const { authorization } = req.headers
-  // console.log(authorization);
-
-  if (!authorization) {
-    return res.status(401).json({ error: 'Authorization token required' })
+module.exports = async (req, res, next) => {
+  const token = req.headers.authorization
+  if (!token) {
+    return null
   }
 
-  // 'Bearer dr328959gnjdsf921kdsk200gloe024id92k.sksdfskgrji2'
-  // so we need to split this string and grab only the token
-
-  const token = authorization.split(' ')[1]
-
   try {
-    const data = jwt.decode(token, process.env.SECRET)
-    // console.log(data)
     const { _id } = jwt.verify(token, process.env.SECRET)
-    // console.log({_id})
-    req.user = await User.findOne({ _id }).select('_id')
+
+    req.user = await User.findOne({ _id })
+    const user = req.user
+    console.log('user: ', user)
+    res.status(200).json({ user, token })
+
     next()
+
   } catch (error) {
     console.log(error)
     res.status(401).json({ error: 'Request is not authorized' })
   }
 }
-
-module.exports = requireAuth

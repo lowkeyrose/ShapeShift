@@ -10,7 +10,6 @@ export const useLogout = () => {
   const logout = () => {
     // dispatch logout action
     dispatch({ type: ACTIONS.LOGOUT })
-    localStorage.removeItem('token')
     snackbar('user logged out')
     setRoleType(RoleTypes.none)
   }

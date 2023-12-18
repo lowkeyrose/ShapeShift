@@ -4,24 +4,23 @@ const jwt = require('jsonwebtoken')
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
 }
+
 // login status
-const loginStatus = async (req, res) => {
-  try {
-    res.status(200).json(req.user)
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ error: 'Internal Server Error' })
-  }
-}
+// const loginStatus = async (req, res) => {
+//   const data = jwt.decode(req.headers.authorization, process.env.SECRET)
+//   console.log('req.user: ', req.user)
+//   const user = req.user
+//   res.status(200).json({user})
+// }
 
 // login user
 const loginUser = async (req, res) => {
   const { email, password } = req.body
   console.log("req.body", req.body);
-  
+
   try {
     const user = await User.login(email, password)
-    
+
     // create a token
     const token = createToken(user._id)
 
@@ -48,4 +47,5 @@ const signupUser = async (req, res) => {
   }
 }
 
-module.exports = { loginUser, signupUser, loginStatus }
+module.exports = { loginUser, signupUser }
+// module.exports = { loginUser, signupUser, loginStatus }

@@ -32,17 +32,9 @@ export const useLogin = () => {
       // update the auth context
       dispatch({ type: ACTIONS.LOGIN, payload: json })
       // set user roleType
-      if (json.user.roleType === 'admin') {
-        setRoleType(RoleTypes.admin)
-      } else if (json.user.roleType === 'master') {
-        setRoleType(RoleTypes.master)
-      } else {
-        setRoleType(RoleTypes.user)
-      }
-
-      // try to make it one function below
-      // setRoleType(RoleTypes[json.user.roleType])
-      // console.log(roleType)
+      const userRoleType = json.user.roleType
+      const mappedRoleType = RoleTypes[userRoleType]
+      setRoleType(mappedRoleType)
 
       // Popup message for UX
       snackbar("Login successful")

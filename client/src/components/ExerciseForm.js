@@ -48,6 +48,7 @@ export default function ExerciseForm({ onAddExercise }) {
     onAddExercise(formData)
     toggleModal()
     setFormData('')
+    console.log(ev);
   }
 
   const handleInput = ev => {

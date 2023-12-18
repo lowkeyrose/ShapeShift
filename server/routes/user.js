@@ -7,7 +7,7 @@ const requireAuth = require('../middleware/requireAuth')
 const router = express.Router()
 
 // login status
-router.get('/loginstatus', requireAuth, loginStatus)
+router.post('/authenticate', requireAuth)
 
 // login route
 router.post('/login', loginUser)
