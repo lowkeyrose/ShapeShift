@@ -27,7 +27,6 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('token'))
     if (token) {
-      // console.log('loginstatus with token');
       const loginstatus = async () => {
         try {
           const response = await fetch('/api/user/authenticate', {
@@ -37,16 +36,13 @@ export const AuthContextProvider = ({ children }) => {
             }
           })
 
-          console.log('response', response);
           const json = await response.json()
-          console.log('data', json);
 
           if (response.ok) {
             dispatch({ type: ACTIONS.SET_USER, payload: json })
             const userRoleType = json.roleType
             const mappedRoleType = RoleTypes[userRoleType]
             setRoleType(mappedRoleType)
-            // console.log("response ok");
           } else {
             snackbar('Session expired')
             dispatch({ type: ACTIONS.LOGOUT })
@@ -54,14 +50,10 @@ export const AuthContextProvider = ({ children }) => {
           }
         } catch (error) {
           console.log("The Promise is rejected!", error)
-          // console.log('loginstatus catch');
         }
       }
       loginstatus()
-    } else {
-      console.log('loginstatus without token');
     }
-
   }, [dispatch, location.pathname, setRoleType, snackbar])
 
   console.log('AuthContext state: ', state)

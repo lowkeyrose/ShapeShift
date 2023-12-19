@@ -5,7 +5,9 @@ const {
   getWorkout,
   createWorkout,
   deleteWorkout,
-  updateWorkout
+  updateWorkout,
+  addFavorite,
+  removeFavorite
 } = require('../controllers/workoutController')
 const requireAuth = require('../middleware/requireAuth')
 
@@ -33,5 +35,11 @@ router.delete('/myworkouts/:id', requireAuth, deleteWorkout)
 
 // UPDATE a workout
 router.put('/myworkouts/:id', requireAuth, updateWorkout)
+
+// Add to favorites
+router.put('/favorite/:id', requireAuth, addFavorite)
+
+// Remove from favorites
+router.put('/unfavorite/:id', requireAuth, removeFavorite)
 
 module.exports = router

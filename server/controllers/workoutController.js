@@ -1,6 +1,7 @@
 const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
-const Exercise = require('../models/exerciseModel');
+const Exercise = require('../models/exerciseModel')
+const User = require('../models/userModel')
 
 // Get all workouts
 const getAllWorkouts = async (req, res) => {
@@ -61,10 +62,6 @@ const createWorkout = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 }
-//   const { title, imgUrl, exercises, Private } = req.body
-
-//   console.log('recieved data: ', req.body);
-
 //   let emptyFields = []
 
 //   if (!title) {
@@ -77,18 +74,9 @@ const createWorkout = async (req, res) => {
 //   if (emptyFields.length) {
 //     return res.status(400).json({ error: 'Please fill in all fields', emptyFields })
 //   }
-
-//   // add doc to db
-//   try {
-//     const user_id = req.user._id
-
-//     const workout = await Workout.create({ title, imgUrl, exercises, Private, user_id })
-
-//     res.status(200).json(workout)
-//   } catch (error) {
-//     res.status(400).json({ error: error.message })
-//   }
 // }
+
+
 
 // Delete a workout
 const deleteWorkout = async (req, res) => {
@@ -105,6 +93,21 @@ const deleteWorkout = async (req, res) => {
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' })
     }
+
+    // check if this works properly
+
+    // Find users with the workout in favorites
+    const usersToUpdate = await User.find({ favorites: id });
+
+    // Remove workout ID from users' favorites
+    await Promise.all(usersToUpdate.map(async (user) => {
+      if (user && user.favorites) { // Check if user exists and has favorites
+        user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id);
+        await user.save();
+      }
+    }));
+
+
 
     // Delete all exercises with the corresponding workout_id
     await Exercise.deleteMany({ workout_id: workout._id })
@@ -128,6 +131,8 @@ const updateWorkout = async (req, res) => {
     ...req.body
   })
 
+
+
   if (!workout) {
     return res.status(404).json({ error: 'Workout not found' })
   }
@@ -135,6 +140,66 @@ const updateWorkout = async (req, res) => {
   res.status(200).json(workout)
 }
 
+// Add workout to favorites
+const addFavorite = async (req, res) => {
+  const user_id = req.user._id
+  console.log('user_id: ', user_id);
+  const workout_id = req.params.id
+  console.log('workout_id: ', workout_id);
+
+  try {
+    const user = await User.findById(user_id)
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.favorites.includes(workout_id)) {
+      return res.status(400).json({ message: 'Workout already in favorites.' })
+    }
+
+    user.favorites.push(workout_id)
+
+    await user.save()
+
+    res.status(200).json({ message: 'Workout added to favorites successfully.' });
+  } catch (error) {
+    console.error('Error adding workout to favorites:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+}
+
+// remove workout to favorites
+const removeFavorite = async (req, res) => {
+  const user_id = req.user._id;
+  const workout_id = req.params.workoutId;
+
+  try {
+    const user = await User.findById(user_id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.favorites.includes(workout_id)) {
+      return res.status(400).json({ message: 'Workout not found in favorites' });
+    }
+
+    // Remove workout ID from user's favorites
+    user.favorites = user.favorites.filter(favorite => favorite !== workout_id);
+
+    // Save the updated user
+    await user.save();
+
+    res.status(200).json({ message: 'Workout removed from favorites successfully.' });
+  } catch (error) {
+    console.error('Error removing workout from favorites:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+}
+
+// check lookup function to connect 2 collections for favorites
+// const workout = await Workout.findMany({ $lookup: [{from: "workouts",  localField: "user_id",  foreignField: "isfavorite",  as: "favorite",}]})
 
 module.exports = {
   getAllWorkouts,
@@ -142,5 +207,7 @@ module.exports = {
   getWorkout,
   createWorkout,
   deleteWorkout,
-  updateWorkout
+  updateWorkout,
+  addFavorite,
+  removeFavorite
 }

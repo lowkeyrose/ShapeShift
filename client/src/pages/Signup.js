@@ -69,7 +69,7 @@ export default function SignUp() {
       ...formData,
       [id]: value,
     }
-    
+
     if (id === "gender") {
       setValue(value)
     }
@@ -146,6 +146,11 @@ export default function SignUp() {
               </FormControl>
             </Grid>
           </Grid>
+          {error && (
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
           <Button
             disabled={!isValid}
             type="submit"

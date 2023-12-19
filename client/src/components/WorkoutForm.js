@@ -1,4 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useWorkoutContext } from "../hooks/useWorkoutContext"
+import { ACTIONS } from "../context/Actions"
+import { Checkbox } from '@mui/material'
+import { useGeneralContext } from '../hooks/useGeneralContext'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -10,19 +14,14 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Joi from 'joi'
-import { useWorkoutContext } from "../hooks/useWorkoutContext"
-// import { useExerciseContext } from "../hooks/useExerciseContext"
-import { ACTIONS } from "../context/Actions"
-import { Checkbox } from '@mui/material'
 import ExerciseForm from './ExerciseForm'
-import { useGeneralContext } from '../hooks/useGeneralContext'
 
 export default function WorkoutForm() {
     const { navigate, snackbar } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
-    // const { dispatch: exerciseDispatch } = useExerciseContext()
-    const [errors, setErrors] = useState({});
-    const [isValid, setIsValid] = useState(false);
+    const [errors, setErrors] = useState({})
+    const [isValid, setIsValid] = useState(false)
+    const myRef = useRef(null)
     const [formData, setFormData] = useState({
         title: '',
         imgUrl: '',
@@ -42,19 +41,13 @@ export default function WorkoutForm() {
         Private: Joi.boolean().default(false).optional()
     })
 
-    const [exerciseArray, setExerciseArray] = useState([])
+    useEffect(() => {
+        // console.log('formData.exercises changed:', formData.exercises);
+        handleInput(myRef.current)
+    }, [formData.exercises.length])
 
     const handleAddExercise = (exercise) => {
-        console.log('exercise', exercise)
-        // Update the exercises array in formData
         setFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exercise] }));
-        // Update the exerciseArray
-        setExerciseArray((prevArray) => [...prevArray, exercise])
-
-        // Freestyle
-        if (formData.title.length >= 3) {
-            setIsValid(true)
-        }
     }
 
     const handleSubmit = async (ev) => {
@@ -65,6 +58,7 @@ export default function WorkoutForm() {
             snackbar('You must be logged in')
             return
         }
+
         try {
             const workoutResponse = await fetch('/api/workouts/myworkouts/new', {
                 method: 'POST',
@@ -74,90 +68,63 @@ export default function WorkoutForm() {
                     'Authorization': token
                 }
             })
-            console.log('formdata1', formData)
-
 
             const workoutData = await workoutResponse.json()
 
-            const workoutId = workoutData._id
-            console.log('workoutId', workoutId)
-
-            console.log('workoutResponse', workoutResponse)
-            console.log('workoutData', workoutData)
-
             if (workoutResponse.status === 201) {
-
                 workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
-
-                exerciseArray.forEach(exercise => {
-                    exercise.workout_id = workoutId
-                })
                 navigate('/workouts/myworkouts')
                 snackbar('New workout added successfully', workoutData)
             } else {
                 snackbar('Failed to create workout');
             }
+
         } catch (error) {
             console.error('Error creating workout and exercise:', error);
         }
     }
 
     const handleInput = ev => {
-        // if (id === 'exercise-form') {
-        //     const exercise = ev
-        //     setFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exercise] }))
-        //     setExerciseArray((prevArray) => [...prevArray, exercise])
-        // } else {
+        let obj = {}
 
-        // }
-
-        const { id, value } = ev.target
-        let obj = {
-            ...formData,
-            [id]: value,
-        }
-
-        if (id === "Private") {
-            const { id, checked } = ev.target
-            obj = { ...formData, [id]: checked }
-        }
-        console.log("obj", obj);
-
-
-        const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
-        const err = { ...errors, [id]: undefined };
-        if (schema.error) {
-            const error = schema.error.details.find(e => e.context.key === id);
-            if (error) {
-                err[id] = error.message;
+        const validation = (id) => {
+            const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
+            const err = { ...errors, [id]: undefined };
+            if (schema.error) {
+                const error = schema.error.details.find(e => e.context.key === id);
+                if (error) {
+                    err[id] = error.message;
+                }
+                setIsValid(false);
+            } else {
+                setIsValid(true)
             }
-            setIsValid(false);
-        } else {
-            setIsValid(true);
+            setErrors(err)
         }
-        setFormData(obj);
-        console.log(schema.error);
-        setErrors(err);
-    };
 
+        if (ev.id === "exercises") {
+            const { id, value } = ev
+            obj = { ...formData, [id]: [value] }
+            validation(id)
+        } else {
+            const { id, value } = ev.target
+            obj = { ...formData, [id]: value }
+
+            if (id === "Private") {
+                const { id, checked } = ev.target
+                obj = { ...formData, [id]: checked }
+            }
+            validation(id)
+            setFormData(obj)
+        }
+    }
 
     return (
         <Container component="main" maxWidth="sm">
             <CssBaseline />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    <AddCircleIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Create A New Workout
-                </Typography>
+            <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
+                <Typography component="h1" variant="h5"> Create A New Workout </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
                         {
@@ -182,34 +149,23 @@ export default function WorkoutForm() {
                         }
 
                         <Grid item xs={12}>
-                            <Typography variant="h6">Number of Exercises: {formData.exercises.length}</Typography>
+                            <p variant="h6" ref={myRef} id='exercises' value={formData.exercises.length}>Number of Exercises: {formData.exercises.length}</p>
                             {/* <Typography variant="subtitle1">Exercises Preview:</Typography> */}
                         </Grid>
 
-                        <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} />
+                        <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} exercises={formData.exercises} />
+
+                        {/* chatGPT said to add exercises={formData.exercises} so that the Failed prop type: Invalid prop `item` of type `number` supplied to `ForwardRef(Grid)`, expected `boolean`. also props on the otherside (exercises)*/}
+                        {/* <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} exercises={formData.exercises} /> */}
 
                         <Grid item xs={12} sx={{ mt: -1 }}>
                             <FormControlLabel
                                 label="Private"
-                                control={<Checkbox
-                                    id="Private"
-                                    color="primary"
-                                    checked={formData.Private}
-                                    onChange={handleInput}
-                                    name="Private"
-                                />}
+                                control={<Checkbox id="Private" color="primary" checked={formData.Private} onChange={handleInput} name="Private" />}
                             />
                         </Grid>
                     </Grid>
-                    <Button
-                        disabled={!isValid}
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                        Add Workout
-                    </Button>
+                    <Button disabled={!isValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}> Add Workout </Button>
                 </Box>
             </Box>
         </Container>

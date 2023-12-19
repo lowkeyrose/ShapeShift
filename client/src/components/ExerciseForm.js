@@ -12,6 +12,7 @@ import Joi from 'joi'
 import './style/ExerciseModal.css'
 
 export default function ExerciseForm({ onAddExercise }) {
+  // console.log('ExerciseForm received exercises:', exercises);
   const [modal, setModal] = useState(false)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
@@ -20,9 +21,9 @@ export default function ExerciseForm({ onAddExercise }) {
     title: '',
     imgUrl: '',
     videoUrl: '',
-    sets: '',
-    weight: '',
-    reps: ''
+    sets: 0,
+    weight: 0,
+    reps: 0
   })
 
   const structure = [
@@ -38,9 +39,9 @@ export default function ExerciseForm({ onAddExercise }) {
     title: Joi.string().min(3).max(20).required(),
     imgUrl: Joi.string().min(0).max(2000).optional(),
     videoUrl: Joi.string().min(0).max(2000).optional(),
-    sets: Joi.number().min(1).max(20).required(),
-    weight: Joi.number().min(0).max(20).required(),
-    reps: Joi.number().min(1).max(20).required()
+    sets: Joi.number().min(1).max(200).required(),
+    weight: Joi.number().min(0).max(1000).required(),
+    reps: Joi.number().min(1).max(200).required()
   });
 
   const handleSubmit = async (ev) => {
@@ -48,16 +49,15 @@ export default function ExerciseForm({ onAddExercise }) {
     onAddExercise(formData)
     toggleModal()
     setFormData('')
+    setIsValid(false)
   }
 
   const handleInput = ev => {
     const { id, value } = ev.target
     let obj = {
       ...formData,
-      [id]: value,
+      [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) : value,
     }
-
-    // console.log(obj);
 
     const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
     const err = { ...errors, [id]: undefined };
@@ -81,7 +81,7 @@ export default function ExerciseForm({ onAddExercise }) {
 
   return (
     <div className='exercise-form'>
-      <Grid item={12} >
+      <Grid item xs={12} >
         <Button onClick={toggleModal} sx={{ p: 2, m: 2 }} variant="contained" color="success" endIcon={<AddCircleIcon />} >Add Exercise</Button>
       </Grid>
       {modal && <div className="modal">

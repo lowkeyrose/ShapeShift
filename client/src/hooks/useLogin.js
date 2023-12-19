@@ -6,9 +6,9 @@ import { RoleTypes } from '../components/Navbar-config'
 
 export const useLogin = () => {
   const { navigate, snackbar, setRoleType } = useGeneralContext()
+  const { dispatch } = useAuthContext()
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(null)
-  const { dispatch } = useAuthContext()
 
   const login = async (email, password) => {
     setIsLoading(true)
@@ -24,6 +24,7 @@ export const useLogin = () => {
     if (!response.ok) {
       setIsLoading(false)
       setError(json.error)
+      console.log('json.error: ', json.error);
     }
     if (response.ok) {
       console.log('json', json);

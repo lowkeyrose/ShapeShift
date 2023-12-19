@@ -1,32 +1,39 @@
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Joi from 'joi';
-import { Link } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import CssBaseline from '@mui/material/CssBaseline'
+import TextField from '@mui/material/TextField'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Paper from '@mui/material/Paper'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import Typography from '@mui/material/Typography'
+import Joi from 'joi'
+import { Link } from 'react-router-dom'
 import { useState } from "react"
 import { useLogin } from '../hooks/useLogin'
 
 export default function Login() {
-  const { login } = useLogin()
+  const { login, error } = useLogin()
   const [formData, setFormData] = useState({
-    email: '',
+    email: localStorage.email ? JSON.parse(localStorage.email) : "",
     password: ''
   })
-  const [errors, setErrors] = useState({});
-  const [isValid, setIsValid] = useState(false);
+  const [errors, setErrors] = useState({})
+  const [isValid, setIsValid] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setFormData(formData)
     await login(formData.email, formData.password)
+    if (rememberMe) {
+      localStorage.email = JSON.stringify(formData.email);
+    } else {
+      localStorage.email = "";
+    }
   }
 
   const userSchema = Joi.object({
@@ -124,8 +131,13 @@ export default function Login() {
               onChange={handleInput}
 
             />
+            {error && (
+              <Typography color="error" variant="body2">
+                {error}
+              </Typography>
+            )}
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox defaultValue={rememberMe} onChange={() => setRememberMe(!rememberMe)} color="primary" />}
               label="Remember me"
             />
             <Button

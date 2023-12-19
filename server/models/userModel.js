@@ -40,8 +40,12 @@ const userSchema = new Schema({
   },
   roleType: {
     type: String,
+    default: 'user',
     required: true
-  }
+  },
+  favorites: [{
+    type: String
+  }]
 })
 
 // static signup method
