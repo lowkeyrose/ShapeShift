@@ -13,9 +13,9 @@ import { useGeneralContext } from '../hooks/useGeneralContext'
 export default function MyWorkouts() {
     const { navigate } = useGeneralContext()
     const { workouts, dispatch } = useWorkoutContext()
+    const token = JSON.parse(localStorage.getItem('token'))
 
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem('token'))
         if (token) {
             const fetchWorkouts = async () => {
                 try {
@@ -53,7 +53,7 @@ export default function MyWorkouts() {
                 </Typography>
 
                 {workouts && workouts.map((workout) => (
-                        <WorkoutDetails key={workout._id} workout={workout} />
+                    <WorkoutDetails key={workout._id} workout={workout} />
                 ))}
 
                 <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/new')} >Create A New Workout</Button>

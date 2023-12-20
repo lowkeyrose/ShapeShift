@@ -22,6 +22,7 @@ export default function WorkoutForm() {
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
     const myRef = useRef(null)
+    const token = JSON.parse(localStorage.getItem('token'))
     const [formData, setFormData] = useState({
         title: '',
         imgUrl: '',
@@ -52,12 +53,11 @@ export default function WorkoutForm() {
 
     const handleSubmit = async (ev) => {
         ev.preventDefault()
-        const token = JSON.parse(localStorage.getItem('token'))
-
         if (!token) {
             snackbar('You must be logged in')
             return
         }
+        console.log('token: ' + token);
 
         try {
             const workoutResponse = await fetch('/api/workouts/myworkouts/new', {

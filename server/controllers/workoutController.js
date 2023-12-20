@@ -5,11 +5,31 @@ const User = require('../models/userModel')
 
 // Get all workouts
 const getAllWorkouts = async (req, res) => {
+  try {
+    const workouts = await Workout.find({}).sort({ createdAt: -1 });
 
-  const workouts = await Workout.find({}).sort({ createdAt: -1 })
+    // Fetch the count of users for each workout
+    // const workoutsWithFavoritesCount = await Promise.all(
+    //   workouts.map(async (workout) => {
+    //     const favoritesCount = await User.countDocuments({ favorites: workout._id });
+    //     return { workout, favoritesCount };
+    //   })
+    // );
 
-  res.status(200).json(workouts)
+    res.status(200).json(workouts);
+    // res.status(200).json({ workouts, workoutsWithFavoritesCount });
+  } catch (error) {
+    console.error('Error fetching all workouts:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
 }
+
+// const getAllWorkouts = async (req, res) => {
+
+//   const workouts = await Workout.find({}).sort({ createdAt: -1 })
+
+//   res.status(200).json(workouts)
+// }
 
 // Get my workouts
 const getMyWorkouts = async (req, res) => {
@@ -43,6 +63,7 @@ const createWorkout = async (req, res) => {
     const workoutData = req.body
     let exercisesData = req.body.exercises
     workoutData.user_id = req.user._id
+    workoutData.username = req.user.username
     exercisesData = exercisesData.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
     // Create a new workout
@@ -146,12 +167,18 @@ const addFavorite = async (req, res) => {
   console.log('user_id: ', user_id);
   const workout_id = req.params.id
   console.log('workout_id: ', workout_id);
-
+  
   try {
+    const workout = await Workout.findById(workout_id)
+
+    if (!workout) {
+      return res.status(404).json({ message: 'Workout not found' });
+    }
+
     const user = await User.findById(user_id)
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' })
     }
 
     if (user.favorites.includes(workout_id)) {
@@ -159,44 +186,52 @@ const addFavorite = async (req, res) => {
     }
 
     user.favorites.push(workout_id)
+    workout.likes= (workout.likes || 0) + 1;
 
-    await user.save()
+    await Promise.all([user.save(), workout.save()])
 
-    res.status(200).json({ message: 'Workout added to favorites successfully.' });
+    res.status(200).json({ message: 'Workout added to favorites successfully.' })
   } catch (error) {
-    console.error('Error adding workout to favorites:', error);
-    res.status(500).json({ message: 'Internal server error.' });
+    console.error('Error adding workout to favorites:', error)
+    res.status(500).json({ message: 'Internal server error.' })
   }
 }
 
-// remove workout to favorites
 const removeFavorite = async (req, res) => {
-  const user_id = req.user._id;
-  const workout_id = req.params.workoutId;
+  const user_id = req.user._id
+  const workout_id = req.params.id
 
   try {
-    const user = await User.findById(user_id);
+    const user = await User.findById(user_id)
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' })
     }
 
     if (!user.favorites.includes(workout_id)) {
-      return res.status(400).json({ message: 'Workout not found in favorites' });
+      return res.status(400).json({ message: 'Workout is not in favorites.' })
     }
 
-    // Remove workout ID from user's favorites
-    user.favorites = user.favorites.filter(favorite => favorite !== workout_id);
+    // Remove workout from favorites
+    user.favorites = user.favorites.filter((favorite) => favorite.toString() !== workout_id)
 
-    // Save the updated user
-    await user.save();
+    const workout = await Workout.findById(workout_id)
 
-    res.status(200).json({ message: 'Workout removed from favorites successfully.' });
+    if (workout) {
+      workout.likes = Math.max((workout.likes || 0) - 1, 0); // Decrement likes count, but not below 0
+      await workout.save();
+    }
+
+    await user.save()
+
+    res.status(200).json({ message: 'Workout removed from favorites successfully.' })
   } catch (error) {
-    console.error('Error removing workout from favorites:', error);
-    res.status(500).json({ message: 'Internal server error.' });
+    console.error('Error removing workout from favorites:', error)
+    res.status(500).json({ message: 'Internal server error.' })
   }
 }
+
+
 
 // check lookup function to connect 2 collections for favorites
 // const workout = await Workout.findMany({ $lookup: [{from: "workouts",  localField: "user_id",  foreignField: "isfavorite",  as: "favorite",}]})

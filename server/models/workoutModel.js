@@ -12,7 +12,7 @@ const workoutSchema = new Schema({
   },
   exercises: [{
     type: Object,
-    ref: 'Exercise',
+    ref: 'Exercise'
   }],
   Private: {
     type: Boolean,
@@ -21,6 +21,12 @@ const workoutSchema = new Schema({
   user_id: {
     type: Object,
     required: true
+  },
+  username: {
+    type: String
+  },
+  likes: {
+    type: Number
   }
 }, { timestamps: true })
 

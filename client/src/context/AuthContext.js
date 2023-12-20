@@ -12,20 +12,28 @@ export const authReducer = (state, action) => {
     case ACTIONS.LOGOUT:
       localStorage.removeItem('token')
       return { user: null }
+    case ACTIONS.FAVORITE:
+      return {
+        user: action.payload.favorites.filter(w => w._id !== action.payload._id)
+      }
+    case ACTIONS.UNFAVORITE:
+      return {
+        user: action.payload.favorites.push(action.payload._id)
+      }
     default:
       return state
   }
 }
 
 export const AuthContextProvider = ({ children }) => {
-  const { snackbar, setRoleType, location } = useGeneralContext()
+  const { snackbar, setRoleType, location, navigate } = useGeneralContext()
+  const token = JSON.parse(localStorage.getItem('token'))
   const [state, dispatch] = useReducer(authReducer, {
     user: null
   })
 
   // loginstatus
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem('token'))
     if (token) {
       const loginstatus = async () => {
         try {
@@ -47,6 +55,7 @@ export const AuthContextProvider = ({ children }) => {
             snackbar('Session expired')
             dispatch({ type: ACTIONS.LOGOUT })
             setRoleType(RoleTypes.none)
+            navigate('/')
           }
         } catch (error) {
           console.log("The Promise is rejected!", error)
