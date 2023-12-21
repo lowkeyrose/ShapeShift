@@ -8,14 +8,14 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 
 
 // date fns
-import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+// import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-export default function WorkoutDetails({ workout }) {
-// export default function WorkoutDetails({ workout, favoritesCount }) {
+export default function WorkoutDetails({ workout, favoriteWorkouts }) {
+  // export default function WorkoutDetails({ workout, favoritesCount }) {
   const { user } = useAuthContext()
   const { dispatch } = useWorkoutContext()
-  const { location, snackbar} = useGeneralContext()
-  const [isFavorited, setIsFavorited] = useState(user?.favorites.includes(workout._id))
+  const { location, snackbar, setLoading } = useGeneralContext()
+  const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
   const token = JSON.parse(localStorage.getItem('token'))
 
   const handleClick = async () => {
@@ -41,6 +41,7 @@ export default function WorkoutDetails({ workout }) {
 
   const favorite = async (workout) => {
     try {
+      setLoading(true)
       setIsFavorited(true)
       const response = await fetch(`/api/workouts/favorite/${workout._id}`, {
         method: 'PUT',
@@ -49,35 +50,51 @@ export default function WorkoutDetails({ workout }) {
         }
       })
 
-      // Update the state to reflect the added workout inside favorites array
-      dispatch({ type: ACTIONS.FAVORITE, payload: workout._id })
-      dispatch({ type: ACTIONS.INCREMENT_LIKES, payload: workout._id })
-      snackbar("Workout added to favorites");
+      if (response.ok) {
+        // Update the state to reflect the added workout inside favorites array
+        dispatch({ type: ACTIONS.FAVORITE, payload: workout._id })
+        console.log('before dispatch INCREMENT_LIKES, workout: ', workout);
+
+        dispatch({ type: ACTIONS.INCREMENT_LIKES, payload: workout._id })
+        console.log('after dispatch INCREMENT_LIKES, workout: ', workout);
+        snackbar("Workout added to favorites");
+      }
+
     } catch (err) {
-      console.error('Error adding workout to favorites', err)
+      console.log(err);
+    } finally {
+      setLoading(false)
     }
+
   }
 
   const unfavorite = async (workout) => {
     try {
-      setIsFavorited(false)
+      setLoading(true)
+      setIsFavorited(false);
       const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
         method: 'PUT',
         headers: {
-          'Authorization': token
-        }
-      })
+          'Authorization': token,
+        },
+      });
 
       if (!response.ok) {
-        throw new Error(`Failed to unfavorite workout: ${response.statusText}`)
+        throw new Error(`Failed to unfavorite workout: ${response.statusText}`);
       }
 
       // Update the state to reflect the removed workout
-      dispatch({ type: ACTIONS.UNFAVORITE, payload: workout._id })
-      dispatch({ type: ACTIONS.DECREMENT_LIKES, payload: workout._id })
-      snackbar("Workout removed from favorites");
+      dispatch({ type: ACTIONS.UNFAVORITE, payload: workout._id });
+      dispatch({ type: ACTIONS.DECREMENT_LIKES, payload: workout._id });
+      snackbar('Workout removed from favorites');
+      console.log('favoriteWorkouts: ', favoriteWorkouts);
+
+      // Call the callback to refetch favorite workouts in FavoriteWorkouts.js
+      favoriteWorkouts();
     } catch (error) {
-      console.error('Error unfavorite workout:', error)
+      console.error('Error unfavorite workout:', error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -93,13 +110,12 @@ export default function WorkoutDetails({ workout }) {
       {user && <span className="material-symbols-outlined" onClick={handleClick}>delete</span>}
 
       <div>
-      <FavoriteIcon className='heart-icon' aria-label="add to favorites" style={{ color: !user ? "grey" : (isFavorited ? "red" : "grey") }} onClick={() => user ? (isFavorited ? unfavorite(workout) : favorite(workout)) : snackbar("This feature is only available for users")} />
-      {workout.likes > 0 && <p>Likes: {workout.likes}</p>}
+        <FavoriteIcon className='heart-icon' aria-label="add to favorites" style={{ color: !user ? "grey" : (isFavorited ? "red" : "grey") }} onClick={() => user ? (isFavorited ? unfavorite(workout) : favorite(workout)) : snackbar("This feature is only available for users")} />
+        {workout.likes > 0 && <p>Likes: {workout.likes}</p>}
       </div>
 
+      {/* this will be a link to the creator's other workouts */}
       <p>Creator: {workout.username}</p>
-
-
 
     </div>
   )

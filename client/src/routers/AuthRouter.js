@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from '../pages/Home';
 import MyWorkouts from '../pages/MyWorkouts';
+import FavoriteWorkouts from '../pages/FavoriteWorkouts';
 import WorkoutForm from '../components/WorkoutForm'
 // import { useAuthContext } from '../hooks/useAuthContext';
 import ErrorPage from '../pages/ErrorPage';
@@ -15,7 +16,7 @@ export default function AuthRouter() {
       <Route path='/workouts/myworkouts/new' element={<WorkoutForm />} />
 
 
-      {/* <Route path="/workouts/favorite" element={<FavoriteWorkouts />} /> */}
+      <Route path="/workouts/favorite" element={<FavoriteWorkouts />} />
       {/* <Route path="/workouts/:id" element={<SingleWorkout />} /> */}
 
       <Route path="*" element={<ErrorPage />} />

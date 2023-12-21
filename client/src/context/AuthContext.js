@@ -8,17 +8,20 @@ export const AuthContext = createContext()
 export const authReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.SET_USER:
-      return { user: action.payload }
+      return { 
+        ...state,
+        user: action.payload 
+      }
     case ACTIONS.LOGOUT:
       localStorage.removeItem('token')
       return { user: null }
     case ACTIONS.FAVORITE:
       return {
-        user: action.payload.favorites.filter(w => w._id !== action.payload._id)
-      }
-    case ACTIONS.UNFAVORITE:
-      return {
         user: action.payload.favorites.push(action.payload._id)
+      }
+      case ACTIONS.UNFAVORITE:
+        return {
+        user: action.payload.favorites.filter(w => w._id !== action.payload._id)
       }
     default:
       return state
@@ -27,13 +30,13 @@ export const authReducer = (state, action) => {
 
 export const AuthContextProvider = ({ children }) => {
   const { snackbar, setRoleType, location, navigate } = useGeneralContext()
-  const token = JSON.parse(localStorage.getItem('token'))
   const [state, dispatch] = useReducer(authReducer, {
     user: null
   })
-
+  
   // loginstatus
   useEffect(() => {
+    const token = JSON.parse(localStorage.getItem('token'))
     if (token) {
       const loginstatus = async () => {
         try {
@@ -45,13 +48,18 @@ export const AuthContextProvider = ({ children }) => {
           })
 
           const json = await response.json()
+          console.log('jsonsssssssssss: ', json);
 
           if (response.ok) {
             dispatch({ type: ACTIONS.SET_USER, payload: json })
+            console.log('statessssssss: ', state );
+
+            
             const userRoleType = json.roleType
             const mappedRoleType = RoleTypes[userRoleType]
             setRoleType(mappedRoleType)
           } else {
+            
             snackbar('Session expired')
             dispatch({ type: ACTIONS.LOGOUT })
             setRoleType(RoleTypes.none)

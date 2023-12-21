@@ -43,7 +43,6 @@ export default function WorkoutForm() {
     })
 
     useEffect(() => {
-        // console.log('formData.exercises changed:', formData.exercises);
         handleInput(myRef.current)
     }, [formData.exercises.length])
 

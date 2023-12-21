@@ -7,29 +7,12 @@ const User = require('../models/userModel')
 const getAllWorkouts = async (req, res) => {
   try {
     const workouts = await Workout.find({}).sort({ createdAt: -1 });
-
-    // Fetch the count of users for each workout
-    // const workoutsWithFavoritesCount = await Promise.all(
-    //   workouts.map(async (workout) => {
-    //     const favoritesCount = await User.countDocuments({ favorites: workout._id });
-    //     return { workout, favoritesCount };
-    //   })
-    // );
-
     res.status(200).json(workouts);
-    // res.status(200).json({ workouts, workoutsWithFavoritesCount });
   } catch (error) {
     console.error('Error fetching all workouts:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 }
-
-// const getAllWorkouts = async (req, res) => {
-
-//   const workouts = await Workout.find({}).sort({ createdAt: -1 })
-
-//   res.status(200).json(workouts)
-// }
 
 // Get my workouts
 const getMyWorkouts = async (req, res) => {
@@ -37,6 +20,29 @@ const getMyWorkouts = async (req, res) => {
   const workouts = await Workout.find({ user_id }).sort({ createdAt: -1 })
 
   res.status(200).json(workouts)
+}
+
+// GET all favorite workouts
+const getFavoriteWorkouts = async (req, res) => {
+  const user = req.user
+  console.log('user: ', user);
+  try {
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Extract the favorites array from the user
+    const favoriteWorkoutIds = user.favorites || [];
+    console.log('favoriteWorkoutIds:', favoriteWorkoutIds);
+
+    // Find the workouts with the IDs in the favorites array
+    const favoriteWorkouts = await Workout.find({ _id: { $in: favoriteWorkoutIds } });
+
+    res.status(200).json(favoriteWorkouts)
+  } catch (error) {
+    console.error('Error fetching favorite workouts:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
 }
 
 // Get a single workout
@@ -163,30 +169,25 @@ const updateWorkout = async (req, res) => {
 
 // Add workout to favorites
 const addFavorite = async (req, res) => {
-  const user_id = req.user._id
-  console.log('user_id: ', user_id);
+  const user = req.user
+  console.log('user: ', user);
   const workout_id = req.params.id
   console.log('workout_id: ', workout_id);
-  
+
   try {
-    const workout = await Workout.findById(workout_id)
-
-    if (!workout) {
-      return res.status(404).json({ message: 'Workout not found' });
-    }
-
-    const user = await User.findById(user_id)
-
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
-
     if (user.favorites.includes(workout_id)) {
       return res.status(400).json({ message: 'Workout already in favorites.' })
     }
-
     user.favorites.push(workout_id)
-    workout.likes= (workout.likes || 0) + 1;
+
+    const workout = await Workout.findById(workout_id)
+    if (!workout) {
+      return res.status(404).json({ message: 'Workout not found' });
+    }
+    workout.likes = (workout.likes || 0) + 1;
 
     await Promise.all([user.save(), workout.save()])
 
@@ -198,25 +199,20 @@ const addFavorite = async (req, res) => {
 }
 
 const removeFavorite = async (req, res) => {
-  const user_id = req.user._id
+  const user = req.user
   const workout_id = req.params.id
 
   try {
-    const user = await User.findById(user_id)
-
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
-
     if (!user.favorites.includes(workout_id)) {
       return res.status(400).json({ message: 'Workout is not in favorites.' })
     }
-
     // Remove workout from favorites
     user.favorites = user.favorites.filter((favorite) => favorite.toString() !== workout_id)
 
     const workout = await Workout.findById(workout_id)
-
     if (workout) {
       workout.likes = Math.max((workout.likes || 0) - 1, 0); // Decrement likes count, but not below 0
       await workout.save();
@@ -243,6 +239,7 @@ module.exports = {
   createWorkout,
   deleteWorkout,
   updateWorkout,
+  getFavoriteWorkouts,
   addFavorite,
-  removeFavorite
+  removeFavorite,
 }

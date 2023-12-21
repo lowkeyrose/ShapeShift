@@ -6,9 +6,10 @@ export const WorkoutContext = createContext()
 export const workoutReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.SET_WORKOUTS:
+      // Ensure immutability by creating a new array reference
       return {
         ...state,
-        workouts: action.payload,
+        workouts: [...action.payload],
       };
     case ACTIONS.CREATE_WORKOUT:
       return {
@@ -24,14 +25,14 @@ export const workoutReducer = (state, action) => {
       return {
         ...state,
         workouts: state.workouts.map((w) =>
-          w._id === action.payload._id ? { ...w, likes: (w.likes || 0) + 1 } : w
+          w._id === action.payload ? { ...w, likes: (w.likes || 0) + 1 } : w
         ),
       };
     case ACTIONS.DECREMENT_LIKES:
       return {
         ...state,
         workouts: state.workouts.map((w) =>
-          w._id === action.payload._id ? { ...w, likes: Math.max((w.likes || 0) - 1, 0) } : w
+          w._id === action.payload ? { ...w, likes: Math.max((w.likes || 0) - 1, 0) } : w
         ),
       };
     default:

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import logo from '../assets/spaceman.jpg'
@@ -8,30 +8,27 @@ import '../components/style/WorkoutDetails.css'
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
-// import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGeneralContext } from '../hooks/useGeneralContext'
 
 export default function Home() {
     const { workouts, dispatch } = useWorkoutContext()
-    // const [favoritesCount, setFavoritesCounts] = useState([]);
-    // const { setLoading } = useGeneralContext()
+    const { setLoading } = useGeneralContext()
 
     useEffect(() => {
-        // setLoading(true)
+        setLoading(true)
         const fetchWorkouts = async () => {
             const response = await fetch('/api/workouts')
             const json = await response.json()
 
-            console.log('json', json);
+            // console.log('json', json);
 
             if (response.ok) {
                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
-                // dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json.workouts })
-                // setFavoritesCounts(json.workoutsWithFavoritesCount);
             }
         }
         fetchWorkouts()
-        // setLoading(false)
-    }, [dispatch])
+        setLoading(false)
+    }, [dispatch, setLoading])
 
     return (
         <div className='home'>
@@ -45,10 +42,6 @@ export default function Home() {
             <div className="workouts">
                 {workouts && workouts.map((workout) => {
                     if (!workout.Private) {
-                        // return <WorkoutDetails key={workout._id} workout={workout} favoriteCount={favoritesCount[workout._id].favoritesCount}/>
-                        // const favoritesCount = favoritesCount.find((count) => count.workout._id === workout._id)?.favoritesCount || 0;
-                        // const favoritesCountForWorkout = favoritesCount.find((count) => count.workout._id === workout._id)?.favoritesCount || 0;
-                        // return <WorkoutDetails key={workout._id} workout={workout} favoriteCount={favoritesCountForWorkout}/>
                         return <WorkoutDetails key={workout._id} workout={workout}/>
                     } else {
                         return null

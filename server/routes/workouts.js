@@ -6,6 +6,7 @@ const {
   createWorkout,
   deleteWorkout,
   updateWorkout,
+  getFavoriteWorkouts,
   addFavorite,
   removeFavorite
 } = require('../controllers/workoutController')
@@ -19,8 +20,11 @@ const router = express.Router()
 // GET all workouts
 router.get('/', getAllWorkouts)
 
-// GET my workouts
-router.get('/myworkouts', requireAuth, getMyWorkouts)
+// GET my  workouts
+router.get('/myworkouts/', requireAuth, getMyWorkouts)
+
+// GET my favorite workouts
+router.get('/favoriteworkouts', requireAuth, getFavoriteWorkouts)
 
 // if you want that the :id won't interfere with the other routes
 // router.get('/singleworkout/:id', getWorkout)

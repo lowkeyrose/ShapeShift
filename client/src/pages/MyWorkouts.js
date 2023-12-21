@@ -39,7 +39,7 @@ export default function MyWorkouts() {
             }
             fetchWorkouts()
         }
-    }, [dispatch])
+    }, [dispatch, token])
 
     return (
         <div className='home'>
