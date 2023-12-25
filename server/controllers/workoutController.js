@@ -54,6 +54,9 @@ const getWorkout = async (req, res) => {
   }
 
   const workout = await Workout.findById(id)
+  const exercises = await Exercise.find({ _id: { $in: workout.exercises } });
+
+  workout.exercises = exercises
 
   if (!workout) {
     return res.status(404).json({ error: 'Workout not found' })

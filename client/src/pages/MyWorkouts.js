@@ -52,9 +52,9 @@ export default function MyWorkouts() {
                     {workouts && workouts.length > 0 ? "Here are your awesome workouts" : "You current have no available workouts, Add your first one today!"}
                 </Typography>
 
-                {workouts && workouts.map((workout) => (
+                {workouts && workouts.map((workout) => 
                     <WorkoutDetails key={workout._id} workout={workout} />
-                ))}
+                )}
 
                 <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/new')} >Create A New Workout</Button>
 

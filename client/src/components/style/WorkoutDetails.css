@@ -21,6 +21,13 @@ width: 100%;
   font-size: 1.2em;
   color: var(--primary);
 }
+.workout-details .material-symbols-outlined {
+  font-size: 30px;
+}
+.workout-details .material-symbols-outlined:hover {
+ cursor: pointer;
+ background-color: #55555518;
+}
 .workout-details p {
   margin: 0;
   font-size: 0.9em;

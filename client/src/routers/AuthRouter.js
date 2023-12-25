@@ -5,6 +5,8 @@ import FavoriteWorkouts from '../pages/FavoriteWorkouts';
 import WorkoutForm from '../components/WorkoutForm'
 // import { useAuthContext } from '../hooks/useAuthContext';
 import ErrorPage from '../pages/ErrorPage';
+import Workouts from '../pages/Workouts';
+import SingleWorkout from '../pages/SingleWorkout';
 
 export default function AuthRouter() {
   // const { user } = useAuthContext()
@@ -12,12 +14,14 @@ export default function AuthRouter() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path='/workouts' element={<Workouts />} />
+      <Route path="/workouts/:id" element={<SingleWorkout />} />
       <Route path='/workouts/myworkouts' element={<MyWorkouts />} />
-      <Route path='/workouts/myworkouts/new' element={<WorkoutForm />} />
-
-
       <Route path="/workouts/favorite" element={<FavoriteWorkouts />} />
-      {/* <Route path="/workouts/:id" element={<SingleWorkout />} /> */}
+      <Route path='/workouts/myworkouts/new' element={<WorkoutForm />} />
+      <Route path='/workouts/myworkouts/:id' element={<WorkoutForm />} />
+
+
 
       <Route path="*" element={<ErrorPage />} />
       <Route path="/errorPage" element={<ErrorPage />} />

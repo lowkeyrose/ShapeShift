@@ -48,7 +48,14 @@ export default function ExerciseForm({ onAddExercise }) {
     ev.preventDefault()
     onAddExercise(formData)
     toggleModal()
-    setFormData('')
+    setFormData({
+      title: '',
+      imgUrl: '',
+      videoUrl: '',
+      sets: 0,
+      weight: 0,
+      reps: 0
+    });
     setIsValid(false)
   }
 

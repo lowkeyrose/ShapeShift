@@ -26,31 +26,31 @@ const getExercise = async (req, res) => {
   res.status(200).json(exercise)
 }
 
-// // Create new exercise
-// const createExercise = async (req, res) => {
-//   const { title, imgUrl, videoUrl, sets, weight, reps, workout_id } = req.body
+// Create new exercise
+const createExercise = async (req, res) => {
+  const { title, imgUrl, videoUrl, sets, weight, reps, workout_id } = req.body
 
-// const requiredFields = ['title', 'sets', 'weight', 'reps'];
-// const emptyFields = requiredFields.filter(field => !req.body[field]);
+const requiredFields = ['title', 'sets', 'weight', 'reps'];
+const emptyFields = requiredFields.filter(field => !req.body[field]);
 
-// if (emptyFields.length > 0) {
-//   return res.status(400).json({ error: 'Please fill in all fields', emptyFields });
-// }
+if (emptyFields.length > 0) {
+  return res.status(400).json({ error: 'Please fill in all fields', emptyFields });
+}
 
-//   // add doc to db
-//   try {
-//     if (workout_id && mongoose.Types.ObjectId.isValid(workout_id)) {
-//       const user_id = req.user._id
-//       const exercise = await Exercise.create({ title, imgUrl, videoUrl, sets, weight, reps, user_id, workout_id })
+  // add doc to db
+  try {
+    if (workout_id && mongoose.Types.ObjectId.isValid(workout_id)) {
+      const user_id = req.user._id
+      const exercise = await Exercise.create({ title, imgUrl, videoUrl, sets, weight, reps, user_id, workout_id })
       
-//       res.status(200).json(exercise)
-//     } else {
-//       return res.status(400).json({ error: 'Invalid workout_id' });
-//     }
-//   } catch (error) {
-//     res.status(400).json({ error: error.message })
-//   }
-// }
+      res.status(200).json(exercise)
+    } else {
+      return res.status(400).json({ error: 'Invalid workout_id' });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}
 
 // Delete exercise
 const deleteExercise = async (req, res) => {
@@ -90,7 +90,7 @@ const updateExercise = async (req, res) => {
 module.exports = {
   getAllExercises,
   getExercise,
-  // createExercise,
+  createExercise,
   deleteExercise,
   updateExercise
 }

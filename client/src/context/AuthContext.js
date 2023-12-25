@@ -33,12 +33,12 @@ export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, {
     user: null
   })
+  const token = JSON.parse(localStorage.getItem('token'))
   
-  // loginstatus
+  // authenticate
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem('token'))
     if (token) {
-      const loginstatus = async () => {
+      const authenticate = async () => {
         try {
           const response = await fetch('/api/user/authenticate', {
             method: 'POST',
@@ -52,14 +52,11 @@ export const AuthContextProvider = ({ children }) => {
 
           if (response.ok) {
             dispatch({ type: ACTIONS.SET_USER, payload: json })
-            console.log('statessssssss: ', state );
-
-            
             const userRoleType = json.roleType
             const mappedRoleType = RoleTypes[userRoleType]
             setRoleType(mappedRoleType)
+
           } else {
-            
             snackbar('Session expired')
             dispatch({ type: ACTIONS.LOGOUT })
             setRoleType(RoleTypes.none)
@@ -69,9 +66,9 @@ export const AuthContextProvider = ({ children }) => {
           console.log("The Promise is rejected!", error)
         }
       }
-      loginstatus()
+      authenticate()
     }
-  }, [dispatch, location.pathname, setRoleType, snackbar])
+  }, [dispatch, location.pathname, setRoleType, snackbar, navigate, token])
 
   console.log('AuthContext state: ', state)
 

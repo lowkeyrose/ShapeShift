@@ -4,6 +4,8 @@ import SignUp from '../pages/Signup';
 import Home from '../pages/Home';
 // import { useAuthContext } from '../hooks/useAuthContext';
 import ErrorPage from '../pages/ErrorPage';
+import Workouts from '../pages/Workouts';
+import SingleWorkout from '../pages/SingleWorkout';
 
 export default function Router() {
   // const { user } = useAuthContext()
@@ -11,12 +13,13 @@ export default function Router() {
   return (
     <Routes>
       <Route path='/' element={<Home />} />
+      <Route path='/workouts' element={<Workouts />} />
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<SignUp />} />
       <Route path="*" element={<ErrorPage />} />
       <Route path="/errorPage" element={<ErrorPage />} />
+      <Route path="/workouts/:id" element={<SingleWorkout />} />
 
-      {/* <Route path="/workouts/:id" element={<SingleWorkout />} /> */}
       {/* <Route path="/about" element={<About />} /> */}
       {/* <Route path="/TermsAndPrivacy" element={<TermsAndPrivacy />} /> */}
     </Routes>

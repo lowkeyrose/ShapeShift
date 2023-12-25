@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
+// import { useExerciseContext } from "../hooks/useExerciseContext"
+import { useGeneralContext } from '../hooks/useGeneralContext'
 import { ACTIONS } from "../context/Actions"
 import { Checkbox } from '@mui/material'
-import { useGeneralContext } from '../hooks/useGeneralContext'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -19,10 +20,12 @@ import ExerciseForm from './ExerciseForm'
 export default function WorkoutForm() {
     const { navigate, snackbar } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
+    // const { dispatch: exerciseDispatch } = useExerciseContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
     const myRef = useRef(null)
     const token = JSON.parse(localStorage.getItem('token'))
+
     const [formData, setFormData] = useState({
         title: '',
         imgUrl: '',
@@ -32,7 +35,7 @@ export default function WorkoutForm() {
 
     const structure = [
         { name: 'title', type: 'text', label: 'Title', required: true, halfWidth: false },
-        { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: true, halfWidth: false },
+        { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false },
     ]
 
     const userSchema = Joi.object({
@@ -42,12 +45,11 @@ export default function WorkoutForm() {
         Private: Joi.boolean().default(false).optional()
     })
 
-    useEffect(() => {
-        handleInput(myRef.current)
-    }, [formData.exercises.length])
 
     const handleAddExercise = (exercise) => {
         setFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exercise] }));
+        // formData comes back the same, ??????????
+        // console.log('formData after added exercise', formData)
     }
 
     const handleSubmit = async (ev) => {
@@ -56,7 +58,13 @@ export default function WorkoutForm() {
             snackbar('You must be logged in')
             return
         }
-        console.log('token: ' + token);
+
+        if (formData.imgUrl === '') {
+            setFormData((prevData) => ({
+                ...prevData,
+                imgUrl: 'https://c4.wallpaperflare.com/wallpaper/599/689/236/machine-dwayne-johnson-the-rock-workout-wallpaper-preview.jpg'
+            }))
+        }
 
         try {
             const workoutResponse = await fetch('/api/workouts/myworkouts/new', {
@@ -67,7 +75,7 @@ export default function WorkoutForm() {
                     'Authorization': token
                 }
             })
-
+            console.log('formData:', formData);
             const workoutData = await workoutResponse.json()
 
             if (workoutResponse.status === 201) {
@@ -87,6 +95,7 @@ export default function WorkoutForm() {
         let obj = {}
 
         const validation = (id) => {
+            console.log('obj: ', obj);
             const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
             const err = { ...errors, [id]: undefined };
             if (schema.error) {
@@ -116,6 +125,22 @@ export default function WorkoutForm() {
             validation(id)
             setFormData(obj)
         }
+    }
+
+    useEffect(() => {
+        console.log('formData before handleInput', formData)
+        handleInput(myRef.current)
+        // INFINITE LOOP
+        console.log('formData after handleInput', formData)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formData])
+
+    const deleteExercise = (ex, ev) => {
+        ev.preventDefault()
+        setFormData((prevData) => ({
+            ...prevData,
+            exercises: prevData.exercises.length === 1 ? [] : prevData.exercises.filter(exercise => ex !== exercise)
+        }));
     }
 
     return (
@@ -149,13 +174,21 @@ export default function WorkoutForm() {
 
                         <Grid item xs={12}>
                             <p variant="h6" ref={myRef} id='exercises' value={formData.exercises.length}>Number of Exercises: {formData.exercises.length}</p>
-                            {/* <Typography variant="subtitle1">Exercises Preview:</Typography> */}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1">Exercises Preview: {
+                                formData.exercises.map((exercise, index) =>
+                                    <div key={index}>
+                                        <p>{exercise.title}</p>
+                                        <img src={exercise.imgUrl} alt={exercise.title} />
+                                        <button onClick={(ev) => deleteExercise(exercise, ev)}>Delete</button>
+                                        <button onClick={() => ('/')}>Edit</button>
+                                    </div>
+                                )
+                            }</Typography>
                         </Grid>
 
-                        <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} exercises={formData.exercises} />
-
-                        {/* chatGPT said to add exercises={formData.exercises} so that the Failed prop type: Invalid prop `item` of type `number` supplied to `ForwardRef(Grid)`, expected `boolean`. also props on the otherside (exercises)*/}
-                        {/* <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} exercises={formData.exercises} /> */}
+                        <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} />
 
                         <Grid item xs={12} sx={{ mt: -1 }}>
                             <FormControlLabel

@@ -9,18 +9,31 @@ export const workoutReducer = (state, action) => {
       // Ensure immutability by creating a new array reference
       return {
         ...state,
-        workouts: [...action.payload],
-      };
+        workouts: [...action.payload]
+      }
+    case ACTIONS.SET_SINGLE_WORKOUT:
+      return {
+        workout: action.payload
+      }
     case ACTIONS.CREATE_WORKOUT:
       return {
         ...state,
-        workouts: [action.payload, ...state.workouts],
-      };
+        workouts: [action.payload, ...state.workouts]
+      }
     case ACTIONS.DELETE_WORKOUT:
       return {
         ...state,
-        workouts: state.workouts.filter((w) => w._id !== action.payload._id),
-      };
+        workouts: state.workouts.filter((w) => w._id !== action.payload._id)
+      }
+
+    // case ACTIONS.UPDATE_WORKOUT:
+    //   return {
+    //     ...state,
+    //     workouts: state.workouts.map((w) =>
+    //       w._id === action.payload._id ? w : action.payload 
+    //     ),
+    //   };
+
     case ACTIONS.INCREMENT_LIKES:
       return {
         ...state,
@@ -44,6 +57,9 @@ export const WorkoutContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(workoutReducer, {
     workouts: null
   })
+
+  console.log('WorkoutContext state: ', state)
+
   return (
     <WorkoutContext.Provider value={{ ...state, dispatch }}>
       {children}
