@@ -15,19 +15,21 @@ export default function Home() {
     const { setLoading } = useGeneralContext()
 
     useEffect(() => {
-        setLoading(true)
         const fetchWorkouts = async () => {
-            const response = await fetch('/api/workouts')
-            const json = await response.json()
-
-            // console.log('json', json);
-
-            if (response.ok) {
-                dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
+            try {
+                setLoading(true)
+                const response = await fetch('/api/workouts')
+                const data = await response.json()
+                if (response.ok) {
+                    dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
+                }
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+            } finally {
+                setLoading(false)
             }
         }
         fetchWorkouts()
-        setLoading(false)
     }, [dispatch, setLoading])
 
     return (
@@ -42,7 +44,7 @@ export default function Home() {
             <div className="workouts">
                 {workouts && workouts.map((workout) => {
                     if (!workout.Private) {
-                        return <WorkoutDetails key={workout._id} workout={workout}/>
+                        return <WorkoutDetails key={workout._id} workout={workout} />
                     } else {
                         return null
                     }

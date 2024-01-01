@@ -46,10 +46,7 @@ export const AuthContextProvider = ({ children }) => {
               'Authorization': token
             }
           })
-
           const json = await response.json()
-          console.log('jsonsssssssssss: ', json);
-
           if (response.ok) {
             dispatch({ type: ACTIONS.SET_USER, payload: json })
             const userRoleType = json.roleType

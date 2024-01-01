@@ -8,7 +8,6 @@ export const workoutReducer = (state, action) => {
     case ACTIONS.SET_WORKOUTS:
       // Ensure immutability by creating a new array reference
       return {
-        ...state,
         workouts: [...action.payload]
       }
     case ACTIONS.SET_SINGLE_WORKOUT:
@@ -17,12 +16,10 @@ export const workoutReducer = (state, action) => {
       }
     case ACTIONS.CREATE_WORKOUT:
       return {
-        ...state,
         workouts: [action.payload, ...state.workouts]
       }
     case ACTIONS.DELETE_WORKOUT:
       return {
-        ...state,
         workouts: state.workouts.filter((w) => w._id !== action.payload._id)
       }
 
@@ -36,18 +33,36 @@ export const workoutReducer = (state, action) => {
 
     case ACTIONS.INCREMENT_LIKES:
       return {
-        ...state,
         workouts: state.workouts.map((w) =>
           w._id === action.payload ? { ...w, likes: (w.likes || 0) + 1 } : w
         ),
-      };
+      }
     case ACTIONS.DECREMENT_LIKES:
       return {
-        ...state,
         workouts: state.workouts.map((w) =>
           w._id === action.payload ? { ...w, likes: Math.max((w.likes || 0) - 1, 0) } : w
         ),
-      };
+      }
+    case ACTIONS.DELETE_EXERCISE:
+      return {
+        workout: {
+          ...state.workout,
+          exercises: state.workout.exercises.filter((e) => e._id !== action.payload._id)
+        }
+      }
+    case ACTIONS.UPDATE_EXERCISE:
+      return {
+        
+      }
+    case ACTIONS.CREATE_EXERCISE:
+      return {
+        workout: {
+          ...state.workout,
+          exercises: state.workout.exercises
+            ? [...state.workout.exercises, action.payload]
+            : [action.payload],
+        },
+      }
     default:
       return state;
   }

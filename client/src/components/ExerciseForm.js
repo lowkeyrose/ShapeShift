@@ -12,7 +12,6 @@ import Joi from 'joi'
 import './style/ExerciseModal.css'
 
 export default function ExerciseForm({ onAddExercise }) {
-  // console.log('ExerciseForm received exercises:', exercises);
   const [modal, setModal] = useState(false)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);

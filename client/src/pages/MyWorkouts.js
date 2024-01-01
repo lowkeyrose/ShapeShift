@@ -11,12 +11,13 @@ import { Typography } from '@mui/material'
 import { useGeneralContext } from '../hooks/useGeneralContext'
 
 export default function MyWorkouts() {
-    const { navigate } = useGeneralContext()
+    const { navigate, setLoading } = useGeneralContext()
     const { workouts, dispatch } = useWorkoutContext()
     const token = JSON.parse(localStorage.getItem('token'))
 
     useEffect(() => {
         if (token) {
+            setLoading(true)
             const fetchWorkouts = async () => {
                 try {
                     const response = await fetch('/api/workouts/myworkouts', {
@@ -24,22 +25,24 @@ export default function MyWorkouts() {
                             'Authorization': token
                         }
                     })
+                    const data = await response.json()
 
                     if (!response.ok) {
                         throw new Error(`Failed to fetch workouts: ${response.statusText}`);
                     }
 
-                    const data = await response.json()
 
                     dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
 
                 } catch (error) {
                     console.error('Error fetching workouts:', error);
+                } finally {
+                    setLoading(false)
                 }
             }
             fetchWorkouts()
         }
-    }, [dispatch, token])
+    }, [dispatch, token, setLoading])
 
     return (
         <div className='home'>
@@ -52,7 +55,7 @@ export default function MyWorkouts() {
                     {workouts && workouts.length > 0 ? "Here are your awesome workouts" : "You current have no available workouts, Add your first one today!"}
                 </Typography>
 
-                {workouts && workouts.map((workout) => 
+                {workouts && workouts.map((workout) =>
                     <WorkoutDetails key={workout._id} workout={workout} />
                 )}
 

@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
-// import { useExerciseContext } from "../hooks/useExerciseContext"
 import { useGeneralContext } from '../hooks/useGeneralContext'
 import { ACTIONS } from "../context/Actions"
 import { Checkbox } from '@mui/material'
@@ -20,10 +19,8 @@ import ExerciseForm from './ExerciseForm'
 export default function WorkoutForm() {
     const { navigate, snackbar } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
-    // const { dispatch: exerciseDispatch } = useExerciseContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
-    const myRef = useRef(null)
     const token = JSON.parse(localStorage.getItem('token'))
 
     const [formData, setFormData] = useState({
@@ -48,8 +45,7 @@ export default function WorkoutForm() {
 
     const handleAddExercise = (exercise) => {
         setFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exercise] }));
-        // formData comes back the same, ??????????
-        // console.log('formData after added exercise', formData)
+        handleInput({ id: "exercises", value: [...formData.exercises, exercise] })
     }
 
     const handleSubmit = async (ev) => {
@@ -95,7 +91,6 @@ export default function WorkoutForm() {
         let obj = {}
 
         const validation = (id) => {
-            console.log('obj: ', obj);
             const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
             const err = { ...errors, [id]: undefined };
             if (schema.error) {
@@ -112,7 +107,7 @@ export default function WorkoutForm() {
 
         if (ev.id === "exercises") {
             const { id, value } = ev
-            obj = { ...formData, [id]: [value] }
+            obj = { ...formData, [id]: value }
             validation(id)
         } else {
             const { id, value } = ev.target
@@ -127,20 +122,13 @@ export default function WorkoutForm() {
         }
     }
 
-    useEffect(() => {
-        console.log('formData before handleInput', formData)
-        handleInput(myRef.current)
-        // INFINITE LOOP
-        console.log('formData after handleInput', formData)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formData])
-
     const deleteExercise = (ex, ev) => {
         ev.preventDefault()
         setFormData((prevData) => ({
             ...prevData,
             exercises: prevData.exercises.length === 1 ? [] : prevData.exercises.filter(exercise => ex !== exercise)
         }));
+        handleInput({ id: "exercises", value: formData.exercises.length === 1 ? [] : formData.exercises.filter(exercise => ex !== exercise) })
     }
 
     return (
@@ -173,7 +161,7 @@ export default function WorkoutForm() {
                         }
 
                         <Grid item xs={12}>
-                            <p variant="h6" ref={myRef} id='exercises' value={formData.exercises.length}>Number of Exercises: {formData.exercises.length}</p>
+                            <Typography variant="h6">Number of Exercises: {formData.exercises.length}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">Exercises Preview: {
