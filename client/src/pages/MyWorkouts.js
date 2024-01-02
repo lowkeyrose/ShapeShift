@@ -27,6 +27,8 @@ export default function MyWorkouts() {
                     })
                     const data = await response.json()
 
+                    console.log('data inside myworkouts', data);
+
                     if (!response.ok) {
                         throw new Error(`Failed to fetch workouts: ${response.statusText}`);
                     }

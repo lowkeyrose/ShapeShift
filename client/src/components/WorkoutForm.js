@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { useGeneralContext } from '../hooks/useGeneralContext'
 import { ACTIONS } from "../context/Actions"
@@ -15,9 +15,11 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Joi from 'joi'
 import ExerciseForm from './ExerciseForm'
+import { useParams } from 'react-router-dom'
 
 export default function WorkoutForm() {
-    const { navigate, snackbar } = useGeneralContext()
+    const { id } = useParams()
+    const { navigate, snackbar, setLoading } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
@@ -42,6 +44,26 @@ export default function WorkoutForm() {
         Private: Joi.boolean().default(false).optional()
     })
 
+    useEffect(() => {
+        const fetchWorkout = async () => {
+            setLoading(true)
+            try {
+
+                const response = await fetch(`/api/workouts/${id}`)
+                const data = await response.json()
+                console.log('data: ', data);
+                setFormData(data)
+            } catch (error) {
+                console.error('Error fetching workout:', error);
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (id) {
+            fetchWorkout()
+        }
+    }, [id, setLoading])
+
 
     const handleAddExercise = (exercise) => {
         setFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exercise] }));
@@ -63,8 +85,8 @@ export default function WorkoutForm() {
         }
 
         try {
-            const workoutResponse = await fetch('/api/workouts/myworkouts/new', {
-                method: 'POST',
+            const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? id : 'new'}`, {
+                method: id ? 'PUT' : 'POST',
                 body: JSON.stringify(formData),
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,17 +95,18 @@ export default function WorkoutForm() {
             })
             console.log('formData:', formData);
             const workoutData = await workoutResponse.json()
+            console.log('workoutResponse:', workoutResponse);
 
-            if (workoutResponse.status === 201) {
-                workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
+            if (workoutResponse.ok) {
+                workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 navigate('/workouts/myworkouts')
-                snackbar('New workout added successfully', workoutData)
+                snackbar(id ? 'Workout updated successfully' : 'New workout added successfully', workoutData)
             } else {
-                snackbar('Failed to create workout');
+                snackbar(id ? 'Failed to update workout' : 'Failed to create workout');
             }
 
         } catch (error) {
-            console.error('Error creating workout and exercise:', error);
+            console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
         }
     }
 
@@ -185,7 +208,7 @@ export default function WorkoutForm() {
                             />
                         </Grid>
                     </Grid>
-                    <Button disabled={!isValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}> Add Workout </Button>
+                    <Button disabled={!isValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}> {id ? 'Update Workout' : 'Add Workout'} </Button>
                 </Box>
             </Box>
         </Container>

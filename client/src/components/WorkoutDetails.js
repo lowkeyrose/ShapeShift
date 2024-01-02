@@ -96,7 +96,11 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
       setLoading(false)
       // console.log('details unfavorite end');
     }
-  };
+  }
+
+  const handleEdit = () => {
+    navigate(`/workouts/myworkouts/${workout._id}`)
+  }
 
   return (
     <div className="workout-details">
@@ -117,8 +121,8 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
 
         {
           user?.roleType === 'master' || user?.roleType === 'admin' ?
-          <p className="material-symbols-outlined" onClick={() => navigate('/myworkouts')}>edit</p> :
-          (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id) && <p className="material-symbols-outlined" onClick={() => navigate('/myworkouts')}>edit</p>
+          <p className="material-symbols-outlined" onClick={handleEdit}>edit</p> :
+          (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id) && <p className="material-symbols-outlined" onClick={handleEdit}>edit</p>
         }
 
         <div>

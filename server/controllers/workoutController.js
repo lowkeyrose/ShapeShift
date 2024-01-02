@@ -25,7 +25,6 @@ const getMyWorkouts = async (req, res) => {
 // GET all favorite workouts
 const getFavoriteWorkouts = async (req, res) => {
   const user = req.user
-  console.log('user: ', user);
   try {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -33,7 +32,6 @@ const getFavoriteWorkouts = async (req, res) => {
 
     // Extract the favorites array from the user
     const favoriteWorkoutIds = user.favorites || [];
-    console.log('favoriteWorkoutIds:', favoriteWorkoutIds);
 
     // Find the workouts with the IDs in the favorites array
     const favoriteWorkouts = await Workout.find({ _id: { $in: favoriteWorkoutIds } });
@@ -152,23 +150,62 @@ const deleteWorkout = async (req, res) => {
 // Update a workout
 const updateWorkout = async (req, res) => {
   const { id } = req.params
-
+  const workoutData = req.body
+  
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
   }
+  
+  try {
+    workoutData.exercises = workoutData.exercises.map(exercise => exercise._id)
+    console.log('workoutData.exercises: ', workoutData.exercises);
+    // Find the workout by ID
+    const workout = await Workout.findOne({ _id: id });
 
-  const workout = await Workout.findOneAndUpdate({ _id: id }, {
-    ...req.body
-  })
+    console.log('workout.exercises: ', workout.exercises);
+    if (!workout) {
+      return res.status(404).json({ error: 'Workout not found' });
+    }
+
+    // Identify deleted exercises
+    const deletedExercises = workout.exercises.filter(exerciseId => !workoutData.exercises.includes(exerciseId));
+
+    // Delete the deleted exercises
+    await Exercise.deleteMany({ _id: { $in: deletedExercises } });
+
+    // Update or add new exercises
+    const updatedExercises = workoutData.exercises.filter(exerciseId => !workout.exercises.includes(exerciseId));
+
+    await Promise.all(updatedExercises.map(async exerciseId => {
+      // Assuming you have an Exercise model
+      const exercise = await Exercise.findOne({ _id: exerciseId });
+
+      if (exercise) {
+        exercise.title = workoutData.exercises.find(ex => ex._id === exerciseId).title;
+        exercise.imgUrl = workoutData.exercises.find(ex => ex._id === exerciseId).imgUrl;
+        exercise.videoUrl = workoutData.exercises.find(ex => ex._id === exerciseId).videoUrl;
+        exercise.sets = workoutData.exercises.find(ex => ex._id === exerciseId).sets;
+        exercise.reps = workoutData.exercises.find(ex => ex._id === exerciseId).reps;
+        exercise.weight = workoutData.exercises.find(ex => ex._id === exerciseId).weight;
+        await exercise.save();
+      }
+    }));
 
 
+    // Update workout data
+    workout.title = workoutData.title;
+    workout.imgUrl = workoutData.imgUrl;
+    workout.Private = workoutData.Private;
 
-  if (!workout) {
-    return res.status(404).json({ error: 'Workout not found' })
+    // Save the updated workout
+    await workout.save();
+
+    res.status(200).json(workout);
+  } catch (error) {
+    console.error('Error updating workout:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
-
-  res.status(200).json(workout)
-}
+};
 
 // Add workout to favorites
 const addFavorite = async (req, res) => {

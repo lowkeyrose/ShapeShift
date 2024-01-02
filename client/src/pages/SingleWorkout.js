@@ -4,6 +4,7 @@ import ErrorPage from './ErrorPage';
 import { useGeneralContext } from '../hooks/useGeneralContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import Button from '@mui/material/Button'
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import { useAuthContext } from '../hooks/useAuthContext';
@@ -160,14 +161,9 @@ export default function SingleWorkout() {
               :
               (user?._id === workout?.user_id) &&
               <>
-                <ExerciseForm id="exercise-form" onAddExercise={addExercise} />
-                <Button
-                  onClick={deleteWorkout}
-                  variant="contained"
-                  sx={{ m: 2 }}
-                >
-                  Delete Workout
-                </Button>
+                <ExerciseForm id="exercise-form" onAddExercise={addExercise}/>
+
+                <Button onClick={deleteWorkout} sx={{ p: 2, m: 2 }} variant="contained" color="error" endIcon={<DeleteIcon />} >Delete Workout</Button>
               </>
           }
         </div>
