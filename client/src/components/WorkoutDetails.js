@@ -114,6 +114,10 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
         {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
 
         {
+
+          // check if this works instead
+          // user?.roleType >= 2 ?
+
           user?.roleType === 'master' || user?.roleType === 'admin' ?
           <p className="material-symbols-outlined" onClick={handleDelete}>delete</p> :
           (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id) && <p className="material-symbols-outlined" onClick={handleDelete}>delete</p>

@@ -2,6 +2,7 @@ const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
 const Exercise = require('../models/exerciseModel')
 const User = require('../models/userModel')
+const { ObjectId } = require('mongodb')
 
 // Get all workouts
 const getAllWorkouts = async (req, res) => {
@@ -151,27 +152,28 @@ const deleteWorkout = async (req, res) => {
 const updateWorkout = async (req, res) => {
   const { id } = req.params
   const workoutData = req.body
-  
+  console.log('workoutData: ', workoutData);
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
   }
-  
+
   try {
     workoutData.exercises = workoutData.exercises.map(exercise => exercise._id)
-    console.log('workoutData.exercises: ', workoutData.exercises);
-    // Find the workout by ID
     const workout = await Workout.findOne({ _id: id });
 
-    console.log('workout.exercises: ', workout.exercises);
+    if (workoutData.exercises.length > workout.exercises.length) {
+      const newStringArray = workout.exercises.map(ObjectId => ObjectId.toString())
+    
+      const deletedExercises = newStringArray.filter(exerciseId => !workoutData.exercises.includes(exerciseId));
+
+    // Delete the deleted exercises
+      await Exercise.deleteMany({ _id: { $in: deletedExercises } });
+    }
+
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' });
     }
-
-    // Identify deleted exercises
-    const deletedExercises = workout.exercises.filter(exerciseId => !workoutData.exercises.includes(exerciseId));
-
-    // Delete the deleted exercises
-    await Exercise.deleteMany({ _id: { $in: deletedExercises } });
 
     // Update or add new exercises
     const updatedExercises = workoutData.exercises.filter(exerciseId => !workout.exercises.includes(exerciseId));
@@ -196,6 +198,7 @@ const updateWorkout = async (req, res) => {
     workout.title = workoutData.title;
     workout.imgUrl = workoutData.imgUrl;
     workout.Private = workoutData.Private;
+    workout.exercises = workoutData.exercises;
 
     // Save the updated workout
     await workout.save();
