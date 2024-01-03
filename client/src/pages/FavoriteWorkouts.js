@@ -1,6 +1,10 @@
 import React, { useEffect, useCallback } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
+import logo from '../assets/favorites.png'
+import './style/Pages.css'
+
+
 // import Button from '@mui/material/Button'
 // import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -47,23 +51,22 @@ export default function FavoirteWorkouts() {
   }, [token, favoriteWorkouts]);
 
   return (
-    <div className='home'>
-      <div className="workouts">
-        <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
-          Favorite Workouts
-        </Typography>
-        <Typography component="p" sx={{ fontWeight: 600, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
-          <br />
-          {workouts && workouts.length > 0 ? "Here are your awesome workouts" : "You current have no available workouts, Add your first one today!"}
-        </Typography>
+    <div className='favorites-page'>
+      <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
+        Favorite Workouts
+      </Typography>
+      <Typography component="p" sx={{ fontWeight: 600, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
+        <br />
+        {workouts && workouts.length > 0 ? "Here are your awesome workouts" : "You current have no available workouts, Add your first one today!"}
+      </Typography>
 
+      <div className="workouts">
         {workouts && workouts.map((workout) => (
           <WorkoutDetails key={workout._id} workout={workout} favoriteWorkouts={favoriteWorkouts} />
         ))}
-
-        {/* <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/new')} >Create A New Workout</Button> */}
-
       </div>
+
+      <img className='bottom-right-icon' src={logo} alt="logo" />
     </div>
   )
 }

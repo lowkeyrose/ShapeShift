@@ -131,13 +131,7 @@ export default function SingleWorkout() {
               <br />
               <div>Title: {exercise.title}</div>
               {
-                user?.roleType === 'master' || user?.roleType === 'admin' ?
-                  <>
-                    <p className="material-symbols-outlined" onClick={() => deleteExercise(exercise._id)}>delete</p>
-                    <p className="material-symbols-outlined" onClick={() => editExercise}>edit</p>
-                  </>
-                  :
-                  (user?._id === workout?.user_id) &&
+                (user?.roleType === 'admin') || (user?._id === workout?.user_id) &&
                   <>
                     <p className="material-symbols-outlined" onClick={() => deleteExercise(exercise._id)}>delete</p>
                     <p className="material-symbols-outlined" onClick={() => editExercise}>edit</p>
@@ -146,24 +140,15 @@ export default function SingleWorkout() {
             </div>
           )}</div>
 
-
-
           {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
           <div>Creator: {workout.username}</div>
           {workout.Private}
 
           {
-            user?.roleType === 'master' || user?.roleType === 'admin' ?
+            (user?.roleType === 'admin') || (user?._id === workout?.user_id) &&
               <>
                 <button onClick={addExercise}>Add Exercise</button>
                 <button onClick={deleteWorkout}>Delete Workout</button>
-              </>
-              :
-              (user?._id === workout?.user_id) &&
-              <>
-                <ExerciseForm id="exercise-form" onAddExercise={addExercise}/>
-
-                <Button onClick={deleteWorkout} sx={{ p: 2, m: 2 }} variant="contained" color="error" endIcon={<DeleteIcon />} >Delete Workout</Button>
               </>
           }
         </div>

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import logo from '../assets/spaceman.jpg'
-import './style/Home.css'
+import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
 
 // components
@@ -34,7 +34,7 @@ export default function Home() {
 
     return (
         <div className='home'>
-            <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
+            <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
                 Your Personal Workout Buddy
             </Typography>
             <Typography component="p" sx={{ fontWeight: 600, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
@@ -51,7 +51,7 @@ export default function Home() {
                 }
                 )}
             </div>
-            <img className='robot' src={logo} alt="logo" />
+            <img className='bottom-right-icon' src={logo} alt="logo" />
         </div>
     )
 }

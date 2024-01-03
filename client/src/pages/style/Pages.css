@@ -1,0 +1,19 @@
+.favorites-page {
+  background-color: #ff0000;
+  min-height: 90.4vh;
+  padding-top: 20px;
+}
+
+.home {
+  min-height: 90.4vh;
+  background: #ffa64c;
+  padding-top: 20px;
+}
+
+.bottom-right-icon {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 15%;
+  z-index: 0;
+}

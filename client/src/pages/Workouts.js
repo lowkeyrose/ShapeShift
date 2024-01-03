@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import logo from '../assets/spaceman.jpg'
-import './style/Home.css'
+import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
 
 // components
@@ -31,7 +31,7 @@ export default function Workouts() {
     }, [dispatch, setLoading])
 
     return (
-        <div className='workouts-page'>
+        <div className='pages'>
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 Your Personal Workout Buddy
             </Typography>

@@ -3,9 +3,8 @@ import { ACTIONS } from "../context/Actions"
 import { useAuthContext } from '../hooks/useAuthContext'
 import { useGeneralContext } from '../hooks/useGeneralContext'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
-
-import FavoriteIcon from '@mui/icons-material/Favorite';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 // date fns
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
@@ -103,40 +102,37 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
   }
 
   return (
-    <div className="workout-details">
-      <div className='clickable' onClick={()=>navigate(`/workouts/${workout._id}`)}>
-        <h4>{workout.title}</h4>
+    <div className="card">
+      <figure className="image-block">
+        <h1>{workout.title}</h1>
         <img src={workout.imgUrl} alt={workout.imgUrl} />
-      </div>
+        <figcaption>
+          <h3>
+            <strong>Exercises: </strong>{workout.exercises ? workout.exercises.length : 0}
+          </h3>
 
-      <div className="info">
-        <p><strong>Exercises: </strong>{workout.exercises ? workout.exercises.length : 0}</p>
-        {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
+          <>
+            <p>Creator: {workout.username}</p>
+            {workout.likes > 0 ? <p>Likes: {workout.likes}</p> : <p>Likes: 0</p>}
+            {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
+            <p>{location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}</p>
+          </>
 
+          <button onClick={() => navigate(`/workouts/${workout._id}`)}>
+            View Workout
+          </button>
+        </figcaption>
+      </figure>
+      <div className="multi-button">
         {
+          ((user?.roleType === 'admin') || (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id)) &&
+          <>
+            <button onClick={handleDelete}><FontAwesomeIcon icon={faTrash} /></button>
+            <button onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></button>
+          </>
 
-          // check if this works instead
-          // user?.roleType >= 2 ?
-
-          user?.roleType === 'master' || user?.roleType === 'admin' ?
-          <p className="material-symbols-outlined" onClick={handleDelete}>delete</p> :
-          (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id) && <p className="material-symbols-outlined" onClick={handleDelete}>delete</p>
         }
-
-        {
-          user?.roleType === 'master' || user?.roleType === 'admin' ?
-          <p className="material-symbols-outlined" onClick={handleEdit}>edit</p> :
-          (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id) && <p className="material-symbols-outlined" onClick={handleEdit}>edit</p>
-        }
-
-        <div>
-          <FavoriteIcon className='heart-icon' aria-label="add to favorites" style={{ color: !user ? "grey" : (isFavorited ? "red" : "grey") }} onClick={() => user ? (isFavorited ? unfavorite(workout) : favorite(workout)) : snackbar("This feature is only available for users")} />
-          {workout.likes > 0 && <p>Likes: {workout.likes}</p>}
-        </div>
-
-        {/* this will be a link to the creator's other workouts */}
-        <p>Creator: {workout.username}</p>
-      {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
+        <button style={{ color: !user ? "grey" : (isFavorited ? "red" : "grey") }} onClick={() => user ? (isFavorited ? unfavorite(workout) : favorite(workout)) : snackbar("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
       </div>
     </div>
   )

@@ -162,7 +162,7 @@ const updateWorkout = async (req, res) => {
     workoutData.exercises = workoutData.exercises.map(exercise => exercise._id)
     const workout = await Workout.findOne({ _id: id });
 
-    if (workoutData.exercises.length > workout.exercises.length) {
+    if (workoutData.exercises.length < workout.exercises.length) {
       const newStringArray = workout.exercises.map(ObjectId => ObjectId.toString())
     
       const deletedExercises = newStringArray.filter(exerciseId => !workoutData.exercises.includes(exerciseId));
@@ -198,6 +198,8 @@ const updateWorkout = async (req, res) => {
     workout.title = workoutData.title;
     workout.imgUrl = workoutData.imgUrl;
     workout.Private = workoutData.Private;
+
+    // This line change back objectID
     workout.exercises = workoutData.exercises;
 
     // Save the updated workout

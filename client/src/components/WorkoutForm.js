@@ -78,7 +78,7 @@ export default function WorkoutForm() {
         }
 
         if (formData.imgUrl === '') {
-            formData.imgUrl = 'https://c4.wallpaperflare.com/wallpaper/599/689/236/machine-dwayne-johnson-the-rock-workout-wallpaper-preview.jpg'
+            formData.imgUrl = 'https://images6.alphacoders.com/108/1082422.jpg'
         }
 
         try {
