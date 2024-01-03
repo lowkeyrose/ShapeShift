@@ -152,55 +152,89 @@ const deleteWorkout = async (req, res) => {
 const updateWorkout = async (req, res) => {
   const { id } = req.params
   const workoutData = req.body
+  let exercisesData = req.body.exercises
   console.log('workoutData: ', workoutData);
+  console.log('exercisesData: ', exercisesData);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
   }
 
   try {
-    workoutData.exercises = workoutData.exercises.map(exercise => exercise._id)
     const workout = await Workout.findOne({ _id: id });
-
-    if (workoutData.exercises.length < workout.exercises.length) {
-      const newStringArray = workout.exercises.map(ObjectId => ObjectId.toString())
-    
-      const deletedExercises = newStringArray.filter(exerciseId => !workoutData.exercises.includes(exerciseId));
-
-    // Delete the deleted exercises
-      await Exercise.deleteMany({ _id: { $in: deletedExercises } });
-    }
 
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' });
     }
 
+    const oldExercisesStringArray = workout.exercises.map(ObjectId => ObjectId.toString())
+    console.log('oldExercisesStringArray: ', oldExercisesStringArray);
+
+
+    // If one or more exercises have been added then create them
+    if (exercisesData.length > oldExercisesStringArray.length) {
+      console.log('inside added exercise');
+
+      const newExercises = exercisesData.filter(exercise => !exercise._id)
+      console.log('newExercises: ', newExercises);
+
+      const createdExercises = await Exercise.create(newExercises.map(exercise => ({ ...exercise, user_id: workoutData.user_id, workout_id: workoutData._id })))
+
+      // Fetch the IDs of the created exercises
+      const createdExerciseIds = createdExercises.map(exercise => exercise._id);
+      console.log('createdExerciseIds aaaaaaaaaaaaaaaaaaa: ', createdExerciseIds);
+      
+      const existingExerciseIds = exercisesData.map(exercise => new ObjectId(exercise._id));
+      console.log('existingExerciseIds aaaaaaaaaaaaaaaaaaa: ', existingExerciseIds);
+
+      exercisesData = [...existingExerciseIds, ...createdExerciseIds].filter(Boolean);
+      console.log('exercisesData check number 2: ', exercisesData);
+    }
+
+    // If one or more exercises have been removed
+    if (exercisesData.length < oldExercisesStringArray.length) {
+      console.log('inside deleted exercise');
+
+      const workoutDataExercsiesIds = exercisesData.map(exercise => exercise._id)
+      console.log('workoutDataExercsiesIds: ', workoutDataExercsiesIds);
+
+      const deletedExercises = oldExercisesStringArray.filter(exerciseId => !workoutDataExercsiesIds.includes(exerciseId));
+
+      // Delete the deleted exercises
+      await Exercise.deleteMany({ _id: { $in: deletedExercises } });
+
+      exercisesData = workoutDataExercsiesIds
+    }
+
+
     // Update or add new exercises
-    const updatedExercises = workoutData.exercises.filter(exerciseId => !workout.exercises.includes(exerciseId));
 
-    await Promise.all(updatedExercises.map(async exerciseId => {
-      // Assuming you have an Exercise model
-      const exercise = await Exercise.findOne({ _id: exerciseId });
 
-      if (exercise) {
-        exercise.title = workoutData.exercises.find(ex => ex._id === exerciseId).title;
-        exercise.imgUrl = workoutData.exercises.find(ex => ex._id === exerciseId).imgUrl;
-        exercise.videoUrl = workoutData.exercises.find(ex => ex._id === exerciseId).videoUrl;
-        exercise.sets = workoutData.exercises.find(ex => ex._id === exerciseId).sets;
-        exercise.reps = workoutData.exercises.find(ex => ex._id === exerciseId).reps;
-        exercise.weight = workoutData.exercises.find(ex => ex._id === exerciseId).weight;
-        await exercise.save();
-      }
-    }));
+    //  NEED TO COMPARE EACH EXERCISE TO THE PREV VERSION EXERCISE AND SEE IF THERE ARE ANY CHANGES THEN SAVE THE ONES THAT CHANGED AND THEN UPDATE THEM
+
+    // const updatedExercises = workoutDataExercsiesIds.filter(exerciseId => !workout.exercises.includes(exerciseId));
+
+    // await Promise.all(updatedExercises.map(async exerciseId => {
+    //   // Assuming you have an Exercise model
+    //   const exercise = await Exercise.findOne({ _id: exerciseId });
+
+    //   if (exercise) {
+    //     exercise.title = exercisesData.find(ex => ex._id === exerciseId).title;
+    //     exercise.imgUrl = exercisesData.find(ex => ex._id === exerciseId).imgUrl;
+    //     exercise.videoUrl = exercisesData.find(ex => ex._id === exerciseId).videoUrl;
+    //     exercise.sets = exercisesData.find(ex => ex._id === exerciseId).sets;
+    //     exercise.reps = exercisesData.find(ex => ex._id === exerciseId).reps;
+    //     exercise.weight = exercisesData.find(ex => ex._id === exerciseId).weight;
+    //     await exercise.save();
+    //   }
+    // }));
 
 
     // Update workout data
     workout.title = workoutData.title;
     workout.imgUrl = workoutData.imgUrl;
     workout.Private = workoutData.Private;
-
-    // This line change back objectID
-    workout.exercises = workoutData.exercises;
+    workout.exercises = exercisesData
 
     // Save the updated workout
     await workout.save();
