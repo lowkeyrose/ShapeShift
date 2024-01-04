@@ -12,6 +12,8 @@ export const useLogout = () => {
     dispatch({ type: ACTIONS.LOGOUT })
     setRoleType(RoleTypes.none)
     snackbar('user logged out')
+    console.log('user logged out')
+    localStorage.removeItem('token')
   }
 
   return { logout }

@@ -15,14 +15,13 @@ import { useGeneralContext } from '../hooks/useGeneralContext'
 // import { useAuthContext } from '../hooks/useAuthContext';
 
 export default function FavoirteWorkouts() {
-  const { setLoading } = useGeneralContext()
+  const { token, setLoading } = useGeneralContext()
   const { workouts, dispatch } = useWorkoutContext()
   // const { user, dispatch2 } = useAuthContext()
-  const token = JSON.parse(localStorage.getItem('token'))
 
   const favoriteWorkouts = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       console.log('favoriteWorkouts start');
       const response = await fetch('/api/workouts/favoriteworkouts', {
         headers: {

@@ -6,18 +6,23 @@ export const WorkoutContext = createContext()
 export const workoutReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.SET_WORKOUTS:
-      // Ensure immutability by creating a new array reference
+      // Ensure immutability by creating a new array reference like ...state,
       return {
+        // if state was workout change it to workouts
         workouts: [...action.payload]
       }
-    case ACTIONS.SET_SINGLE_WORKOUT:
-      return {
+      
+      case ACTIONS.SET_SINGLE_WORKOUT:
+        return {
+        // if state was workouts change it to workout
         workout: action.payload
       }
+
     case ACTIONS.CREATE_WORKOUT:
       return {
         workouts: [action.payload, ...state.workouts]
       }
+
     case ACTIONS.DELETE_WORKOUT:
       return {
         workouts: state.workouts.filter((w) => w._id !== action.payload._id)

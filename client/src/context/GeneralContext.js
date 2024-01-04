@@ -10,6 +10,8 @@ export const GeneralContext = createContext()
 
 export const GeneralContextProvider = ({ children }) => {
 
+  const token = JSON.parse(localStorage.getItem('token'))
+
   const navigate = useNavigate()
   
   const location = useLocation()
@@ -26,7 +28,7 @@ export const GeneralContextProvider = ({ children }) => {
   }
 
   return (
-    <GeneralContext.Provider value={{ snackbar, navigate, roleType, setRoleType, location, setLoading }}>
+    <GeneralContext.Provider value={{ snackbar, navigate, roleType, setRoleType, location, setLoading, token }}>
       {snackbarText && <Snackbar text={snackbarText} />}
       {loading && <Loader />}
       {children}

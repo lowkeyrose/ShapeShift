@@ -12,11 +12,11 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 export default function WorkoutDetails({ workout, favoriteWorkouts }) {
   const { user } = useAuthContext()
   const { dispatch } = useWorkoutContext()
-  const { location, snackbar, setLoading, navigate } = useGeneralContext()
+  const { token, setLoading, snackbar, navigate, location } = useGeneralContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
-  const token = JSON.parse(localStorage.getItem('token'))
 
   const handleDelete = async () => {
+    setLoading(true)
     try {
       const response = await fetch(`/api/workouts/myworkouts/${workout._id}`, {
         method: 'DELETE',
@@ -34,12 +34,14 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
     } catch (error) {
       console.error('Error deleting workout:', error)
       snackbar('Failed to delete workout. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
   const favorite = async (workout) => {
+    setLoading(true)
     try {
-      setLoading(true)
       setIsFavorited(true)
       const response = await fetch(`/api/workouts/favorite/${workout._id}`, {
         method: 'PUT',
@@ -67,8 +69,8 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
   }
 
   const unfavorite = async (workout) => {
+    setLoading(true)
     try {
-      setLoading(true)
       // console.log('details unfavorite start');
       setIsFavorited(false);
       const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
@@ -111,12 +113,10 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
             <strong>Exercises: </strong>{workout.exercises ? workout.exercises.length : 0}
           </h3>
 
-          <>
             <p>Creator: {workout.username}</p>
             {workout.likes > 0 ? <p>Likes: {workout.likes}</p> : <p>Likes: 0</p>}
             {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
-            <p>{location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}</p>
-          </>
+            {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
 
           <button onClick={() => navigate(`/workouts/${workout._id}`)}>
             View Workout

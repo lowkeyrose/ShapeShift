@@ -21,7 +21,7 @@ const router = express.Router()
 router.get('/', getAllWorkouts)
 
 // GET my  workouts
-router.get('/myworkouts/', requireAuth, getMyWorkouts)
+router.get('/myworkouts', requireAuth, getMyWorkouts)
 
 // GET my favorite workouts
 router.get('/favoriteworkouts', requireAuth, getFavoriteWorkouts)

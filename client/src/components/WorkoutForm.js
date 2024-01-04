@@ -19,11 +19,10 @@ import { useParams } from 'react-router-dom'
 
 export default function WorkoutForm() {
     const { id } = useParams()
-    const { navigate, snackbar, setLoading } = useGeneralContext()
+    const { token, setLoading, snackbar, navigate } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
-    const token = JSON.parse(localStorage.getItem('token'))
 
     const [formData, setFormData] = useState({
         title: '',
@@ -48,7 +47,6 @@ export default function WorkoutForm() {
         const fetchWorkout = async () => {
             setLoading(true)
             try {
-
                 const response = await fetch(`/api/workouts/${id}`)
                 const data = await response.json()
                 console.log('data: ', data);
@@ -62,7 +60,7 @@ export default function WorkoutForm() {
         if (id) {
             fetchWorkout()
         }
-    }, [id, setLoading])
+    }, [id, setLoading, setFormData])
 
 
     const handleAddExercise = (exercise) => {
@@ -76,7 +74,8 @@ export default function WorkoutForm() {
             snackbar('You must be logged in')
             return
         }
-
+        setLoading(true)
+        
         if (formData.imgUrl === '') {
             formData.imgUrl = 'https://images6.alphacoders.com/108/1082422.jpg'
         }
@@ -95,7 +94,9 @@ export default function WorkoutForm() {
             console.log('workoutResponse:', workoutResponse);
 
             if (workoutResponse.ok) {
-                workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
+                // We currently don't have an update action, nor do we need to since we are using dispatch SET_WORKOUT in MyWorkouts.js where we are navigated to anyways and updating the workouts state to the workouts from the db, 
+                // workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
+                !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 navigate('/workouts/myworkouts')
                 snackbar(id ? 'Workout updated successfully' : 'New workout added successfully', workoutData)
             } else {
@@ -104,6 +105,8 @@ export default function WorkoutForm() {
 
         } catch (error) {
             console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
+        } finally {
+            setLoading(false)
         }
     }
 

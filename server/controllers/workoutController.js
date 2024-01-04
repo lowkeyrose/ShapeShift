@@ -18,7 +18,6 @@ const getAllWorkouts = async (_, res) => {
 const getMyWorkouts = async (req, res) => {
   const user_id = req.user._id
   const workouts = await Workout.find({ user_id }).sort({ createdAt: -1 })
-
   res.status(200).json(workouts)
 }
 
@@ -52,13 +51,15 @@ const getWorkout = async (req, res) => {
   }
 
   const workout = await Workout.findById(id)
+  
+  if (!workout) {
+    return res.status(404).json({ error: 'Workout not found' })
+  }
+
   const exercises = await Exercise.find({ _id: { $in: workout.exercises } });
 
   workout.exercises = exercises
 
-  if (!workout) {
-    return res.status(404).json({ error: 'Workout not found' })
-  }
 
   res.status(200).json(workout)
 }
@@ -139,7 +140,7 @@ const deleteWorkout = async (req, res) => {
 
     // Delete all exercises with the corresponding workout_id
     await Exercise.deleteMany({ workout_id: workout._id })
-
+    console.log('workout supppper: ', workout);
     res.status(200).json(workout)
   } catch (error) {
     console.error(error);

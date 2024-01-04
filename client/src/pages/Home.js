@@ -16,8 +16,8 @@ export default function Home() {
 
     useEffect(() => {
         const fetchWorkouts = async () => {
+            setLoading(true)
             try {
-                setLoading(true)
                 const response = await fetch('/api/workouts')
                 const data = await response.json()
                 if (response.ok) {

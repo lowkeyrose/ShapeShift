@@ -44,19 +44,23 @@ export default function ExerciseForm({ onAddExercise }) {
   });
 
   const handleSubmit = async (ev) => {
-    ev.preventDefault()
-    onAddExercise(formData)
-    toggleModal()
-    setFormData({
-      title: '',
-      imgUrl: '',
-      videoUrl: '',
-      sets: 0,
-      weight: 0,
-      reps: 0
-    });
-    setIsValid(false)
-  }
+    try {
+        ev.preventDefault();
+        onAddExercise(formData);
+        toggleModal();
+        setFormData({
+            title: '',
+            imgUrl: '',
+            videoUrl: '',
+            sets: 0,
+            weight: 0,
+            reps: 0
+        });
+        setIsValid(false);
+    } catch (error) {
+        console.error('Error in handleSubmit:', error);
+    }
+}
 
   const handleInput = ev => {
     const { id, value } = ev.target

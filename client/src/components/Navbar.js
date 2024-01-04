@@ -22,7 +22,8 @@ export default function ResponsiveAppBar() {
   const { roleType } = useGeneralContext()
   const { user } = useAuthContext()
   const { logout } = useLogout()
-  const handleLogout = () => {
+  const handleLogout = (ev) => {
+    ev.preventDefault()
     logout()
   }
   const [anchorElNav, setAnchorElNav] = React.useState(null)

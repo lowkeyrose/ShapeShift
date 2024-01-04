@@ -12,14 +12,13 @@ import { Typography } from '@mui/material'
 import { useGeneralContext } from '../hooks/useGeneralContext'
 
 export default function MyWorkouts() {
-    const { navigate, setLoading } = useGeneralContext()
+    const { navigate, setLoading, token } = useGeneralContext()
     const { workouts, dispatch } = useWorkoutContext()
-    const token = JSON.parse(localStorage.getItem('token'))
 
     useEffect(() => {
         if (token) {
-            setLoading(true)
             const fetchWorkouts = async () => {
+                setLoading(true)
                 try {
                     const response = await fetch('/api/workouts/myworkouts', {
                         headers: {
@@ -27,18 +26,12 @@ export default function MyWorkouts() {
                         }
                     })
                     const data = await response.json()
-
-                    console.log('data inside myworkouts', data);
-
                     if (!response.ok) {
                         throw new Error(`Failed to fetch workouts: ${response.statusText}`);
                     }
-
-
                     dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
-
                 } catch (error) {
-                    console.error('Error fetching workouts:', error);
+                    console.error('Error fetching workouts:', 'error:', error, 'error.message:', error.message, 'error.stack:', error.stack);
                 } finally {
                     setLoading(false)
                 }
@@ -58,9 +51,11 @@ export default function MyWorkouts() {
             </Typography>
 
             <div className="workouts">
-                {workouts && workouts.map((workout) =>
-                    <WorkoutDetails key={workout._id} workout={workout} />
-                )}
+                {workouts &&
+                    workouts.map((workout) => {
+                        // use String(workout._id) because i kept getting a Each child in a list should have a unique "key" prop. warning
+                        return <WorkoutDetails key={String(workout._id)} workout={workout} />;
+                    })}
             </div>
 
             <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/new')} >Create A New Workout</Button>
