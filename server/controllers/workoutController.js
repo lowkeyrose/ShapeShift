@@ -2,10 +2,9 @@ const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
 const Exercise = require('../models/exerciseModel')
 const User = require('../models/userModel')
-const { ObjectId } = require('mongodb')
 
 // Get all workouts
-const getAllWorkouts = async (req, res) => {
+const getAllWorkouts = async (_, res) => {
   try {
     const workouts = await Workout.find({}).sort({ createdAt: -1 });
     res.status(200).json(workouts);
@@ -152,9 +151,11 @@ const deleteWorkout = async (req, res) => {
 const updateWorkout = async (req, res) => {
   const { id } = req.params
   const workoutData = req.body
-  let exercisesData = req.body.exercises
-  console.log('workoutData: ', workoutData);
-  console.log('exercisesData: ', exercisesData);
+
+  // instead of declaring maybe just write workoutData.exercises? but we have multiple cases
+  const exercisesData = req.body.exercises
+  // console.log('workoutData: ', workoutData);
+  // console.log('exercisesData: ', exercisesData);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
@@ -162,53 +163,50 @@ const updateWorkout = async (req, res) => {
 
   try {
     const workout = await Workout.findOne({ _id: id });
-
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' });
     }
 
+    // Convert the old workout's exercises into strings for comparison purposes
     const oldExercisesStringArray = workout.exercises.map(ObjectId => ObjectId.toString())
-    console.log('oldExercisesStringArray: ', oldExercisesStringArray);
-
+    // console.log('oldExercisesStringArray: ', oldExercisesStringArray);
 
     // If one or more exercises have been added then create them
     if (exercisesData.length > oldExercisesStringArray.length) {
-      console.log('inside added exercise');
 
+      // Get an array of the exercises that don't have the _id property
       const newExercises = exercisesData.filter(exercise => !exercise._id)
-      console.log('newExercises: ', newExercises);
 
+      // Add the user_id and workout_id to each new exercise and then doc to db
       const createdExercises = await Exercise.create(newExercises.map(exercise => ({ ...exercise, user_id: workoutData.user_id, workout_id: workoutData._id })))
 
       // Fetch the IDs of the created exercises
       const createdExerciseIds = createdExercises.map(exercise => exercise._id);
-      console.log('createdExerciseIds aaaaaaaaaaaaaaaaaaa: ', createdExerciseIds);
-      
-      const existingExerciseIds = exercisesData.map(exercise => new ObjectId(exercise._id));
-      console.log('existingExerciseIds aaaaaaaaaaaaaaaaaaa: ', existingExerciseIds);
 
-      exercisesData = [...existingExerciseIds, ...createdExerciseIds].filter(Boolean);
-      console.log('exercisesData check number 2: ', exercisesData);
-    }
+      // update the old workout with the new exercises (not workout.exercises.push(...createdExerciseIds))
+      workout.exercises = [...workout.exercises, ...createdExerciseIds]
+      //this way is often recommended in modern JavaScript development. It explicitly creates a new array, ensuring that the original array remains unchanged.
 
-    // If one or more exercises have been removed
-    if (exercisesData.length < oldExercisesStringArray.length) {
-      console.log('inside deleted exercise');
+      // If one or more exercises have been removed
+    } else if (exercisesData.length < oldExercisesStringArray.length) {
 
+      // Fetch the IDs of the exercises inside workoutData.exercises
       const workoutDataExercsiesIds = exercisesData.map(exercise => exercise._id)
-      console.log('workoutDataExercsiesIds: ', workoutDataExercsiesIds);
 
+      // Filter to get the array of ids of the exercises deleted,
+      // run a filter on the previous version workout exercises array,
+      // check which ids are inside oldExercisesStringArray and not inside workoutDataExercsiesIds and save them.
       const deletedExercises = oldExercisesStringArray.filter(exerciseId => !workoutDataExercsiesIds.includes(exerciseId));
 
-      // Delete the deleted exercises
+      // Delete the deleted exercises from db
       await Exercise.deleteMany({ _id: { $in: deletedExercises } });
 
-      exercisesData = workoutDataExercsiesIds
+      // Update the existing workout's exercises array,
+      // Keep only Ids that don't exist in the deleted exercises array
+      workout.exercises = workout.exercises.filter(exerciseId => !deletedExercises.includes(exerciseId.toString()));
     }
 
-
-    // Update or add new exercises
-
+    // Update exercises
 
     //  NEED TO COMPARE EACH EXERCISE TO THE PREV VERSION EXERCISE AND SEE IF THERE ARE ANY CHANGES THEN SAVE THE ONES THAT CHANGED AND THEN UPDATE THEM
 
@@ -234,7 +232,6 @@ const updateWorkout = async (req, res) => {
     workout.title = workoutData.title;
     workout.imgUrl = workoutData.imgUrl;
     workout.Private = workoutData.Private;
-    workout.exercises = exercisesData
 
     // Save the updated workout
     await workout.save();
