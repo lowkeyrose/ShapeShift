@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { ACTIONS } from "../context/Actions"
-import { useAuthContext } from '../hooks/useAuthContext'
 import { useGeneralContext } from '../hooks/useGeneralContext'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 
+import { memo } from 'react'
 // date fns
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-export default function WorkoutDetails({ workout, favoriteWorkouts }) {
-  const { user } = useAuthContext()
+const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
   const { dispatch } = useWorkoutContext()
-  const { token, setLoading, snackbar, navigate, location } = useGeneralContext()
+  const { user, token, setLoading, snackbar, navigate, location } = useGeneralContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
 
   const handleDelete = async () => {
@@ -113,10 +112,10 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
             <strong>Exercises: </strong>{workout.exercises ? workout.exercises.length : 0}
           </h3>
 
-            <p>Creator: {workout.username}</p>
-            {workout.likes > 0 ? <p>Likes: {workout.likes}</p> : <p>Likes: 0</p>}
-            {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
-            {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
+          <p>Creator: {workout.username}</p>
+          {workout.likes > 0 ? <p>Likes: {workout.likes}</p> : <p>Likes: 0</p>}
+          {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
+          {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
 
           <button onClick={() => navigate(`/workouts/${workout._id}`)}>
             View Workout
@@ -137,3 +136,4 @@ export default function WorkoutDetails({ workout, favoriteWorkouts }) {
     </div>
   )
 }
+export default memo(WorkoutDetails)

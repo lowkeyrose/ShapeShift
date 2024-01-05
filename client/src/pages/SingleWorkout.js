@@ -7,7 +7,6 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 // import DeleteIcon from '@mui/icons-material/Delete';
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
-import { useAuthContext } from '../hooks/useAuthContext';
 // import ExerciseForm from '../components/ExerciseForm';
 
 const isValidObjectId = (id) => {
@@ -17,9 +16,8 @@ const isValidObjectId = (id) => {
 
 export default function SingleWorkout() {
   const { id } = useParams()
-  const { setLoading, snackbar, navigate, token } = useGeneralContext()
+  const { user, setLoading, snackbar, navigate, token } = useGeneralContext()
   const { workout, dispatch } = useWorkoutContext()
-  const { user } = useAuthContext()
 
   useEffect(() => {
     if (isValidObjectId(id)) {
@@ -51,7 +49,7 @@ export default function SingleWorkout() {
       console.error('Invalid ObjectId');
       // You can display an error message or redirect to an error page
     }
-  }, [id, setLoading, dispatch]);
+  }, [id, setLoading, dispatch, navigate]);
 
   const deleteExercise = async (id) => {
     if (workout.exercises.length === 1) {

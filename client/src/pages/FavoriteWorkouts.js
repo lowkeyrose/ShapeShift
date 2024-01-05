@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
-import logo from '../assets/favorites.png'
+// import logo from '../assets/favorites.png'
 import './style/Pages.css'
 
 
@@ -12,12 +12,10 @@ import './style/Pages.css'
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGeneralContext } from '../hooks/useGeneralContext'
-// import { useAuthContext } from '../hooks/useAuthContext';
 
 export default function FavoirteWorkouts() {
   const { token, setLoading } = useGeneralContext()
   const { workouts, dispatch } = useWorkoutContext()
-  // const { user, dispatch2 } = useAuthContext()
 
   const favoriteWorkouts = useCallback(async () => {
     setLoading(true);

@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { GeneralContext } from '../context/GeneralContext'
+import { GeneralContext } from "../context/GeneralContext"
+import { useContext } from "react"
 
 export const useGeneralContext = () => {
   const context = useContext(GeneralContext)

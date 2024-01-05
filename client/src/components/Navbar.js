@@ -16,12 +16,10 @@ import { Link } from 'react-router-dom'
 import { useLogout } from '../hooks/useLogout'
 import { checkPermissions, pages, settings } from './Navbar-config'
 import { useGeneralContext } from '../hooks/useGeneralContext'
-import { useAuthContext } from '../hooks/useAuthContext'
 import { memo } from 'react'
 
 const ResponsiveAppBar = () => {
-  const { roleType } = useGeneralContext()
-  const { user } = useAuthContext()
+  const { user, roleType } = useGeneralContext()
   const { logout } = useLogout()
   const handleLogout = (ev) => {
     ev.preventDefault()

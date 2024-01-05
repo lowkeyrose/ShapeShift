@@ -74,7 +74,7 @@ export default function WorkoutForm() {
             console.error('Invalid ObjectId');
             // You can display an error message or redirect to an error page
         }
-    }, [id, setLoading, setFormData])
+    }, [id, setLoading, setFormData, navigate])
 
 
     const handleAddExercise = (exercise) => {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
+import { memo } from 'react'
 import logo from '../assets/spaceman.jpg'
 import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
@@ -10,12 +11,14 @@ import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGeneralContext } from '../hooks/useGeneralContext'
 
-export default function Home() {
+const Home = () => {
     const { workouts, dispatch } = useWorkoutContext()
     const { setLoading } = useGeneralContext()
+    console.log("Home component rendered"); // Add this line
 
     useEffect(() => {
         const fetchWorkouts = async () => {
+            console.log("Fetching workouts...");
             setLoading(true)
             try {
                 const response = await fetch('/api/workouts')
@@ -55,3 +58,4 @@ export default function Home() {
         </div>
     )
 }
+export default memo(Home)

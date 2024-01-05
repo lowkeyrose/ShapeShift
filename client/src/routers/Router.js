@@ -2,13 +2,11 @@ import { Route, Routes } from 'react-router-dom';
 import Login from '../pages/Login';
 import SignUp from '../pages/Signup';
 import Home from '../pages/Home';
-// import { useAuthContext } from '../hooks/useAuthContext';
 import ErrorPage from '../pages/ErrorPage';
 import Workouts from '../pages/Workouts';
 import SingleWorkout from '../pages/SingleWorkout';
 
 export default function Router() {
-  // const { user } = useAuthContext()
 
   return (
     <Routes>
