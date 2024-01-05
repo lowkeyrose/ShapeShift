@@ -16,7 +16,7 @@ export default function Router() {
       <Route path='/signup' element={<SignUp />} />
       <Route path="*" element={<ErrorPage />} />
       <Route path="/errorPage" element={<ErrorPage />} />
-      <Route path="/workouts/:id" element={<SingleWorkout />} />
+      <Route path="/workouts/workout/:id" element={<SingleWorkout />} />
 
       {/* <Route path="/about" element={<About />} /> */}
       {/* <Route path="/TermsAndPrivacy" element={<TermsAndPrivacy />} /> */}

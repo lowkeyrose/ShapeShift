@@ -26,12 +26,11 @@ export default function SingleWorkout() {
         setLoading(true);
 
         try {
-          const response = await fetch(`/api/workouts/${id}`);
+          const response = await fetch(`/api/workouts/workout/${id}`);
           if (!response.ok) {
             throw new Error(`Workout not found: ${response.statusText}`);
           }
           const data = await response.json();
-          console.log('data: ', data);
 
           dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
         } catch (error) {
@@ -43,7 +42,6 @@ export default function SingleWorkout() {
 
       fetchWorkout();
     } else {
-      console.log('navigated from inside MyWorkouts');
       navigate('/errorPage')
       // Handle invalid ObjectId
       console.error('Invalid ObjectId');

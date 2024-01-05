@@ -29,10 +29,10 @@ router.get('/favoriteworkouts', requireAuth, getFavoriteWorkouts)
 // if you want that the :id won't interfere with the other routes
 // router.get('/singleworkout/:id', getWorkout)
 // GET a single workouts
-router.get('/:id', getWorkout)
+router.get('/workout/:id', getWorkout)
 
 // POST a new workout
-router.post('/myworkouts/new', requireAuth, createWorkout)
+router.post('/myworkouts/create/new', requireAuth, createWorkout)
 
 // DELETE a workout
 router.delete('/myworkouts/:id', requireAuth, deleteWorkout)

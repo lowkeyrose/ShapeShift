@@ -24,7 +24,6 @@ const isValidObjectId = (id) => {
 
 export default function WorkoutForm() {
     const { id } = useParams()
-    console.log('id: ', id);
     const { token, setLoading, snackbar, navigate } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
@@ -54,9 +53,8 @@ export default function WorkoutForm() {
             const fetchWorkout = async () => {
                 setLoading(true)
                 try {
-                    const response = await fetch(`/api/workouts/${id}`)
+                    const response = await fetch(`/api/workouts/workout/${id}`)
                     const data = await response.json()
-                    console.log('data: ', data);
                     setFormData(data)
                 } catch (error) {
                     console.error('Error fetching workout:', error);
@@ -68,7 +66,6 @@ export default function WorkoutForm() {
                 fetchWorkout()
             }
         } else if (id !== undefined) {
-            console.log('navigated from inside WorkoutForm');
             navigate('/errorPage')
             // Handle invalid ObjectId
             console.error('Invalid ObjectId');
@@ -95,7 +92,7 @@ export default function WorkoutForm() {
         }
 
         try {
-            const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? id : 'new'}`, {
+            const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? id : 'create/new'}`, {
                 method: id ? 'PUT' : 'POST',
                 body: JSON.stringify(formData),
                 headers: {

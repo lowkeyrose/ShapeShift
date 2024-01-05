@@ -99,7 +99,7 @@ const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
   }
 
   const handleEdit = () => {
-    navigate(`/workouts/myworkouts/${workout._id}`)
+    navigate(`/workouts/myworkouts/edit/${workout._id}`)
   }
 
   return (
@@ -117,7 +117,7 @@ const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
           {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
           {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
 
-          <button onClick={() => navigate(`/workouts/${workout._id}`)}>
+          <button onClick={() => navigate(`/workouts/workout/${workout._id}`)}>
             View Workout
           </button>
         </figcaption>
