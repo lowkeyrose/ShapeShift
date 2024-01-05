@@ -18,11 +18,16 @@ export const authReducer = (state, action) => {
       return { user: null };
     case ACTIONS.FAVORITE:
       return {
-        user: action.payload.favorites.push(action.payload._id)
+        ...state,
+        user: { ...state.user, favorites: [...state.user.favorites, action.payload._id] }
       };
     case ACTIONS.UNFAVORITE:
       return {
-        user: action.payload.favorites.filter(w => w._id !== action.payload._id)
+        ...state,
+        user: {
+          ...state.user,
+          favorites: state.user.favorites.filter(w => w._id !== action.payload._id)
+        }
       };
     default:
       return state;
@@ -48,6 +53,8 @@ export const GeneralContextProvider = ({ children }) => {
 
   const memoizedDispatch = useCallback(dispatch, [dispatch]);
 
+
+
   useEffect(() => {
     if (token) {
       const authenticate = async () => {
@@ -60,20 +67,23 @@ export const GeneralContextProvider = ({ children }) => {
           });
 
           if (response.ok) {
+            console.log('inside if!!!!!!!!!!!!!!!!!!!!!');
             const json = await response.json();
             memoizedDispatch({ type: ACTIONS.SET_USER, payload: json });
             const userRoleType = json.roleType;
             const mappedRoleType = RoleTypes[userRoleType];
             setRoleType(mappedRoleType);
           } else {
+            console.log('inside else!!!!!!!!!!!!!!!!!!!!!');
             snackbar('Session expired');
             memoizedDispatch({ type: ACTIONS.LOGOUT });
+            localStorage.removeItem('token')
             setRoleType(RoleTypes.none);
             navigate('/');
           }
         } catch (error) {
           console.log("The Promise is rejected!", error);
-        } 
+        }
       };
 
       authenticate();
