@@ -66,6 +66,7 @@ const getWorkout = async (req, res) => {
 
 // Create new workout
 const createWorkout = async (req, res) => {
+  console.log('');
   try {
     // Extract workout and exercises data from the request body
     const workoutData = req.body

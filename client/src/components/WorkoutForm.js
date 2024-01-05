@@ -17,8 +17,14 @@ import Joi from 'joi'
 import ExerciseForm from './ExerciseForm'
 import { useParams } from 'react-router-dom'
 
+const isValidObjectId = (id) => {
+    const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+    return objectIdPattern.test(id);
+};
+
 export default function WorkoutForm() {
     const { id } = useParams()
+    console.log('id: ', id);
     const { token, setLoading, snackbar, navigate } = useGeneralContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
@@ -44,21 +50,29 @@ export default function WorkoutForm() {
     })
 
     useEffect(() => {
-        const fetchWorkout = async () => {
-            setLoading(true)
-            try {
-                const response = await fetch(`/api/workouts/${id}`)
-                const data = await response.json()
-                console.log('data: ', data);
-                setFormData(data)
-            } catch (error) {
-                console.error('Error fetching workout:', error);
-            } finally {
-                setLoading(false)
+        if (isValidObjectId(id)) {
+            const fetchWorkout = async () => {
+                setLoading(true)
+                try {
+                    const response = await fetch(`/api/workouts/${id}`)
+                    const data = await response.json()
+                    console.log('data: ', data);
+                    setFormData(data)
+                } catch (error) {
+                    console.error('Error fetching workout:', error);
+                } finally {
+                    setLoading(false)
+                }
             }
-        }
-        if (id) {
-            fetchWorkout()
+            if (id) {
+                fetchWorkout()
+            }
+        } else if (id !== undefined) {
+            console.log('navigated from inside WorkoutForm');
+            navigate('/errorPage')
+            // Handle invalid ObjectId
+            console.error('Invalid ObjectId');
+            // You can display an error message or redirect to an error page
         }
     }, [id, setLoading, setFormData])
 
@@ -75,7 +89,7 @@ export default function WorkoutForm() {
             return
         }
         setLoading(true)
-        
+
         if (formData.imgUrl === '') {
             formData.imgUrl = 'https://images6.alphacoders.com/108/1082422.jpg'
         }
@@ -184,11 +198,11 @@ export default function WorkoutForm() {
                         }
 
                         <Grid item xs={12}>
-                            <Typography variant="h6">Number of Exercises: {formData.exercises.length}</Typography>
+                            <Typography variant="h6">Number of Exercises: {formData?.exercises?.length}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">Exercises Preview: {
-                                formData.exercises.map((exercise, index) =>
+                                formData?.exercises?.map((exercise, index) =>
                                     <div key={index}>
                                         <p>{exercise.title}</p>
                                         <img src={exercise.imgUrl} alt={exercise.title} />
