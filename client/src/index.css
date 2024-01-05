@@ -10,4 +10,5 @@
 body {
   margin: 0;
   font-family: "Poppins";
+  min-height: 100vh;
 }

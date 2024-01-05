@@ -65,7 +65,7 @@ export default function FavoirteWorkouts() {
         ))}
       </div>
 
-      <img className='bottom-right-icon' src={logo} alt="logo" />
+      {/* <img className='bottom-right-icon' src={logo} alt="logo" /> */}
     </div>
   )
 }

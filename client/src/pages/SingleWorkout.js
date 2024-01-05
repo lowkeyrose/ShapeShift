@@ -45,6 +45,8 @@ export default function SingleWorkout() {
 
       fetchWorkout();
     } else {
+      console.log('navigated from inside MyWorkouts');
+      navigate('/errorPage')
       // Handle invalid ObjectId
       console.error('Invalid ObjectId');
       // You can display an error message or redirect to an error page

@@ -13,6 +13,7 @@ export default function AuthRouter() {
 
   return (
     <Routes>
+      <Route path="*" element={<ErrorPage />} />
       <Route path="/" element={<Home />} />
       <Route path='/workouts' element={<Workouts />} />
       <Route path="/workouts/:id" element={<SingleWorkout />} />
@@ -20,10 +21,13 @@ export default function AuthRouter() {
       {/* Additional check for the user inside the AuthRouter. It provides an extra layer of security. If, for some reason, the AuthRouter is rendered when there's no user, the routes within it won't be accessible due to the conditional rendering.*/}
       {user ? (
         <>
-          <Route path='/workouts/myworkouts' element={<MyWorkouts />} />
-          <Route path="/workouts/favorite" element={<FavoriteWorkouts />} />
-          <Route path='/workouts/myworkouts/new' element={<WorkoutForm />} />
-          <Route path='/workouts/myworkouts/:id' element={<WorkoutForm />} />
+          <Route path='/workouts/myworkouts' element={<MyWorkouts />} user={user} />
+          <Route path="/workouts/favorite" element={<FavoriteWorkouts />} user={user} />
+
+          <Route path='/workouts/myworkouts/new' element={<WorkoutForm />} user={user} />
+          {/* <Route path='/workouts/myworkouts/create/new' element={<WorkoutForm />} /> */}
+          {/* <Route path='/workouts/myworkouts/edit/:id' element={<WorkoutForm />} /> */}
+          <Route path='/workouts/myworkouts/:id' element={<WorkoutForm />} user={user} />
           {/* <Route path="/account" element={<Account />} /> */}
           {/* <Route path="/profile" element={<Profile />} /> */}
         </>
@@ -31,7 +35,6 @@ export default function AuthRouter() {
       <Navigate to="/" />
       }
 
-      <Route path="*" element={<ErrorPage />} />
       <Route path="/errorPage" element={<ErrorPage />} />
       {/* <Route path="/about" element={<About />} /> */}
       {/* <Route path="/TermsAndPrivacy" element={<TermsAndPrivacy />} /> */}

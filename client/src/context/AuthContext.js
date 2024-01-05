@@ -53,14 +53,7 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       const authenticate = async () => {
-        console.log("authenticate, authenticate, authenticate, authenticate")
-
         try {
-          // Check if the user is already logged out
-          // if (!state.user) {
-          //   return;
-          // }
-
           const response = await fetch('/api/user/authenticate', {
             method: 'POST',
             headers: {

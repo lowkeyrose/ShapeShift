@@ -16,7 +16,7 @@ import { FormControl, FormLabel, Radio, RadioGroup } from '@mui/material'
 
 
 export default function SignUp() {
-  const { signup, isLoading, error } = useSignup()
+  const { signup, error } = useSignup()
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [value, setValue] = useState('');

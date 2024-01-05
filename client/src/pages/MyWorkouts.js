@@ -10,10 +10,17 @@ import './style/Workouts.css'
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useParams } from 'react-router-dom';
+
+const isValidObjectId = (id) => {
+    const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+    return objectIdPattern.test(id);
+};
 
 export default function MyWorkouts() {
     const { navigate, setLoading, token } = useGeneralContext()
     const { workouts, dispatch } = useWorkoutContext()
+
 
     useEffect(() => {
         if (token) {

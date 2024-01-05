@@ -17,8 +17,9 @@ import { useLogout } from '../hooks/useLogout'
 import { checkPermissions, pages, settings } from './Navbar-config'
 import { useGeneralContext } from '../hooks/useGeneralContext'
 import { useAuthContext } from '../hooks/useAuthContext'
+import { memo } from 'react'
 
-export default function ResponsiveAppBar() {
+const ResponsiveAppBar = () => {
   const { roleType } = useGeneralContext()
   const { user } = useAuthContext()
   const { logout } = useLogout()
@@ -185,3 +186,4 @@ export default function ResponsiveAppBar() {
     </AppBar>
   );
 }
+export default memo(ResponsiveAppBar)
