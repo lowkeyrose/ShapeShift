@@ -5,19 +5,17 @@ import App from './App';
 import { WorkoutContextProvider } from './context/WorkoutContext';
 import { ExerciseContextProvider } from './context/ExerciseContext';
 import { BrowserRouter } from 'react-router-dom';
-import { GeneralContextProvider } from './context/GeneralContext';
+import { GlobalContextProvider } from './context/GlobalContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <BrowserRouter>
-      <GeneralContextProvider>
+      <GlobalContextProvider>
         <WorkoutContextProvider>
           <ExerciseContextProvider>
             <App />
           </ExerciseContextProvider>
         </WorkoutContextProvider>
-      </GeneralContextProvider>
+      </GlobalContextProvider>
     </BrowserRouter>
-  </React.StrictMode>
 )

@@ -15,11 +15,11 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
 import { Link } from 'react-router-dom'
 import { useLogout } from '../hooks/useLogout'
 import { checkPermissions, pages, settings } from './Navbar-config'
-import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 import { memo } from 'react'
 
 const ResponsiveAppBar = () => {
-  const { user, roleType } = useGeneralContext()
+  const { user, roleType } = useGlobalContext()
   const { logout } = useLogout()
   const handleLogout = (ev) => {
     ev.preventDefault()

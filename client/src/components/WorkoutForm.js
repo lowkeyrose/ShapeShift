@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
-import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 import { ACTIONS } from "../context/Actions"
 import { Checkbox } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
@@ -24,7 +24,7 @@ const isValidObjectId = (id) => {
 
 export default function WorkoutForm() {
     const { id } = useParams()
-    const { token, setLoading, snackbar, navigate } = useGeneralContext()
+    const { token, setLoading, snackbar, navigate } = useGlobalContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
@@ -65,11 +65,9 @@ export default function WorkoutForm() {
             if (id) {
                 fetchWorkout()
             }
+            // if the id is new for CreateWorkout, then it comes as undefined
         } else if (id !== undefined) {
             navigate('/errorPage')
-            // Handle invalid ObjectId
-            console.error('Invalid ObjectId');
-            // You can display an error message or redirect to an error page
         }
     }, [id, setLoading, setFormData, navigate])
 

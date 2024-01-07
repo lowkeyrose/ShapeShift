@@ -3,16 +3,17 @@ import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import logo from '../assets/robots/myworkouts.png'
 import '../components/style/WorkoutDetails.css'
 import './style/Workouts.css'
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
-import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 
 export default function MyWorkouts() {
-    const { navigate, setLoading, token } = useGeneralContext()
+    const { navigate, setLoading, token } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
 
     useEffect(() => {
@@ -41,7 +42,7 @@ export default function MyWorkouts() {
     }, [dispatch, token, setLoading])
 
     return (
-        <div className='pages'>
+        <div className='my-workouts-page'>
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 My Workouts
             </Typography>
@@ -59,6 +60,9 @@ export default function MyWorkouts() {
             </div>
 
             <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/create/new')} >Create A New Workout</Button>
+
+            <img className='bottom-left-icon' src={logo} alt="logo" />
+
 
         </div>
     )

@@ -1,9 +1,9 @@
 import { RoleTypes } from '../components/Navbar-config';
 import { ACTIONS } from '../context/Actions';
-import { useGeneralContext } from './useGeneralContext';
+import { useGlobalContext } from './useGlobalContext';
 
 export const useLogout = () => {
-  const { dispatch, snackbar, setRoleType } = useGeneralContext()
+  const { dispatch, snackbar, setRoleType } = useGlobalContext()
 
   const logout = () => {
     dispatch({ type: ACTIONS.LOGOUT })

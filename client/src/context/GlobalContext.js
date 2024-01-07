@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Snackbar from '../components/Snackbar';
 import Loader from '../components/Loader';
 
-export const GeneralContext = createContext();
+export const GlobalContext = createContext();
 
 export const authReducer = (state, action) => {
   switch (action.type) {
@@ -34,7 +34,7 @@ export const authReducer = (state, action) => {
   }
 };
 
-export const GeneralContextProvider = ({ children }) => {
+export const GlobalContextProvider = ({ children }) => {
   const token = JSON.parse(localStorage.getItem('token'));
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,8 +53,6 @@ export const GeneralContextProvider = ({ children }) => {
 
   const memoizedDispatch = useCallback(dispatch, [dispatch]);
 
-
-
   useEffect(() => {
     if (token) {
       const authenticate = async () => {
@@ -67,14 +65,12 @@ export const GeneralContextProvider = ({ children }) => {
           });
 
           if (response.ok) {
-            console.log('inside if!!!!!!!!!!!!!!!!!!!!!');
             const json = await response.json();
             memoizedDispatch({ type: ACTIONS.SET_USER, payload: json });
             const userRoleType = json.roleType;
             const mappedRoleType = RoleTypes[userRoleType];
             setRoleType(mappedRoleType);
           } else {
-            console.log('inside else!!!!!!!!!!!!!!!!!!!!!');
             snackbar('Session expired');
             memoizedDispatch({ type: ACTIONS.LOGOUT });
             localStorage.removeItem('token')
@@ -90,7 +86,7 @@ export const GeneralContextProvider = ({ children }) => {
     }
   }, [memoizedDispatch, location.pathname, token, navigate, setRoleType]);
 
-  console.log('GeneralContextProvider state: ', state);
+  console.log('GlobalContextProvider state: ', state);
 
   const memoizedValue = useMemo(() => ({
     ...state,
@@ -108,10 +104,10 @@ export const GeneralContextProvider = ({ children }) => {
   }), [state, token, navigate, location, snackbarText, roleType, loading]);
 
   return (
-    <GeneralContext.Provider value={memoizedValue}>
+    <GlobalContext.Provider value={memoizedValue}>
       {snackbarText && <Snackbar text={snackbarText} />}
       {loading && <Loader />}
       {children}
-    </GeneralContext.Provider>
+    </GlobalContext.Provider>
   );
 };

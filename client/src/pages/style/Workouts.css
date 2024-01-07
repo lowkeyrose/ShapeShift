@@ -2,5 +2,6 @@
 display: flex;
 justify-content: center;
 flex-wrap: wrap;
-row-gap: 30px;
+width: 80%;
+margin: auto;
 }

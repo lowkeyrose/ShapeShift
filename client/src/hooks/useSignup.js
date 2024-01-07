@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { ACTIONS } from '../context/Actions'
-import { useGeneralContext } from './useGeneralContext'
+import { useGlobalContext } from './useGlobalContext'
 import { RoleTypes } from '../components/Navbar-config'
 
 export const useSignup = () => {
   const [error, setError] = useState(null)
-  const { dispatch, setLoading, snackbar, navigate, setRoleType } = useGeneralContext()
+  const { dispatch, setLoading, snackbar, navigate, setRoleType } = useGlobalContext()
 
   const signup = async (firstName, lastName, email, password, username, phone, gender, profilePic) => {
     setError(null)

@@ -1,20 +1,17 @@
 import React, { useEffect, useCallback } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
-// import logo from '../assets/favorites.png'
+import logo from '../assets/robots/favorites.png'
 import './style/Pages.css'
 
-
-// import Button from '@mui/material/Button'
-// import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
-import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 
 export default function FavoirteWorkouts() {
-  const { token, setLoading } = useGeneralContext()
+  const { token, setLoading } = useGlobalContext()
   const { workouts, dispatch } = useWorkoutContext()
 
   const favoriteWorkouts = useCallback(async () => {
@@ -63,7 +60,7 @@ export default function FavoirteWorkouts() {
         ))}
       </div>
 
-      {/* <img className='bottom-right-icon' src={logo} alt="logo" /> */}
+      <img className='bottom-left-icon' src={logo} alt="logo" />
     </div>
   )
 }

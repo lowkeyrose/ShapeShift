@@ -1,19 +1,39 @@
 .favorites-page {
-  background-color: #df8686;
+  background-image: linear-gradient(to bottom right, #86df89, #4fb352);
+  min-height: 90.4vh;
+  padding-top: 20px;
+}
+
+.my-workouts-page {
+  background-image: linear-gradient(to bottom right, #eda2bd, #451736);
+  min-height: 90.4vh;
+  padding-top: 20px;
+}
+
+.workouts-page {
+  background-color: #6c9197;
   min-height: 90.4vh;
   padding-top: 20px;
 }
 
 .home {
   min-height: 90.4vh;
-  background: #ffa64c;
   padding-top: 20px;
+  background-image: linear-gradient(to bottom right, #ffa64c, #ffd9b3);
 }
 
 .bottom-right-icon {
   position: fixed;
-  bottom: 0;
+  bottom: -10px;
   right: 0;
+  width: 15%;
+  z-index: 0;
+}
+
+.bottom-left-icon {
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 15%;
   z-index: 0;
 }

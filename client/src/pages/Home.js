@@ -2,18 +2,18 @@ import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import { memo } from 'react'
-import logo from '../assets/spaceman.jpg'
+import logo from '../assets/robots/home.png'
 import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
-import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 
 const Home = () => {
     const { workouts, dispatch } = useWorkoutContext()
-    const { setLoading } = useGeneralContext()
+    const { setLoading } = useGlobalContext()
     console.log("Home component rendered"); // Add this line
 
     useEffect(() => {

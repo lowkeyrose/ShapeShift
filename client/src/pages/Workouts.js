@@ -1,18 +1,18 @@
 import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
-import logo from '../assets/spaceman.jpg'
+import logo from '../assets/robots/workouts.jpg'
 import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
-import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 
 export default function Workouts() {
     const { workouts, dispatch } = useWorkoutContext()
-    const { setLoading } = useGeneralContext()
+    const { setLoading } = useGlobalContext()
 
     useEffect(() => {
         const fetchWorkouts = async () => {
@@ -34,9 +34,9 @@ export default function Workouts() {
     }, [dispatch, setLoading])
 
     return (
-        <div className='pages'>
+        <div className='workouts-page'>
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Pacifico, cursive", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
-                Your Personal Workout Buddy
+                Workouts Page
             </Typography>
             <Typography component="p" sx={{ fontWeight: 600, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
@@ -52,7 +52,7 @@ export default function Workouts() {
                 }
                 )}
             </div>
-            <img className='robot' src={logo} alt="logo" />
+            <img className='bottom-left-icon' src={logo} alt="logo" />
         </div>
     )
 }

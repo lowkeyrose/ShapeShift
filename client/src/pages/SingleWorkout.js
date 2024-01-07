@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import ErrorPage from './ErrorPage';
-import { useGeneralContext } from '../hooks/useGeneralContext';
+import { useGlobalContext } from '../hooks/useGlobalContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 // import Button from '@mui/material/Button'
 // import DeleteIcon from '@mui/icons-material/Delete';
@@ -16,7 +16,7 @@ const isValidObjectId = (id) => {
 
 export default function SingleWorkout() {
   const { id } = useParams()
-  const { user, setLoading, snackbar, navigate, token } = useGeneralContext()
+  const { user, setLoading, snackbar, navigate, token } = useGlobalContext()
   const { workout, dispatch } = useWorkoutContext()
 
   useEffect(() => {
@@ -43,9 +43,6 @@ export default function SingleWorkout() {
       fetchWorkout();
     } else {
       navigate('/errorPage')
-      // Handle invalid ObjectId
-      console.error('Invalid ObjectId');
-      // You can display an error message or redirect to an error page
     }
   }, [id, setLoading, dispatch, navigate]);
 

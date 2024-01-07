@@ -6,10 +6,10 @@ import WorkoutForm from '../components/WorkoutForm'
 import ErrorPage from '../pages/ErrorPage';
 import Workouts from '../pages/Workouts';
 import SingleWorkout from '../pages/SingleWorkout';
-import { useGeneralContext } from '../hooks/useGeneralContext';
+import { useGlobalContext } from '../hooks/useGlobalContext';
 
 export default function AuthRouter() {
-  const { user } = useGeneralContext()
+  const { user } = useGlobalContext()
 
   return (
     <Routes>

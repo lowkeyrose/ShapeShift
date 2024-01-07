@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ACTIONS } from "../context/Actions"
-import { useGeneralContext } from '../hooks/useGeneralContext'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +11,7 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
   const { dispatch } = useWorkoutContext()
-  const { user, token, setLoading, snackbar, navigate, location } = useGeneralContext()
+  const { user, token, setLoading, snackbar, navigate, location } = useGlobalContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
 
   const handleDelete = async () => {
