@@ -12,7 +12,7 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
-import { Link } from 'react-router-dom'
+import { Link, useResolvedPath } from 'react-router-dom'
 import { useLogout } from '../hooks/useLogout'
 import { checkPermissions, pages, settings } from './Navbar-config'
 import { useGlobalContext } from '../hooks/useGlobalContext'
@@ -25,6 +25,7 @@ const ResponsiveAppBar = () => {
     ev.preventDefault()
     logout()
   }
+  const path = useResolvedPath().pathname;
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
 
@@ -47,6 +48,8 @@ const ResponsiveAppBar = () => {
     <AppBar position="static">
       <Container maxWidth="100%" sx={{ backgroundColor: '#fff1d0' }}>
         <Toolbar disableGutters>
+
+          {/* LOGO */}
           <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: 'black' }} />
           <Typography
             variant="h6"
@@ -56,9 +59,9 @@ const ResponsiveAppBar = () => {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontFamily: 'Kanit',
+              fontWeight: 500,
+              fontSize: '28px',
               color: 'black',
               textDecoration: 'none',
             }}
@@ -66,6 +69,7 @@ const ResponsiveAppBar = () => {
             ShapeShift
           </Typography>
 
+            {/* Hamburger Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -98,12 +102,14 @@ const ResponsiveAppBar = () => {
               {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
                 <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: "black" }}>
                   <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page.title}</Typography>
+                    <Typography textAlign="center" fontFamily='Kanit'>{page.title}</Typography>
                   </MenuItem>
                 </Link>
               ))}
             </Menu>
           </Box>
+
+          {/* Middle Section when small screen */}
           <FitnessCenterIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: 'black' }} />
           <Typography
             variant="h5"
@@ -115,22 +121,24 @@ const ResponsiveAppBar = () => {
               mr: 2,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontFamily: 'Kanit',
+              fontWeight: 500,
+              fontSize: '28px',
               color: 'black',
               textDecoration: 'none',
             }}
           >
             ShapeShift
           </Typography>
+
+          {/* Nav Links */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
               <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
                 <Button
                   key={page.route}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'black', display: 'block' }}
+                  sx={{ m: 2, color: 'black', display: 'block', fontFamily: 'Kanit', fontSize: '16px', textTransform: 'capitalize', backgroundColor: page.route === path ? '#cebd9640' : '#fff1d0'}}
                 >
                   {page.title}
                 </Button>
@@ -138,13 +146,15 @@ const ResponsiveAppBar = () => {
             ))}
           </Box>
 
+
+          {/* User Section */}
           {user &&
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <span>{roleType},</span>
-                  <span>{user.username}</span>
-                  <Avatar alt={user.profilePic} src={user.profilePic} />
+                  {/* <span>{roleType},</span>
+                  <span>{user.username}</span> */}
+                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{  width: '62px', height: '62px' }} />
 
                 </IconButton>
               </Tooltip>
@@ -167,13 +177,13 @@ const ResponsiveAppBar = () => {
                 {settings.filter(s => !s.permissions || checkPermissions(s.permissions, roleType)).map((setting) => (
                   <Link to={setting.route} key={setting.route} style={{ textDecoration: 'none', color: 'black' }} >
                     <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting.title}</Typography>
+                      <Typography textAlign="center" fontFamily='Kanit'>{setting.title}</Typography>
                     </MenuItem>
                   </Link>
                 ))}
                 <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
                   <MenuItem onClick={handleLogout}>
-                    <Typography textAlign="center">Logout</Typography>
+                    <Typography textAlign="center" fontFamily='Kanit'>Logout</Typography>
                   </MenuItem>
                 </Link>
               </Menu>

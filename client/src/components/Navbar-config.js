@@ -17,6 +17,6 @@ export const pages = [
   { route: '/signup', title: 'Signup', permissions: [RoleTypes.none] }
 ];
 export const settings = [
-  { route: '/profile', title: 'Profile', permissions: [RoleTypes.user, RoleTypes.admin] },
+  // { route: '/profile', title: 'Profile', permissions: [RoleTypes.user, RoleTypes.admin] },
   { route: '/account', title: 'Account', permissions: [RoleTypes.user, RoleTypes.admin] }
 ];

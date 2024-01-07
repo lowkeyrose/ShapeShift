@@ -70,7 +70,7 @@ const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
   const unfavorite = async (workout) => {
     setLoading(true)
     try {
-      // console.log('details unfavorite start');
+      console.log('details unfavorite start');
       setIsFavorited(false);
       const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
         method: 'PUT',
@@ -84,7 +84,7 @@ const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
       }
       // Call the callback to refetch favorite workouts in FavoriteWorkouts.js
       favoriteWorkouts()
-
+      
       // Update the state to reflect the removed workout
       dispatch({ type: ACTIONS.UNFAVORITE, payload: workout._id });
       dispatch({ type: ACTIONS.DECREMENT_LIKES, payload: workout._id });
@@ -94,7 +94,7 @@ const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
       console.error('Error unfavorite workout:', error);
     } finally {
       setLoading(false)
-      // console.log('details unfavorite end');
+      console.log('details unfavorite end');
     }
   }
 

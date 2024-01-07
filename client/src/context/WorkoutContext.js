@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react"
+import React, { createContext, useReducer } from "react"
 import { ACTIONS } from "./Actions"
 
 export const WorkoutContext = createContext()
@@ -11,9 +11,9 @@ export const workoutReducer = (state, action) => {
         // if state was workout change it to workouts
         workouts: [...action.payload]
       }
-      
-      case ACTIONS.SET_SINGLE_WORKOUT:
-        return {
+
+    case ACTIONS.SET_SINGLE_WORKOUT:
+      return {
         // if state was workouts change it to workout
         workout: action.payload
       }
@@ -57,7 +57,7 @@ export const workoutReducer = (state, action) => {
       }
     case ACTIONS.UPDATE_EXERCISE:
       return {
-        
+
       }
     case ACTIONS.CREATE_EXERCISE:
       return {
@@ -73,7 +73,7 @@ export const workoutReducer = (state, action) => {
   }
 };
 
-export const WorkoutContextProvider = ({ children }) => {
+export const WorkoutContextProvider = React.memo(({ children }) => {
   const [state, dispatch] = useReducer(workoutReducer, {
     workouts: null
   })
@@ -85,4 +85,4 @@ export const WorkoutContextProvider = ({ children }) => {
       {children}
     </WorkoutContext.Provider>
   )
-}
+})

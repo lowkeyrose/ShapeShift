@@ -1,11 +1,11 @@
 .favorites-page {
-  background-image: linear-gradient(to bottom right, #86df89, #4fb352);
+  background-image: linear-gradient(to bottom right, #eda2bd, #451736);
   min-height: 90.4vh;
   padding-top: 20px;
 }
 
 .my-workouts-page {
-  background-image: linear-gradient(to bottom right, #eda2bd, #451736);
+  background-image: linear-gradient(to bottom right, #86df89, #4fb352);
   min-height: 90.4vh;
   padding-top: 20px;
 }

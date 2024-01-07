@@ -34,7 +34,7 @@ export const authReducer = (state, action) => {
   }
 };
 
-export const GlobalContextProvider = ({ children }) => {
+export const GlobalContextProvider = React.memo(({ children }) => {
   const token = JSON.parse(localStorage.getItem('token'));
   const navigate = useNavigate();
   const location = useLocation();
@@ -110,4 +110,4 @@ export const GlobalContextProvider = ({ children }) => {
       {children}
     </GlobalContext.Provider>
   );
-};
+});
