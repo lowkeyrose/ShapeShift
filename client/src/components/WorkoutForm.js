@@ -29,6 +29,12 @@ export default function WorkoutForm() {
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
 
+
+    const [editExerciseModal, setEditExerciseModal] = useState(false);
+    const [editingExercise, setEditingExercise] = useState(null);
+
+
+
     const [formData, setFormData] = useState({
         title: '',
         imgUrl: '',
@@ -86,7 +92,7 @@ export default function WorkoutForm() {
         setLoading(true)
 
         if (formData.imgUrl === '') {
-            formData.imgUrl = 'https://images6.alphacoders.com/108/1082422.jpg'
+            formData.imgUrl = 'https://images.unsplash.com/photo-1600026453346-a44501602a02?q=80&w=1970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
         }
 
         try {
@@ -163,12 +169,27 @@ export default function WorkoutForm() {
         handleInput({ id: "exercises", value: formData.exercises.length === 1 ? [] : formData.exercises.filter(exercise => ex !== exercise) })
     }
 
+    const handleEditExercise = (ex, ev) => {
+        ev.preventDefault()
+        setEditingExercise(ex);
+        setEditExerciseModal(true);
+        console.log('handleEditExercise exercise: ', ex);
+        
+        
+        setFormData((prevData) => {
+            const updatedExercises = prevData.exercises.map((exercise) =>
+            exercise === editingExercise ? ex : exercise
+            );
+            return { ...prevData, exercises: updatedExercises };
+        });
+    };
+    
     return (
         <Container component="main" maxWidth="sm">
             <CssBaseline />
             <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
-                <Typography component="h1" variant="h5"> Create A New Workout </Typography>
+                <Typography component="h1" variant="h5"> {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
                         {
@@ -202,13 +223,20 @@ export default function WorkoutForm() {
                                         <p>{exercise.title}</p>
                                         <img src={exercise.imgUrl} alt={exercise.title} />
                                         <button onClick={(ev) => deleteExercise(exercise, ev)}>Delete</button>
-                                        <button onClick={() => ('/')}>Edit</button>
+                                        <button onClick={(ev) => handleEditExercise(exercise, ev)}>Edit</button>
                                     </div>
                                 )
                             }</Typography>
                         </Grid>
 
-                        <ExerciseForm id="exercise-form" onAddExercise={handleAddExercise} />
+                        <ExerciseForm
+                            id="exercise-form"
+                            onAddExercise={handleAddExercise}
+                            onEditExercise={(exercise, ev) => handleEditExercise(exercise, ev)}
+                            editingExercise={editingExercise}
+                            editExerciseModal={editExerciseModal}
+                            setEditExerciseModal={setEditExerciseModal}
+                        />
 
                         <Grid item xs={12} sx={{ mt: -1 }}>
                             <FormControlLabel

@@ -50,7 +50,7 @@ const ResponsiveAppBar = () => {
         <Toolbar disableGutters>
 
           {/* LOGO */}
-          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: 'black' }} />
+          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: 'black', fontSize: '30px' }} />
           <Typography
             variant="h6"
             noWrap
@@ -60,8 +60,8 @@ const ResponsiveAppBar = () => {
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'Kanit',
-              fontWeight: 500,
-              fontSize: '28px',
+              fontWeight: 600,
+              fontSize: '34px',
               color: 'black',
               textDecoration: 'none',
             }}
@@ -138,7 +138,7 @@ const ResponsiveAppBar = () => {
                 <Button
                   key={page.route}
                   onClick={handleCloseNavMenu}
-                  sx={{ m: 2, color: 'black', display: 'block', fontFamily: 'Kanit', fontSize: '16px', textTransform: 'capitalize', backgroundColor: page.route === path ? '#cebd9640' : '#fff1d0'}}
+                  sx={{ mx: 2, color: 'black', display: 'block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize', backgroundColor: page.route === path ? '#cebd9640' : '#fff1d0'}}
                 >
                   {page.title}
                 </Button>
@@ -154,7 +154,7 @@ const ResponsiveAppBar = () => {
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   {/* <span>{roleType},</span>
                   <span>{user.username}</span> */}
-                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{  width: '62px', height: '62px' }} />
+                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{  width: '40px', height: '40px' }} />
 
                 </IconButton>
               </Tooltip>

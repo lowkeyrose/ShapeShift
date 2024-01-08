@@ -54,7 +54,7 @@ const Home = () => {
                 }
                 )}
             </div>
-            <img className='bottom-right-icon' src={logo} alt="logo" />
+            <img className='home-icon' src={logo} alt="logo" />
         </div>
     )
 }

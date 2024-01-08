@@ -68,7 +68,7 @@ export default function Login() {
   };
 
   return (
-    <Grid container component="main" sx={{ height: '88vh' }}>
+    <Grid container component="main" sx={{ minHeight: '92.2vh' }}>
       <CssBaseline />
       <Grid
         item

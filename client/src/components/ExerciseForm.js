@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -11,7 +11,7 @@ import Container from '@mui/material/Container'
 import Joi from 'joi'
 import './style/ExerciseModal.css'
 
-export default function ExerciseForm({ onAddExercise }) {
+export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, editExerciseModal, setEditExerciseModal }) {
   const [modal, setModal] = useState(false)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
@@ -43,24 +43,26 @@ export default function ExerciseForm({ onAddExercise }) {
     reps: Joi.number().min(1).max(200).required()
   });
 
-  const handleSubmit = async (ev) => {
-    try {
-        ev.preventDefault();
-        onAddExercise(formData);
-        toggleModal();
-        setFormData({
-            title: '',
-            imgUrl: '',
-            videoUrl: '',
-            sets: 0,
-            weight: 0,
-            reps: 0
-        });
-        setIsValid(false);
-    } catch (error) {
-        console.error('Error in handleSubmit:', error);
+
+  const resetFormData = () => {
+    setFormData({
+      title: '',
+      imgUrl: '',
+      videoUrl: '',
+      sets: 0,
+      weight: 0,
+      reps: 0
+    });
+  };
+
+  useEffect(() => {
+    if (editingExercise) {
+      setFormData(editingExercise);
+    } else {
+      resetFormData()
     }
-}
+  }, [editingExercise]);
+
 
   const handleInput = ev => {
     const { id, value } = ev.target
@@ -89,12 +91,33 @@ export default function ExerciseForm({ onAddExercise }) {
     setModal(!modal)
   }
 
+  const handleSubmit = async (ev) => {
+    try {
+      ev.preventDefault();
+      console.log('event: ', ev);
+      if (editingExercise) {
+        console.log('check');
+        await onEditExercise(formData, ev);
+        setEditExerciseModal(false);
+
+        // check
+      } else {
+        onAddExercise(formData);
+        toggleModal();
+      }
+      resetFormData()
+      setIsValid(false);
+    } catch (error) {
+      console.error('Error in handleSubmit:', error);
+    }
+  };
+
   return (
     <div className='exercise-form'>
       <Grid item xs={12} >
         <Button onClick={toggleModal} sx={{ p: 2, m: 2 }} variant="contained" color="success" endIcon={<AddCircleIcon />} >Add Exercise</Button>
       </Grid>
-      {modal && <div className="modal">
+      {(modal || editExerciseModal) && <div className="modal">
         <div className="overlay"></div>
         <div className="modal-content">
           <Container component="main" maxWidth="sm">
@@ -111,7 +134,7 @@ export default function ExerciseForm({ onAddExercise }) {
                 <AddCircleIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Add Exercise
+                {editExerciseModal ? 'Edit Exercise' : 'Add Exercise'}
               </Typography>
               <Box component="div" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
@@ -144,12 +167,12 @@ export default function ExerciseForm({ onAddExercise }) {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Add Exercise
+                  {editExerciseModal ? 'Update Exercise' : 'Add Exercise'}
                 </Button>
               </Box>
             </Box>
           </Container>
-          <button className="close-modal" onClick={toggleModal}>X</button>
+          <button className="close-modal" onClick={() => editExerciseModal ? setEditExerciseModal(false) : toggleModal()}>X</button>
         </div>
       </div>}
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
-import logo from '../assets/robots/workouts.jpg'
+import logo from '../assets/robots/workouts.png'
 import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
 

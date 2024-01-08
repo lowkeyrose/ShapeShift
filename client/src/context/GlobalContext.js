@@ -65,24 +65,24 @@ export const GlobalContextProvider = React.memo(({ children }) => {
           });
 
           if (response.ok) {
-            const json = await response.json();
-            memoizedDispatch({ type: ACTIONS.SET_USER, payload: json });
-            const userRoleType = json.roleType;
-            const mappedRoleType = RoleTypes[userRoleType];
-            setRoleType(mappedRoleType);
+            const json = await response.json()
+            memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
+            const userRoleType = json.roleType
+            const mappedRoleType = RoleTypes[userRoleType]
+            setRoleType(mappedRoleType)
           } else {
             snackbar('Session expired');
-            memoizedDispatch({ type: ACTIONS.LOGOUT });
+            memoizedDispatch({ type: ACTIONS.LOGOUT })
             localStorage.removeItem('token')
-            setRoleType(RoleTypes.none);
-            navigate('/');
+            setRoleType(RoleTypes.none)
+            navigate('/')
           }
         } catch (error) {
-          console.log("The Promise is rejected!", error);
+          console.log("The Promise is rejected!", error)
         }
       };
 
-      authenticate();
+      authenticate()
     }
   }, [memoizedDispatch, location.pathname, token, navigate, setRoleType]);
 
