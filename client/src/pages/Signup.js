@@ -116,7 +116,8 @@ export default function SignUp() {
                 <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
                   <TextField
                     autoComplete={item.autoComplete}
-                    error={Boolean(errors[item.name])}
+                    // error={Boolean(errors[item.name])}
+                    error={!!errors[item.name]}
                     helperText={errors[item.name]}
                     onChange={handleInput}
                     value={formData[item.name]}

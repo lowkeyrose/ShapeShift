@@ -51,7 +51,7 @@ const getWorkout = async (req, res) => {
   }
 
   const workout = await Workout.findById(id)
-  
+
   if (!workout) {
     return res.status(404).json({ error: 'Workout not found' })
   }
@@ -75,6 +75,13 @@ const createWorkout = async (req, res) => {
     workoutData.username = req.user.username
     exercisesData = exercisesData.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
+    // Check if a workout with the same title already exists for the current user
+    const existingWorkout = await Workout.findOne({ title: workoutData.title, user_id: workoutData.user_id });
+
+    if (existingWorkout) {
+      return res.status(420).json({ success: false, error: 'Title already in use for this user' });
+    }
+
     // Create a new workout
     const newWorkout = await Workout.create(workoutData)
 
@@ -88,7 +95,6 @@ const createWorkout = async (req, res) => {
     res.status(201).json({ success: true, workout: newWorkout })
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, error: error.message });
   }
 }

@@ -14,11 +14,11 @@ import { useGlobalContext } from '../hooks/useGlobalContext'
 const Home = () => {
     const { workouts, dispatch } = useWorkoutContext()
     const { setLoading } = useGlobalContext()
-    console.log("Home component rendered"); // Add this line
+    // console.log("Home component rendered"); // Add this line
 
     useEffect(() => {
         const fetchWorkouts = async () => {
-            console.log("Fetching workouts...");
+            // console.log("Fetching workouts...");
             setLoading(true)
             try {
                 const response = await fetch('/api/workouts')

@@ -16,6 +16,7 @@ import Container from '@mui/material/Container'
 import Joi from 'joi'
 import ExerciseForm from './ExerciseForm'
 import { useParams } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid'
 
 const isValidObjectId = (id) => {
     const objectIdPattern = /^[0-9a-fA-F]{24}$/;
@@ -29,13 +30,10 @@ export default function WorkoutForm() {
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
 
-
     const [editExerciseModal, setEditExerciseModal] = useState(false);
     const [editingExercise, setEditingExercise] = useState(null);
 
-
-
-    const [formData, setFormData] = useState({
+    const [workoutFormData, setWorkoutFormData] = useState({
         title: '',
         imgUrl: '',
         exercises: [],
@@ -47,7 +45,7 @@ export default function WorkoutForm() {
         { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false },
     ]
 
-    const userSchema = Joi.object({
+    const workoutSchema = Joi.object({
         title: Joi.string().min(3).max(20).required(),
         imgUrl: Joi.string().min(0).max(2000).optional(),
         exercises: Joi.array().min(1).max(20).required(),
@@ -61,7 +59,7 @@ export default function WorkoutForm() {
                 try {
                     const response = await fetch(`/api/workouts/workout/${id}`)
                     const data = await response.json()
-                    setFormData(data)
+                    setWorkoutFormData(data)
                 } catch (error) {
                     console.error('Error fetching workout:', error);
                 } finally {
@@ -75,61 +73,13 @@ export default function WorkoutForm() {
         } else if (id !== undefined) {
             navigate('/errorPage')
         }
-    }, [id, setLoading, setFormData, navigate])
-
-
-    const handleAddExercise = (exercise) => {
-        setFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exercise] }));
-        handleInput({ id: "exercises", value: [...formData.exercises, exercise] })
-    }
-
-    const handleSubmit = async (ev) => {
-        ev.preventDefault()
-        if (!token) {
-            snackbar('You must be logged in')
-            return
-        }
-        setLoading(true)
-
-        if (formData.imgUrl === '') {
-            formData.imgUrl = 'https://images.unsplash.com/photo-1600026453346-a44501602a02?q=80&w=1970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-        }
-
-        try {
-            const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? id : 'create/new'}`, {
-                method: id ? 'PUT' : 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': token
-                }
-            })
-            console.log('formData:', formData);
-            const workoutData = await workoutResponse.json()
-            console.log('workoutResponse:', workoutResponse);
-
-            if (workoutResponse.ok) {
-                // We currently don't have an update action, nor do we need to since we are using dispatch SET_WORKOUT in MyWorkouts.js where we are navigated to anyways and updating the workouts state to the workouts from the db, 
-                // workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
-                !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
-                navigate('/workouts/myworkouts')
-                snackbar(id ? 'Workout updated successfully' : 'New workout added successfully', workoutData)
-            } else {
-                snackbar(id ? 'Failed to update workout' : 'Failed to create workout');
-            }
-
-        } catch (error) {
-            console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
-        } finally {
-            setLoading(false)
-        }
-    }
+    }, [id, setLoading, setWorkoutFormData, navigate])
 
     const handleInput = ev => {
         let obj = {}
 
         const validation = (id) => {
-            const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
+            const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true });
             const err = { ...errors, [id]: undefined };
             if (schema.error) {
                 const error = schema.error.details.find(e => e.context.key === id);
@@ -145,28 +95,36 @@ export default function WorkoutForm() {
 
         if (ev.id === "exercises") {
             const { id, value } = ev
-            obj = { ...formData, [id]: value }
+            obj = { ...workoutFormData, [id]: value }
             validation(id)
         } else {
             const { id, value } = ev.target
-            obj = { ...formData, [id]: value }
+            obj = { ...workoutFormData, [id]: value }
 
             if (id === "Private") {
                 const { id, checked } = ev.target
-                obj = { ...formData, [id]: checked }
+                obj = { ...workoutFormData, [id]: checked }
             }
             validation(id)
-            setFormData(obj)
+            setWorkoutFormData(obj)
         }
+    }
+
+    const handleAddExercise = (exercise) => {
+        // Generate a unique key for the exercise
+        const exerciseWithKey = { ...exercise, key: uuidv4() }
+
+        setWorkoutFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exerciseWithKey] }));
+        handleInput({ id: "exercises", value: [...workoutFormData.exercises, exerciseWithKey] })
     }
 
     const deleteExercise = (ex, ev) => {
         ev.preventDefault()
-        setFormData((prevData) => ({
+        setWorkoutFormData((prevData) => ({
             ...prevData,
             exercises: prevData.exercises.length === 1 ? [] : prevData.exercises.filter(exercise => ex !== exercise)
         }));
-        handleInput({ id: "exercises", value: formData.exercises.length === 1 ? [] : formData.exercises.filter(exercise => ex !== exercise) })
+        handleInput({ id: "exercises", value: workoutFormData.exercises.length === 1 ? [] : workoutFormData.exercises.filter(exercise => ex !== exercise) })
     }
 
     const handleEditExercise = (ex, ev) => {
@@ -174,16 +132,58 @@ export default function WorkoutForm() {
         setEditingExercise(ex);
         setEditExerciseModal(true);
         console.log('handleEditExercise exercise: ', ex);
-        
-        
-        setFormData((prevData) => {
+
+        setWorkoutFormData((prevData) => {
             const updatedExercises = prevData.exercises.map((exercise) =>
-            exercise === editingExercise ? ex : exercise
+                exercise === editingExercise ? ex : exercise
             );
             return { ...prevData, exercises: updatedExercises };
         });
     };
-    
+
+    const handleSubmit = async (ev) => {
+        ev.preventDefault()
+        if (!token) {
+            snackbar('You must be logged in')
+            return
+        }
+        setLoading(true)
+
+        if (workoutFormData.imgUrl === '') {
+            workoutFormData.imgUrl = 'https://images.unsplash.com/photo-1600026453346-a44501602a02?q=80&w=1970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        }
+
+        try {
+            const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? id : 'create/new'}`, {
+                method: id ? 'PUT' : 'POST',
+                body: JSON.stringify(workoutFormData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                }
+            })
+            const workoutData = await workoutResponse.json()
+            // console.log('workoutFormData:', workoutFormData);
+            // console.log('workoutResponse:', workoutResponse);
+
+            if (workoutResponse.ok) {
+                // We currently don't have an update action, nor do we need to since we are using dispatch SET_WORKOUT in MyWorkouts.js where we are navigated to anyways and updating the workouts state to the workouts from the db, 
+                // workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
+                !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
+                navigate('/workouts/myworkouts')
+                snackbar(id ? 'Workout updated successfully' : 'New workout added successfully', workoutData)
+            } else if (workoutResponse.status === 420) {
+                snackbar(workoutData.error)
+            } else {
+                snackbar(id ? 'Failed to update workout' : 'Failed to create workout');
+            }
+        } catch (error) {
+            console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <Container component="main" maxWidth="sm">
             <CssBaseline />
@@ -197,10 +197,12 @@ export default function WorkoutForm() {
                                 <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
                                     <TextField
                                         autoComplete={item.autoComplete}
-                                        error={Boolean(errors[item.name])}
+                                        // error={errors ? errors : Boolean(errors[item.name]) }
+                                        // error={Boolean(errors[item.name])}
+                                        error={!!errors[item.name]}
                                         helperText={errors[item.name]}
                                         onChange={handleInput}
-                                        value={formData[item.name]}
+                                        value={workoutFormData[item.name]}
                                         name={item.name}
                                         type={item.type}
                                         required={item.required}
@@ -212,13 +214,18 @@ export default function WorkoutForm() {
                                 </Grid>
                             )
                         }
+                        {/* {errors && (
+                            <Typography color="error" variant="body2">
+                                {errors}
+                            </Typography>
+                        )} */}
 
                         <Grid item xs={12}>
-                            <Typography variant="h6">Number of Exercises: {formData?.exercises?.length}</Typography>
+                            <Typography variant="h6">Number of Exercises: {workoutFormData?.exercises?.length}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">Exercises Preview: {
-                                formData?.exercises?.map((exercise, index) =>
+                                workoutFormData?.exercises?.map((exercise, index) =>
                                     <div key={index}>
                                         <p>{exercise.title}</p>
                                         <img src={exercise.imgUrl} alt={exercise.title} />
@@ -241,7 +248,7 @@ export default function WorkoutForm() {
                         <Grid item xs={12} sx={{ mt: -1 }}>
                             <FormControlLabel
                                 label="Private"
-                                control={<Checkbox id="Private" color="primary" checked={formData.Private} onChange={handleInput} name="Private" />}
+                                control={<Checkbox id="Private" color="primary" checked={workoutFormData.Private} onChange={handleInput} name="Private" />}
                             />
                         </Grid>
                     </Grid>

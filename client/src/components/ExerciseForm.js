@@ -16,7 +16,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [exerciseFormData, setExerciseFormData] = useState({
     title: '',
     imgUrl: '',
     videoUrl: '',
@@ -34,7 +34,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     { name: 'reps', type: 'number', label: 'Reps', required: true, halfWidth: true }
   ]
 
-  const userSchema = Joi.object({
+  const exerciseSchema = Joi.object({
     title: Joi.string().min(3).max(20).required(),
     imgUrl: Joi.string().min(0).max(2000).optional(),
     videoUrl: Joi.string().min(0).max(2000).optional(),
@@ -45,7 +45,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
 
 
   const resetFormData = () => {
-    setFormData({
+    setExerciseFormData({
       title: '',
       imgUrl: '',
       videoUrl: '',
@@ -57,7 +57,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
 
   useEffect(() => {
     if (editingExercise) {
-      setFormData(editingExercise);
+      setExerciseFormData(editingExercise);
     } else {
       resetFormData()
     }
@@ -67,11 +67,11 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
   const handleInput = ev => {
     const { id, value } = ev.target
     let obj = {
-      ...formData,
+      ...exerciseFormData,
       [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) : value,
     }
 
-    const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
+    const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true });
     const err = { ...errors, [id]: undefined };
     if (schema.error) {
       const error = schema.error.details.find(e => e.context.key === id);
@@ -82,7 +82,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     } else {
       setIsValid(true);
     }
-    setFormData(obj);
+    setExerciseFormData(obj);
     // console.log(schema.error);
     setErrors(err);
   };
@@ -97,12 +97,12 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       console.log('event: ', ev);
       if (editingExercise) {
         console.log('check');
-        await onEditExercise(formData, ev);
+        await onEditExercise(exerciseFormData, ev);
         setEditExerciseModal(false);
 
         // check
       } else {
-        onAddExercise(formData);
+        onAddExercise(exerciseFormData);
         toggleModal();
       }
       resetFormData()
@@ -143,10 +143,11 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
                       <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
                         <TextField
                           autoComplete={item.autoComplete}
-                          error={Boolean(errors[item.name])}
+                          // error={Boolean(errors[item.name])}
+                          error={!!errors[item.name]}
                           helperText={errors[item.name]}
                           onChange={handleInput}
-                          value={formData[item.name]}
+                          value={exerciseFormData[item.name]}
                           name={item.name}
                           type={item.type}
                           required={item.required}

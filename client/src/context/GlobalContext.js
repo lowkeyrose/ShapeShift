@@ -86,7 +86,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     }
   }, [memoizedDispatch, location.pathname, token, navigate, setRoleType]);
 
-  console.log('GlobalContextProvider state: ', state);
+  // console.log('GlobalContextProvider state: ', state);
 
   const memoizedValue = useMemo(() => ({
     ...state,
