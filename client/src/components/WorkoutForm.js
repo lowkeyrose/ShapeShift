@@ -17,6 +17,7 @@ import Joi from 'joi'
 import ExerciseForm from './ExerciseForm'
 import { useParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
+// import _isEqual from 'lodash/isEqual';
 
 const isValidObjectId = (id) => {
     const objectIdPattern = /^[0-9a-fA-F]{24}$/;
@@ -32,6 +33,9 @@ export default function WorkoutForm() {
 
     const [editExerciseModal, setEditExerciseModal] = useState(false);
     const [editingExercise, setEditingExercise] = useState(null);
+
+    const [initialWorkoutData, setInitialWorkoutData] = useState({});
+
 
     const [workoutFormData, setWorkoutFormData] = useState({
         title: '',
@@ -60,36 +64,71 @@ export default function WorkoutForm() {
                     const response = await fetch(`/api/workouts/workout/${id}`)
                     const data = await response.json()
                     setWorkoutFormData(data)
+                    console.log('data: ', data);
+                    setInitialWorkoutData(data)
                 } catch (error) {
                     console.error('Error fetching workout:', error);
                 } finally {
                     setLoading(false)
                 }
             }
-            if (id) {
-                fetchWorkout()
-            }
+            fetchWorkout()
             // if the id is new for CreateWorkout, then it comes as undefined
         } else if (id !== undefined) {
             navigate('/errorPage')
         }
     }, [id, setLoading, setWorkoutFormData, navigate])
 
+    // const handleInput = ev => {
+    //     let id, value;
+
+    //     if (ev.id === 'exercises') {
+    //         ({ id, value } = ev)
+    //     } else {
+    //         ({ id, value } = ev.target)
+    //     }
+    //     let obj = {
+    //         ...workoutFormData,
+    //         [id]: value,
+    //     }
+    //     if (id === "Private") {
+    //         const { checked } = ev.target
+    //         obj = { ...workoutFormData, [id]: checked }
+    //     }
+    //     const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true });
+    //     const err = { ...errors, [id]: undefined };
+    //     if (schema.error) {
+    //         const error = schema.error.details.find(e => e.context.key === id);
+    //         if (error) {
+    //             err[id] = error.message;
+    //         }
+    //         setIsValid(false);
+    //     } else {
+    //         setIsValid(true)
+    //     }
+    //     setErrors(err)
+    // }
+
     const handleInput = ev => {
         let obj = {}
 
         const validation = (id) => {
+            const hasChanges = Object.keys(obj).some((key) => obj[key] !== initialWorkoutData[key]);
             const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true });
             const err = { ...errors, [id]: undefined };
-            if (schema.error) {
-                const error = schema.error.details.find(e => e.context.key === id);
+
+            if (schema.error || !hasChanges) {
+                const error = schema.error?.details.find(e => e.context.key === id);
+
                 if (error) {
                     err[id] = error.message;
                 }
+
                 setIsValid(false);
             } else {
                 setIsValid(true)
             }
+
             setErrors(err)
         }
 
@@ -106,25 +145,39 @@ export default function WorkoutForm() {
                 obj = { ...workoutFormData, [id]: checked }
             }
             validation(id)
-            setWorkoutFormData(obj)
         }
-    }
 
-    const handleAddExercise = (exercise) => {
-        // Generate a unique key for the exercise
-        const exerciseWithKey = { ...exercise, key: uuidv4() }
-
-        setWorkoutFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exerciseWithKey] }));
-        handleInput({ id: "exercises", value: [...workoutFormData.exercises, exerciseWithKey] })
+        setWorkoutFormData(obj)
     }
 
     const deleteExercise = (ex, ev) => {
         ev.preventDefault()
         setWorkoutFormData((prevData) => ({
             ...prevData,
-            exercises: prevData.exercises.length === 1 ? [] : prevData.exercises.filter(exercise => ex !== exercise)
+            exercises: prevData.exercises.length === 1
+                ? []
+                : prevData.exercises.filter(exercise => {
+                    if (ex._id) {
+                        return ex._id !== exercise._id
+                    }
+                    if (ex.key) {
+                        return ex.key !== exercise.key
+                    }
+                    return true
+                })
         }));
         handleInput({ id: "exercises", value: workoutFormData.exercises.length === 1 ? [] : workoutFormData.exercises.filter(exercise => ex !== exercise) })
+    }
+
+    const handleAddExercise = (exercise) => {
+        // Generate a unique temporary key for the exercise
+        const exerciseWithKey = { ...exercise, key: uuidv4() }
+
+        setWorkoutFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exerciseWithKey] }));
+
+        handleInput({ id: "exercises", value: [...workoutFormData.exercises, exerciseWithKey] })
+
+        console.log('exerciseWithKey: ', exerciseWithKey);
     }
 
     const handleEditExercise = (ex, ev) => {
@@ -132,14 +185,30 @@ export default function WorkoutForm() {
         setEditingExercise(ex);
         setEditExerciseModal(true);
         console.log('handleEditExercise exercise: ', ex);
-
-        setWorkoutFormData((prevData) => {
-            const updatedExercises = prevData.exercises.map((exercise) =>
-                exercise === editingExercise ? ex : exercise
-            );
-            return { ...prevData, exercises: updatedExercises };
-        });
     };
+
+    const handleSubmiteExerciseForm = (updatedExercise) => {
+        console.log('handleSubmiteExerciseForm updatedExercise: ', updatedExercise);
+
+        const updatedExercises = workoutFormData.exercises.map((exercise) =>
+            (updatedExercise._id && updatedExercise._id === exercise._id) ||
+                (updatedExercise.key && updatedExercise.key === exercise.key)
+                ? updatedExercise
+                : exercise
+        )
+        setWorkoutFormData((prevData) => {
+
+            console.log('updatedExercises: ', updatedExercises);
+            return { ...prevData, exercises: updatedExercises };
+        })
+
+        // Check if anything changed, wasteful to send api calls if nothing changed FIX THIS!!!
+        if (workoutFormData.exercises !== updatedExercises) {
+            handleInput({ id: "exercises", value: [...updatedExercises] })
+        }
+
+    }
+
 
     const handleSubmit = async (ev) => {
         ev.preventDefault()
@@ -240,7 +309,9 @@ export default function WorkoutForm() {
                             id="exercise-form"
                             onAddExercise={handleAddExercise}
                             onEditExercise={(exercise, ev) => handleEditExercise(exercise, ev)}
+                            onSubmiteExerciseForm={handleSubmiteExerciseForm}
                             editingExercise={editingExercise}
+                            setEditingExercise={setEditingExercise}
                             editExerciseModal={editExerciseModal}
                             setEditExerciseModal={setEditExerciseModal}
                         />

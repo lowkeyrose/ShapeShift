@@ -11,10 +11,11 @@ import Container from '@mui/material/Container'
 import Joi from 'joi'
 import './style/ExerciseModal.css'
 
-export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, editExerciseModal, setEditExerciseModal }) {
+export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, setEditingExercise, editExerciseModal, setEditExerciseModal, onSubmiteExerciseForm }) {
   const [modal, setModal] = useState(false)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
+  const [initialExerciseData, setInitialExerciseData] = useState({});
 
   const [exerciseFormData, setExerciseFormData] = useState({
     title: '',
@@ -44,6 +45,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
   });
 
 
+
   const resetFormData = () => {
     setExerciseFormData({
       title: '',
@@ -58,10 +60,15 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
   useEffect(() => {
     if (editingExercise) {
       setExerciseFormData(editingExercise);
+      setInitialExerciseData(editingExercise);
     } else {
       resetFormData()
+      setInitialExerciseData({});
     }
-  }, [editingExercise]);
+  }, [editingExercise, editExerciseModal]);
+  // }, [editingExercise]);
+  // I think only having the editExerciseModal chane also line 61 and line 118
+  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
   const handleInput = ev => {
@@ -71,10 +78,12 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) : value,
     }
 
+    const hasChanges = Object.keys(obj).some(key => obj[key] !== initialExerciseData[key]);
     const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true });
     const err = { ...errors, [id]: undefined };
-    if (schema.error) {
-      const error = schema.error.details.find(e => e.context.key === id);
+    // if (schema.error || (!hasChanges && editExerciseModal)) {
+    if (schema.error || !hasChanges) {
+      const error = schema.error?.details.find(e => e.context.key === id);
       if (error) {
         err[id] = error.message;
       }
@@ -82,26 +91,38 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     } else {
       setIsValid(true);
     }
-    setExerciseFormData(obj);
-    // console.log(schema.error);
     setErrors(err);
+    setExerciseFormData(obj);
   };
 
   const toggleModal = () => {
     setModal(!modal)
+
+    // If the user accidentally closes the modal mid filling out the form I can keep the data if I remove the lines below!
+    if (!modal) {
+      resetFormData();
+      setIsValid(false);
+    }
   }
+
+  const handleClose = () => {
+    setEditExerciseModal(false);
+
+    // Reset the form data when closing the modal
+    resetFormData();
+  };
 
   const handleSubmit = async (ev) => {
     try {
       ev.preventDefault();
-      console.log('event: ', ev);
+      // console.log('event: ', ev);
       if (editingExercise) {
-        console.log('check');
-        await onEditExercise(exerciseFormData, ev);
+        console.log('onSubmiteExerciseForm');
+        await onSubmiteExerciseForm(exerciseFormData);
         setEditExerciseModal(false);
-
-        // check
+        setEditingExercise(null)
       } else {
+        console.log('onAddExercise');
         onAddExercise(exerciseFormData);
         toggleModal();
       }
@@ -111,6 +132,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       console.error('Error in handleSubmit:', error);
     }
   };
+
 
   return (
     <div className='exercise-form'>
@@ -173,7 +195,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
               </Box>
             </Box>
           </Container>
-          <button className="close-modal" onClick={() => editExerciseModal ? setEditExerciseModal(false) : toggleModal()}>X</button>
+          <button className="close-modal" onClick={() => editExerciseModal ? handleClose() : toggleModal()}>X</button>
         </div>
       </div>}
 

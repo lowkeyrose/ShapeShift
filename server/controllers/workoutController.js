@@ -179,40 +179,73 @@ const updateWorkout = async (req, res) => {
     const oldExercisesStringArray = workout.exercises.map(ObjectId => ObjectId.toString())
     // console.log('oldExercisesStringArray: ', oldExercisesStringArray);
 
-    // If one or more exercises have been added then create them
-    if (exercisesData.length > oldExercisesStringArray.length) {
+    // Update or create exercises
+    const updatedExercises = await Promise.all(exercisesData.map(async (exerciseData) => {
+      if (exerciseData._id) {
+        // Exercise already has an _id, update it
+        const existingExercise = await Exercise.findOne({ _id: exerciseData._id })
+        if (existingExercise) {
+          Object.assign(existingExercise, exerciseData)
+          await existingExercise.save()
+          return existingExercise._id
+        }
+      } else {
+        // Exercise doesn't have an _id, create it
+        const newExercise = await Exercise.create({
+          ...exerciseData,
+          user_id: workoutData.user_id,
+          workout_id: workoutData._id,
+        })
+        return newExercise._id
+      }
+    }))
 
-      // Get an array of the exercises that don't have the _id property
-      const newExercises = exercisesData.filter(exercise => !exercise._id)
+    // Identify exercises to be deleted
+    const exercisesToDelete = workout.exercises.filter(
+      (exerciseId) => !updatedExercises.includes(exerciseId.toString())
+    );
 
-      // Add the user_id and workout_id to each new exercise and then doc to db
-      const createdExercises = await Exercise.create(newExercises.map(exercise => ({ ...exercise, user_id: workoutData.user_id, workout_id: workoutData._id })))
+    console.log('exercisesToDelete: ', exercisesToDelete);
 
-      // Fetch the IDs of the created exercises
-      const createdExerciseIds = createdExercises.map(exercise => exercise._id);
+    // Delete exercises that are no longer present in the updated workout
+    await Exercise.deleteMany({ _id: { $in: exercisesToDelete } });
 
-      // update the old workout with the new exercises (not workout.exercises.push(...createdExerciseIds))
-      workout.exercises = [...workout.exercises, ...createdExerciseIds]
-      //this way is often recommended in modern JavaScript development. It explicitly creates a new array, ensuring that the original array remains unchanged.
 
-      // If one or more exercises have been removed
-    } else if (exercisesData.length < oldExercisesStringArray.length) {
 
-      // Fetch the IDs of the exercises inside workoutData.exercises
-      const workoutDataExercsiesIds = exercisesData.map(exercise => exercise._id)
+    // // If one or more exercises have been added then create them
+    // if (exercisesData.length > oldExercisesStringArray.length) {
 
-      // Filter to get the array of ids of the exercises deleted,
-      // run a filter on the previous version workout exercises array,
-      // check which ids are inside oldExercisesStringArray and not inside workoutDataExercsiesIds and save them.
-      const deletedExercises = oldExercisesStringArray.filter(exerciseId => !workoutDataExercsiesIds.includes(exerciseId));
+    //   // Get an array of the exercises that don't have the _id property
+    //   const newExercises = exercisesData.filter(exercise => !exercise._id)
 
-      // Delete the deleted exercises from db
-      await Exercise.deleteMany({ _id: { $in: deletedExercises } });
+    //   // Add the user_id and workout_id to each new exercise and then doc to db
+    //   const createdExercises = await Exercise.create(newExercises.map(exercise => ({ ...exercise, user_id: workoutData.user_id, workout_id: workoutData._id })))
 
-      // Update the existing workout's exercises array,
-      // Keep only Ids that don't exist in the deleted exercises array
-      workout.exercises = workout.exercises.filter(exerciseId => !deletedExercises.includes(exerciseId.toString()));
-    }
+    //   // Fetch the IDs of the created exercises
+    //   const createdExerciseIds = createdExercises.map(exercise => exercise._id);
+
+    //   // update the old workout with the new exercises (not workout.exercises.push(...createdExerciseIds))
+    //   workout.exercises = [...workout.exercises, ...createdExerciseIds]
+    //   //this way is often recommended in modern JavaScript development. It explicitly creates a new array, ensuring that the original array remains unchanged.
+
+    //   // If one or more exercises have been removed
+    // } else if (exercisesData.length < oldExercisesStringArray.length) {
+
+    //   // Fetch the IDs of the exercises inside workoutData.exercises
+    //   const workoutDataExercsiesIds = exercisesData.map(exercise => exercise._id)
+
+    //   // Filter to get the array of ids of the exercises deleted,
+    //   // run a filter on the previous version workout exercises array,
+    //   // check which ids are inside oldExercisesStringArray and not inside workoutDataExercsiesIds and save them.
+    //   const deletedExercises = oldExercisesStringArray.filter(exerciseId => !workoutDataExercsiesIds.includes(exerciseId));
+
+    //   // Delete the deleted exercises from db
+    //   await Exercise.deleteMany({ _id: { $in: deletedExercises } });
+
+    //   // Update the existing workout's exercises array,
+    //   // Keep only Ids that don't exist in the deleted exercises array
+    //   workout.exercises = workout.exercises.filter(exerciseId => !deletedExercises.includes(exerciseId.toString()));
+    // }
 
     // Update exercises
 
@@ -240,6 +273,10 @@ const updateWorkout = async (req, res) => {
     workout.title = workoutData.title;
     workout.imgUrl = workoutData.imgUrl;
     workout.Private = workoutData.Private;
+
+    // Update the workout's exercises array with the new/existing exercise IDs
+    workout.exercises = updatedExercises;
+
 
     // Save the updated workout
     await workout.save();
