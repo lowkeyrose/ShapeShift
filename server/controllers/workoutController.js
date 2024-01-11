@@ -159,9 +159,9 @@ const deleteWorkout = async (req, res) => {
 const updateWorkout = async (req, res) => {
   const { id } = req.params
   const workoutData = req.body
+  const exercisesData = req.body.exercises
 
   // instead of declaring maybe just write workoutData.exercises? but we have multiple cases
-  const exercisesData = req.body.exercises
   // console.log('workoutData: ', workoutData);
   // console.log('exercisesData: ', exercisesData);
 
@@ -174,25 +174,37 @@ const updateWorkout = async (req, res) => {
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' });
     }
-
-    // Convert the old workout's exercises into strings for comparison purposes
-    const oldExercisesStringArray = workout.exercises.map(ObjectId => ObjectId.toString())
-    // console.log('oldExercisesStringArray: ', oldExercisesStringArray);
+    // @@@@@@@@@@@@@@@@@@@@@@@@ STARTED HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     // Update or create exercises
-    const updatedExercises = await Promise.all(exercisesData.map(async (exerciseData) => {
-      if (exerciseData._id) {
+    const updatedExercises = await Promise.all(exercisesData.map(async (exercise) => {
+      if (exercise._id) {
         // Exercise already has an _id, update it
-        const existingExercise = await Exercise.findOne({ _id: exerciseData._id })
+        const existingExercise = await Exercise.findOne({ _id: exercise._id })
         if (existingExercise) {
-          Object.assign(existingExercise, exerciseData)
-          await existingExercise.save()
-          return existingExercise._id
+          const hasChanges = JSON.stringify(exercise) !== JSON.stringify(existingExercise);
+          // For more fine grained check below.
+          // const originalExercise = existingExercise.toObject();
+          // const hasChanges = Object.keys(exercise).some((key) => {
+          //   const skipProperties = ['createdAt', 'updatedAt', '__v'];
+          //   if (!skipProperties.includes(key)) {
+          //     return exercise[key] !== originalExercise[key];
+          //   }
+          //   return false;
+          // });
+
+          if (hasChanges) {
+            Object.assign(existingExercise, exercise);
+            await existingExercise.save();
+            return existingExercise._id;
+          } else {
+            return exercise._id
+          }
         }
       } else {
         // Exercise doesn't have an _id, create it
         const newExercise = await Exercise.create({
-          ...exerciseData,
+          ...exercise,
           user_id: workoutData.user_id,
           workout_id: workoutData._id,
         })
@@ -201,82 +213,25 @@ const updateWorkout = async (req, res) => {
     }))
 
     // Identify exercises to be deleted
-    const exercisesToDelete = workout.exercises.filter(
-      (exerciseId) => !updatedExercises.includes(exerciseId.toString())
-    );
-
-    console.log('exercisesToDelete: ', exercisesToDelete);
+    const exercisesToDelete = workout.exercises.filter((exerciseId) => !updatedExercises.includes(exerciseId.toString()));
 
     // Delete exercises that are no longer present in the updated workout
     await Exercise.deleteMany({ _id: { $in: exercisesToDelete } });
 
+    // Check if the fields have changed before updating
+    if (workout.title !== workoutData.title) {
+      workout.title = workoutData.title;
+    }
 
+    if (workout.imgUrl !== workoutData.imgUrl) {
+      workout.imgUrl = workoutData.imgUrl;
+    }
 
-    // // If one or more exercises have been added then create them
-    // if (exercisesData.length > oldExercisesStringArray.length) {
-
-    //   // Get an array of the exercises that don't have the _id property
-    //   const newExercises = exercisesData.filter(exercise => !exercise._id)
-
-    //   // Add the user_id and workout_id to each new exercise and then doc to db
-    //   const createdExercises = await Exercise.create(newExercises.map(exercise => ({ ...exercise, user_id: workoutData.user_id, workout_id: workoutData._id })))
-
-    //   // Fetch the IDs of the created exercises
-    //   const createdExerciseIds = createdExercises.map(exercise => exercise._id);
-
-    //   // update the old workout with the new exercises (not workout.exercises.push(...createdExerciseIds))
-    //   workout.exercises = [...workout.exercises, ...createdExerciseIds]
-    //   //this way is often recommended in modern JavaScript development. It explicitly creates a new array, ensuring that the original array remains unchanged.
-
-    //   // If one or more exercises have been removed
-    // } else if (exercisesData.length < oldExercisesStringArray.length) {
-
-    //   // Fetch the IDs of the exercises inside workoutData.exercises
-    //   const workoutDataExercsiesIds = exercisesData.map(exercise => exercise._id)
-
-    //   // Filter to get the array of ids of the exercises deleted,
-    //   // run a filter on the previous version workout exercises array,
-    //   // check which ids are inside oldExercisesStringArray and not inside workoutDataExercsiesIds and save them.
-    //   const deletedExercises = oldExercisesStringArray.filter(exerciseId => !workoutDataExercsiesIds.includes(exerciseId));
-
-    //   // Delete the deleted exercises from db
-    //   await Exercise.deleteMany({ _id: { $in: deletedExercises } });
-
-    //   // Update the existing workout's exercises array,
-    //   // Keep only Ids that don't exist in the deleted exercises array
-    //   workout.exercises = workout.exercises.filter(exerciseId => !deletedExercises.includes(exerciseId.toString()));
-    // }
-
-    // Update exercises
-
-    //  NEED TO COMPARE EACH EXERCISE TO THE PREV VERSION EXERCISE AND SEE IF THERE ARE ANY CHANGES THEN SAVE THE ONES THAT CHANGED AND THEN UPDATE THEM
-
-    // const updatedExercises = workoutDataExercsiesIds.filter(exerciseId => !workout.exercises.includes(exerciseId));
-
-    // await Promise.all(updatedExercises.map(async exerciseId => {
-    //   // Assuming you have an Exercise model
-    //   const exercise = await Exercise.findOne({ _id: exerciseId });
-
-    //   if (exercise) {
-    //     exercise.title = exercisesData.find(ex => ex._id === exerciseId).title;
-    //     exercise.imgUrl = exercisesData.find(ex => ex._id === exerciseId).imgUrl;
-    //     exercise.videoUrl = exercisesData.find(ex => ex._id === exerciseId).videoUrl;
-    //     exercise.sets = exercisesData.find(ex => ex._id === exerciseId).sets;
-    //     exercise.reps = exercisesData.find(ex => ex._id === exerciseId).reps;
-    //     exercise.weight = exercisesData.find(ex => ex._id === exerciseId).weight;
-    //     await exercise.save();
-    //   }
-    // }));
-
-
-    // Update workout data
-    workout.title = workoutData.title;
-    workout.imgUrl = workoutData.imgUrl;
-    workout.Private = workoutData.Private;
-
+    if (workout.Private !== workoutData.Private) {
+      workout.Private = workoutData.Private;
+    }
     // Update the workout's exercises array with the new/existing exercise IDs
     workout.exercises = updatedExercises;
-
 
     // Save the updated workout
     await workout.save();

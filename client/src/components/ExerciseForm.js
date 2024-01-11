@@ -11,7 +11,7 @@ import Container from '@mui/material/Container'
 import Joi from 'joi'
 import './style/ExerciseModal.css'
 
-export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, setEditingExercise, editExerciseModal, setEditExerciseModal, onSubmiteExerciseForm }) {
+export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, setEditingExercise, editExerciseModal, setEditExerciseModal }) {
   const [modal, setModal] = useState(false)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
@@ -21,9 +21,9 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     title: '',
     imgUrl: '',
     videoUrl: '',
-    sets: 0,
+    sets: '',
     weight: 0,
-    reps: 0
+    reps: ''
   })
 
   const structure = [
@@ -44,45 +44,40 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     reps: Joi.number().min(1).max(200).required()
   });
 
-
-
   const resetFormData = () => {
     setExerciseFormData({
       title: '',
       imgUrl: '',
       videoUrl: '',
-      sets: 0,
+      sets: '',
       weight: 0,
-      reps: 0
+      reps: ''
     });
   };
 
   useEffect(() => {
-    if (editingExercise) {
+    if ((editExerciseModal && editingExercise)) {
       setExerciseFormData(editingExercise);
       setInitialExerciseData(editingExercise);
     } else {
       resetFormData()
       setInitialExerciseData({});
+      setEditingExercise(null);
     }
-  }, [editingExercise, editExerciseModal]);
-  // }, [editingExercise]);
-  // I think only having the editExerciseModal chane also line 61 and line 118
-  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+  }, [editingExercise, editExerciseModal, setEditingExercise]);
 
   const handleInput = ev => {
     const { id, value } = ev.target
     let obj = {
       ...exerciseFormData,
-      [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) : value,
+      // [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) : value,
+         [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value,
     }
-
     const hasChanges = Object.keys(obj).some(key => obj[key] !== initialExerciseData[key]);
     const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true });
     const err = { ...errors, [id]: undefined };
-    // if (schema.error || (!hasChanges && editExerciseModal)) {
-    if (schema.error || !hasChanges) {
+
+    if (schema.error) {
       const error = schema.error?.details.find(e => e.context.key === id);
       if (error) {
         err[id] = error.message;
@@ -91,13 +86,16 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     } else {
       setIsValid(true);
     }
+
+    if (!hasChanges) {
+      setIsValid(false);
+    }
     setErrors(err);
     setExerciseFormData(obj);
   };
 
   const toggleModal = () => {
     setModal(!modal)
-
     // If the user accidentally closes the modal mid filling out the form I can keep the data if I remove the lines below!
     if (!modal) {
       resetFormData();
@@ -107,25 +105,28 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
 
   const handleClose = () => {
     setEditExerciseModal(false);
-
     // Reset the form data when closing the modal
     resetFormData();
   };
 
   const handleSubmit = async (ev) => {
     try {
+
+      if (exerciseFormData.imgUrl === '') {
+        exerciseFormData.imgUrl = 'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg'
+    }
       ev.preventDefault();
       // console.log('event: ', ev);
-      if (editingExercise) {
-        console.log('onSubmiteExerciseForm');
-        await onSubmiteExerciseForm(exerciseFormData);
+      if ((editExerciseModal && editingExercise)) {
+        console.log('onEditExercise');
+        await onEditExercise(exerciseFormData);
         setEditExerciseModal(false);
-        setEditingExercise(null)
       } else {
         console.log('onAddExercise');
         onAddExercise(exerciseFormData);
         toggleModal();
       }
+      setEditingExercise(null)
       resetFormData()
       setIsValid(false);
     } catch (error) {

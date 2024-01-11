@@ -33,9 +33,7 @@ export default function WorkoutForm() {
 
     const [editExerciseModal, setEditExerciseModal] = useState(false);
     const [editingExercise, setEditingExercise] = useState(null);
-
     const [initialWorkoutData, setInitialWorkoutData] = useState({});
-
 
     const [workoutFormData, setWorkoutFormData] = useState({
         title: '',
@@ -113,20 +111,41 @@ export default function WorkoutForm() {
         let obj = {}
 
         const validation = (id) => {
-            const hasChanges = Object.keys(obj).some((key) => obj[key] !== initialWorkoutData[key]);
+
+            const hasChanges = id === 'exercises' ? JSON.stringify(obj.exercises) !== JSON.stringify(initialWorkoutData.exercises) : obj[id] !== initialWorkoutData[id];
+
+            // const hasChanges = Object.keys(obj).some((key) => obj[key] !== initialWorkoutData[key]);
+
+            // const hasChanges = Object.keys(obj).some((key) => {
+            //     if (key === 'exercises') {
+            //         // Perform a deep comparison for the 'exercises' array
+            //         return obj[key].length !== initialWorkoutData[key].length ||
+            //             obj[key].some((exercise, index) =>
+            //                 Object.keys(exercise).some(prop =>
+            //                     exercise[prop] !== initialWorkoutData[key][index][prop]
+            //                 )
+            //             );
+            //     }
+            //     // Perform a shallow comparison for other properties
+            //     return obj[key] !== initialWorkoutData[key];
+            // });
+
             const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true });
             const err = { ...errors, [id]: undefined };
-
-            if (schema.error || !hasChanges) {
+            if (schema.error) {
                 const error = schema.error?.details.find(e => e.context.key === id);
 
                 if (error) {
                     err[id] = error.message;
                 }
-
                 setIsValid(false);
+
             } else {
-                setIsValid(true)
+                setIsValid(true);
+            }
+
+            if (!hasChanges) {
+                setIsValid(false);
             }
 
             setErrors(err)
@@ -150,45 +169,42 @@ export default function WorkoutForm() {
         setWorkoutFormData(obj)
     }
 
-    const deleteExercise = (ex, ev) => {
+    const handleDeleteExercise = (ex, ev) => {
         ev.preventDefault()
+
+        const exercisesNotDeleted = workoutFormData.exercises.filter((exercise) => {
+            if (ex._id) {
+                return ex._id !== exercise._id;
+            }
+            if (ex.key) {
+                return ex.key !== exercise.key;
+            }
+            return true;
+        });
+
         setWorkoutFormData((prevData) => ({
             ...prevData,
-            exercises: prevData.exercises.length === 1
-                ? []
-                : prevData.exercises.filter(exercise => {
-                    if (ex._id) {
-                        return ex._id !== exercise._id
-                    }
-                    if (ex.key) {
-                        return ex.key !== exercise.key
-                    }
-                    return true
-                })
+            exercises: exercisesNotDeleted,
         }));
-        handleInput({ id: "exercises", value: workoutFormData.exercises.length === 1 ? [] : workoutFormData.exercises.filter(exercise => ex !== exercise) })
+
+        handleInput({ id: "exercises", value: exercisesNotDeleted })
     }
 
     const handleAddExercise = (exercise) => {
         // Generate a unique temporary key for the exercise
         const exerciseWithKey = { ...exercise, key: uuidv4() }
-
         setWorkoutFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exerciseWithKey] }));
-
         handleInput({ id: "exercises", value: [...workoutFormData.exercises, exerciseWithKey] })
-
-        console.log('exerciseWithKey: ', exerciseWithKey);
     }
 
-    const handleEditExercise = (ex, ev) => {
+    const handleOpenExerciseModal = (ex, ev) => {
         ev.preventDefault()
         setEditingExercise(ex);
         setEditExerciseModal(true);
-        console.log('handleEditExercise exercise: ', ex);
+        console.log('handleOpenExerciseModal exercise: ', ex);
     };
 
-    const handleSubmiteExerciseForm = (updatedExercise) => {
-        console.log('handleSubmiteExerciseForm updatedExercise: ', updatedExercise);
+    const handleEditExercise = (updatedExercise) => {
 
         const updatedExercises = workoutFormData.exercises.map((exercise) =>
             (updatedExercise._id && updatedExercise._id === exercise._id) ||
@@ -196,17 +212,16 @@ export default function WorkoutForm() {
                 ? updatedExercise
                 : exercise
         )
-        setWorkoutFormData((prevData) => {
 
-            console.log('updatedExercises: ', updatedExercises);
+        setWorkoutFormData((prevData) => {
             return { ...prevData, exercises: updatedExercises };
         })
 
-        // Check if anything changed, wasteful to send api calls if nothing changed FIX THIS!!!
-        if (workoutFormData.exercises !== updatedExercises) {
-            handleInput({ id: "exercises", value: [...updatedExercises] })
-        }
-
+        handleInput({ id: "exercises", value: [...updatedExercises] })
+        // since we can't submit an exercise if its not new or isn't different from its initial state inside ExerciseForm.js we don't need the extra check
+        // if (JSON.stringify(workoutFormData.exercises) !== JSON.stringify(updatedExercises)) {
+        //     handleInput({ id: "exercises", value: [...updatedExercises] })
+        // }
     }
 
 
@@ -240,9 +255,10 @@ export default function WorkoutForm() {
                 // workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 navigate('/workouts/myworkouts')
-                snackbar(id ? 'Workout updated successfully' : 'New workout added successfully', workoutData)
+                snackbar(id ? 'Workout updated successfully' : 'New workout added successfully')
             } else if (workoutResponse.status === 420) {
-                snackbar(workoutData.error)
+                // snackbar(workoutData.error)
+                snackbar('Title already in use for this user')
             } else {
                 snackbar(id ? 'Failed to update workout' : 'Failed to create workout');
             }
@@ -283,6 +299,8 @@ export default function WorkoutForm() {
                                 </Grid>
                             )
                         }
+
+                        {/* instead of snackbar "Title already in use for this user" line 261  to display the error under the field*/}
                         {/* {errors && (
                             <Typography color="error" variant="body2">
                                 {errors}
@@ -295,11 +313,13 @@ export default function WorkoutForm() {
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">Exercises Preview: {
                                 workoutFormData?.exercises?.map((exercise, index) =>
-                                    <div key={index}>
+                                    <div key={index} style={{ display: 'flex', width: '50%', margin: '0 auto 10px', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', border: '1px solid black', borderRadius: '5%' }}>
                                         <p>{exercise.title}</p>
-                                        <img src={exercise.imgUrl} alt={exercise.title} />
-                                        <button onClick={(ev) => deleteExercise(exercise, ev)}>Delete</button>
-                                        <button onClick={(ev) => handleEditExercise(exercise, ev)}>Edit</button>
+                                        <img height={100} src={exercise.imgUrl} alt={exercise.title} />
+                                        <div style={{ display: 'flex', alignItems: 'center', margin: '5px' }}>
+                                            <button onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
+                                            <button onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
+                                        </div>
                                     </div>
                                 )
                             }</Typography>
@@ -308,8 +328,7 @@ export default function WorkoutForm() {
                         <ExerciseForm
                             id="exercise-form"
                             onAddExercise={handleAddExercise}
-                            onEditExercise={(exercise, ev) => handleEditExercise(exercise, ev)}
-                            onSubmiteExerciseForm={handleSubmiteExerciseForm}
+                            onEditExercise={handleEditExercise}
                             editingExercise={editingExercise}
                             setEditingExercise={setEditingExercise}
                             editExerciseModal={editExerciseModal}
@@ -326,6 +345,12 @@ export default function WorkoutForm() {
                     <Button disabled={!isValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}> {id ? 'Update Workout' : 'Add Workout'} </Button>
                 </Box>
             </Box>
+            <button style={{
+                position: 'absolute',
+                top: '75px',
+                right: '10px',
+                padding: '5px 7px',
+            }} onClick={() => navigate('workouts/myworkouts')}>X</button>
         </Container>
     );
 }
