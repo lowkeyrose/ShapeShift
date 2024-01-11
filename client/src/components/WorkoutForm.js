@@ -310,16 +310,22 @@ export default function WorkoutForm() {
                         <Grid item xs={12}>
                             <Typography variant="h6">Number of Exercises: {workoutFormData?.exercises?.length}</Typography>
                         </Grid>
+
                         <Grid item xs={12}>
                             <Typography variant="subtitle1">Exercises Preview: {
                                 workoutFormData?.exercises?.map((exercise, index) =>
-                                    <div key={index} style={{ display: 'flex', width: '50%', margin: '0 auto 10px', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', border: '1px solid black', borderRadius: '5%' }}>
-                                        <p>{exercise.title}</p>
-                                        <img height={100} src={exercise.imgUrl} alt={exercise.title} />
-                                        <div style={{ display: 'flex', alignItems: 'center', margin: '5px' }}>
-                                            <button onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
-                                            <button onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
-                                        </div>
+                                    <div className="card">
+                                        <figure className="image-block">
+                                            <h1>{exercise.title}</h1>
+                                            <img src={exercise.imgUrl} alt={exercise.imgUrl} />
+                                            <figcaption className='exercise-figcaption'>
+                                                <h3 className='exercise-h3'>Edit/Remove</h3>
+                                                <div className='exercise-buttons'>
+                                                    <button className='exercise-button' onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
+                                                    <button className='exercise-button' onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
+                                                </div>
+                                            </figcaption>
+                                        </figure>
                                     </div>
                                 )
                             }</Typography>

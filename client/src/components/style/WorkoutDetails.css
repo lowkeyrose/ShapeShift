@@ -117,7 +117,7 @@ figure:hover h1 {
 figure:hover img {
   transform: scale(1.25);
 }
-figure:hover figcaption {
+figure:hover figcaption, figure:hover .exercise-figcaption {
   bottom: 0;
 }
 figure h1 {
@@ -128,8 +128,8 @@ figure h1 {
   padding: 0;
   color: white;
   text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
-  font-size: 60px;
-  font-weight: 100;
+  font-size: 40px;
+  font-weight: 500;
   line-height: 1;
   opacity: 1;
   transform: scale(1);
@@ -142,7 +142,7 @@ figure img {
 }
 figure figcaption {
   position: absolute;
-  bottom: -29%;
+  bottom: -32%;
   left: 0;
   width: 100%;
   margin: 0;
@@ -153,8 +153,15 @@ figure figcaption {
   line-height: 1;
   transition: 0.25s;
 }
+.exercise-figcaption {
+  bottom: -15%;
+}
 figure figcaption h3 {
   margin: 0 0 20px;
+  padding: 0;
+}
+.exercise-h3 {
+  text-align: center;
   padding: 0;
 }
 figure figcaption p {
@@ -163,16 +170,29 @@ figure figcaption p {
 }
 figure figcaption button {
   position: relative;
+  width: 60%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 10px 0 0;
+  margin: 30px 0 0 25px;
   padding: 10px 30px;
   background-color: #1abc9c;
   border: none;
   border-radius: 5px;
   color: rgb(0, 0, 0);
-  font-size: 14px;
-  font-weight: 300;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+}
+
+.exercise-buttons{
+  display: flex;
+  gap: 5px;
+}
+.exercise-button {
+  width: 40%;
+  cursor: pointer;
+  margin: 0 auto;
+  font-weight: 600;
+  font-size: 14px;
 }
