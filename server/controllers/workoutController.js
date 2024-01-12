@@ -2,6 +2,7 @@ const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
 const Exercise = require('../models/exerciseModel')
 const User = require('../models/userModel')
+const { ObjectId } = require('mongoose').Types;
 
 // Get all workouts
 const getAllWorkouts = async (_, res) => {
@@ -177,28 +178,22 @@ const updateWorkout = async (req, res) => {
     // @@@@@@@@@@@@@@@@@@@@@@@@ STARTED HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     // Update or create exercises
-    const updatedExercises = await Promise.all(exercisesData.map(async (exercise) => {
+    // take code to sperate function
+    const updatedExercisesIds = await Promise.all(exercisesData.map(async (exercise) => {
       if (exercise._id) {
         // Exercise already has an _id, update it
         const existingExercise = await Exercise.findOne({ _id: exercise._id })
         if (existingExercise) {
           const hasChanges = JSON.stringify(exercise) !== JSON.stringify(existingExercise);
-          // For more fine grained check below.
-          // const originalExercise = existingExercise.toObject();
-          // const hasChanges = Object.keys(exercise).some((key) => {
-          //   const skipProperties = ['createdAt', 'updatedAt', '__v'];
-          //   if (!skipProperties.includes(key)) {
-          //     return exercise[key] !== originalExercise[key];
-          //   }
-          //   return false;
-          // });
 
           if (hasChanges) {
             Object.assign(existingExercise, exercise);
             await existingExercise.save();
+            console.log('existingExercise._id: ', existingExercise._id);
             return existingExercise._id;
           } else {
-            return exercise._id
+            console.log('existingExercise._id: ', existingExercise._id);
+            return existingExercise._id;
           }
         }
       } else {
@@ -208,12 +203,17 @@ const updateWorkout = async (req, res) => {
           user_id: workoutData.user_id,
           workout_id: workoutData._id,
         })
-        return newExercise._id
+        console.log('newExercise._id: ', newExercise._id);
+        return newExercise._id;
       }
     }))
 
+    console.log('updatedExercisesIds: ', updatedExercisesIds);
+
     // Identify exercises to be deleted
-    const exercisesToDelete = workout.exercises.filter((exerciseId) => !updatedExercises.includes(exerciseId.toString()));
+    const exercisesToDelete = workout.exercises
+    .map((exerciseId) => exerciseId.toString())
+    .filter((exerciseId) => !updatedExercisesIds.toString().includes(exerciseId));
 
     // Delete exercises that are no longer present in the updated workout
     await Exercise.deleteMany({ _id: { $in: exercisesToDelete } });
@@ -231,7 +231,7 @@ const updateWorkout = async (req, res) => {
       workout.Private = workoutData.Private;
     }
     // Update the workout's exercises array with the new/existing exercise IDs
-    workout.exercises = updatedExercises;
+    workout.exercises = updatedExercisesIds;
 
     // Save the updated workout
     await workout.save();
