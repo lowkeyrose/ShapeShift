@@ -9,7 +9,7 @@ import { memo } from 'react'
 // date fns
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
+const WorkoutDetails = ({ workout, favoriteWorkouts, redHeart }) => {
   const { dispatch } = useWorkoutContext()
   const { user, token, setLoading, snackbar, navigate, location } = useGlobalContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
@@ -103,21 +103,21 @@ const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
   }
 
   return (
-    <div className="card">
-      <figure className="image-block">
+    <div className="workout-card">
+      <figure className="workout-figure">
         <h1>{workout.title}</h1>
-        <img src={workout.imgUrl} alt={workout.imgUrl} />
-        <figcaption>
+        <img className="workout-img" src={workout.imgUrl} alt={workout.imgUrl} />
+        <figcaption className="workout-figcaption">
           <h3>
             <strong>Exercises: </strong>{workout.exercises ? workout.exercises.length : 0}
           </h3>
 
-          <p>Creator: {workout.username}</p>
+          <p >Creator: {workout.username}</p>
           {workout.likes > 0 ? <p>Likes: {workout.likes}</p> : <p>Likes: 0</p>}
           {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
           {location.pathname === '/workouts/myworkouts' && <p><strong>Private: </strong>{workout.Private ? 'Yes' : 'No'}</p>}
 
-          <button onClick={() => navigate(`/workouts/workout/${workout._id}`)}>
+          <button className="workout-button" onClick={() => navigate(`/workouts/workout/${workout._id}`)}>
             View Workout
           </button>
         </figcaption>
@@ -131,7 +131,7 @@ const WorkoutDetails = ({ workout, favoriteWorkouts }) => {
           </>
 
         }
-        <button style={{ color: !user ? "grey" : (isFavorited ? "red" : "grey") }} onClick={() => user ? (isFavorited ? unfavorite(workout) : favorite(workout)) : snackbar("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
+        <button style={{ color:(location.pathname === '/workouts/favorites' && 'red') || (!user ? "grey" : (isFavorited ? "red" : "grey")) }} onClick={() => user ? (isFavorited ? unfavorite(workout) : favorite(workout)) : snackbar("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
       </div>
     </div>
   )

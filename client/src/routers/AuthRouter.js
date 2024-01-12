@@ -22,7 +22,7 @@ export default function AuthRouter() {
       {user ? (
         <>
           <Route path='/workouts/myworkouts' element={<MyWorkouts />} user={user} />
-          <Route path="/workouts/favorite" element={<FavoriteWorkouts />} user={user} />
+          <Route path="/workouts/favorites" element={<FavoriteWorkouts />} user={user} />
           <Route path='/workouts/myworkouts/create/new' element={<WorkoutForm />} />
           <Route path='/workouts/myworkouts/edit/:id' element={<WorkoutForm />} />
           {/* <Route path="/account" element={<Account />} /> */}

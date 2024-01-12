@@ -31,6 +31,9 @@ export default function Workouts() {
             }
         }
         fetchWorkouts()
+        return () => {
+            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+        }
     }, [dispatch, setLoading])
 
     return (

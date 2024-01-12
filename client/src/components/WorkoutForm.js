@@ -18,6 +18,7 @@ import ExerciseForm from './ExerciseForm'
 import { useParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 // import _isEqual from 'lodash/isEqual';
+import './style/WorkoutForm.css'
 
 const isValidObjectId = (id) => {
     const objectIdPattern = /^[0-9a-fA-F]{24}$/;
@@ -311,24 +312,26 @@ export default function WorkoutForm() {
                             <Typography variant="h6">Number of Exercises: {workoutFormData?.exercises?.length}</Typography>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1">Exercises Preview: {
-                                workoutFormData?.exercises?.map((exercise, index) =>
-                                    <div className="card">
-                                        <figure className="image-block">
-                                            <h1>{exercise.title}</h1>
-                                            <img src={exercise.imgUrl} alt={exercise.imgUrl} />
-                                            <figcaption className='exercise-figcaption'>
-                                                <h3 className='exercise-h3'>Edit/Remove</h3>
-                                                <div className='exercise-buttons'>
-                                                    <button className='exercise-button' onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
-                                                    <button className='exercise-button' onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
-                                                </div>
-                                            </figcaption>
-                                        </figure>
-                                    </div>
-                                )
-                            }</Typography>
+                        <Grid item xs={12} >
+                            <Typography variant="subtitle1">Exercises Preview: 
+                                <div className='exercise-preview'>{
+                                    workoutFormData?.exercises?.map((exercise, index) =>
+                                        <div className="exercise-card">
+                                            <figure className="exercise-figure">
+                                                <h1>{exercise.title}</h1>
+                                                <img className='exercise-img' src={exercise.imgUrl} alt={exercise.imgUrl} />
+                                                <figcaption className='exercise-figcaption'>
+                                                    <h3>Edit/Remove</h3>
+                                                    <div className='exercise-buttons'>
+                                                        <button className='exercise-button' onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
+                                                        <button className='exercise-button' onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
+                                                    </div>
+                                                </figcaption>
+                                            </figure>
+                                        </div>
+                                    )
+                                }</div>
+                            </Typography>
                         </Grid>
 
                         <ExerciseForm

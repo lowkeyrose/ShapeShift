@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import Button from '@mui/material/Button'
@@ -15,13 +15,13 @@ import { useGlobalContext } from '../hooks/useGlobalContext'
 export default function MyWorkouts() {
     const { navigate, setLoading, token } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
+    const [redHeart, setRedHeart] = useState(true)
     // console.log("MyWorkouts component rendered"); // Add this line
-
 
     useEffect(() => {
         if (token) {
             const fetchWorkouts = async () => {
-            // console.log("Fetching My-workouts...");
+                // console.log("Fetching My-workouts...");
 
                 setLoading(true)
                 try {
@@ -43,6 +43,10 @@ export default function MyWorkouts() {
             }
             fetchWorkouts()
         }
+
+        return () => {
+            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+        }
     }, [dispatch, token, setLoading])
 
     return (
@@ -50,7 +54,7 @@ export default function MyWorkouts() {
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 My Workouts
             </Typography>
-            <Typography component="p" sx={{  fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
+            <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
                 {workouts && workouts.length > 0 ? "Here are your awesome workouts" : "You current have no available workouts, Add your first one today!"}
             </Typography>
@@ -59,7 +63,7 @@ export default function MyWorkouts() {
                 {workouts &&
                     workouts.map((workout) => {
                         // use String(workout._id) because i kept getting a Each child in a list should have a unique "key" prop. warning
-                        return <WorkoutDetails key={String(workout._id)} workout={workout} />;
+                        return <WorkoutDetails key={String(workout._id)} workout={workout} redHeart={redHeart} />;
                     })}
             </div>
 

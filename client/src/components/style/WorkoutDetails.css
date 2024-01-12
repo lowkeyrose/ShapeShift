@@ -1,12 +1,12 @@
-.card {
+.workout-card {
   position: relative;
   z-index: 1;
   box-shadow: 0 0 2rem -1rem rgba(0, 0, 0, 0.05);
 }
-.card:hover .multi-button button {
+.workout-card:hover .multi-button button {
   display: grid;
 }
-.card .multi-button {
+.workout-card .multi-button {
   --background: #000000;
   --text: rgb(255, 255, 255);
   z-index: 0;
@@ -19,7 +19,7 @@
   transform: translate(-50%, -50%);
   transition: 0.25s cubic-bezier(0.25, 0, 0, 1);
 }
-.card .multi-button button {
+.workout-card .multi-button button {
   display: none;
   place-items: center;
   position: absolute;
@@ -34,67 +34,66 @@
   transition: 0.25s cubic-bezier(0.25, 0, 0, 1);
   box-shadow: 0 0 0rem -0.25rem var(--background);
 }
-.card .multi-button button:hover {
+.workout-card .multi-button button:hover {
   background: var(--text);
   color: var(--background);
   box-shadow: 0 0 1rem -0.25rem var(--background);
 }
-.card .multi-button button:first-child:nth-last-child(1) {
+.workout-card .multi-button button:first-child:nth-last-child(1) {
   left: 25%;
   top: 25%;
 }
-.card .multi-button button:first-child:nth-last-child(2):nth-child(1),
-.card .multi-button button:first-child:nth-last-child(2) ~ *:nth-child(1) {
+.workout-card .multi-button button:first-child:nth-last-child(2):nth-child(1),
+.workout-card .multi-button button:first-child:nth-last-child(2) ~ *:nth-child(1) {
   left: 37.5%;
   top: 18.75%;
 }
-.card .multi-button button:first-child:nth-last-child(2):nth-child(2),
-.card .multi-button button:first-child:nth-last-child(2) ~ *:nth-child(2) {
+.workout-card .multi-button button:first-child:nth-last-child(2):nth-child(2),
+.workout-card .multi-button button:first-child:nth-last-child(2) ~ *:nth-child(2) {
   left: 18.75%;
   top: 37.5%;
 }
-.card .multi-button button:first-child:nth-last-child(3):nth-child(1),
-.card .multi-button button:first-child:nth-last-child(3) ~ *:nth-child(1) {
+.workout-card .multi-button button:first-child:nth-last-child(3):nth-child(1),
+.workout-card .multi-button button:first-child:nth-last-child(3) ~ *:nth-child(1) {
   left: 50%;
   top: 15.625%;
 }
-.card .multi-button button:first-child:nth-last-child(3):nth-child(2),
-.card .multi-button button:first-child:nth-last-child(3) ~ *:nth-child(2) {
+.workout-card .multi-button button:first-child:nth-last-child(3):nth-child(2),
+.workout-card .multi-button button:first-child:nth-last-child(3) ~ *:nth-child(2) {
   left: 25%;
   top: 25%;
 }
-.card .multi-button button:first-child:nth-last-child(3):nth-child(3),
-.card .multi-button button:first-child:nth-last-child(3) ~ *:nth-child(3) {
+.workout-card .multi-button button:first-child:nth-last-child(3):nth-child(3),
+.workout-card .multi-button button:first-child:nth-last-child(3) ~ *:nth-child(3) {
   left: 15.625%;
   top: 50%;
 }
-.card .multi-button button:first-child:nth-last-child(4):nth-child(1),
-.card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(1) {
+.workout-card .multi-button button:first-child:nth-last-child(4):nth-child(1),
+.workout-card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(1) {
   left: 62.5%;
   top: 18.75%;
 }
-.card .multi-button button:first-child:nth-last-child(4):nth-child(2),
-.card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(2) {
+.workout-card .multi-button button:first-child:nth-last-child(4):nth-child(2),
+.workout-card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(2) {
   left: 37.5%;
   top: 18.75%;
 }
-.card .multi-button button:first-child:nth-last-child(4):nth-child(3),
-.card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(3) {
+.workout-card .multi-button button:first-child:nth-last-child(4):nth-child(3),
+.workout-card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(3) {
   left: 18.75%;
   top: 37.5%;
 }
-.card .multi-button button:first-child:nth-last-child(4):nth-child(4),
-.card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(4) {
+.workout-card .multi-button button:first-child:nth-last-child(4):nth-child(4),
+.workout-card .multi-button button:first-child:nth-last-child(4) ~ *:nth-child(4) {
   left: 18.75%;
   top: 62.5%;
 }
-.card:hover .multi-button,
-.card .multi-button:focus-within {
+.workout-card:hover .multi-button, .workout-card .multi-button:focus-within {
   width: 10rem;
   height: 10rem;
 }
 
-figure {
+.workout-figure {
   position: relative;
   display: flex;
   align-items: center;
@@ -107,20 +106,20 @@ figure {
   overflow: hidden;
   margin: 30px
 }
-figure:hover {
+.workout-figure:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
-figure:hover h1 {
+.workout-figure:hover h1 {
   opacity: 0;
   transform: scale(0.7);
 }
-figure:hover img {
+.workout-figure:hover .workout-img {
   transform: scale(1.25);
 }
-figure:hover figcaption, figure:hover .exercise-figcaption {
+.workout-figure:hover .workout-figcaption {
   bottom: 0;
 }
-figure h1 {
+.workout-figure h1 {
   position: absolute;
   top: 50px;
   left: 20px;
@@ -136,11 +135,11 @@ figure h1 {
   transition: 0.25s ease;
   z-index: 999;
 }
-figure img {
+.workout-figure .workout-img {
   height: 100%;
   transition: 0.25s;
 }
-figure figcaption {
+.workout-figure .workout-figcaption {
   position: absolute;
   bottom: -32%;
   left: 0;
@@ -153,22 +152,17 @@ figure figcaption {
   line-height: 1;
   transition: 0.25s;
 }
-.exercise-figcaption {
-  bottom: -15%;
-}
-figure figcaption h3 {
+
+.workout-figure .workout-figcaption h3 {
   margin: 0 0 20px;
   padding: 0;
 }
-.exercise-h3 {
-  text-align: center;
-  padding: 0;
-}
-figure figcaption p {
+
+.workout-figure .workout-figcaption p {
   font-size: 14px;
   line-height: 1.3;
 }
-figure figcaption button {
+.workout-figure .workout-figcaption button {
   position: relative;
   width: 60%;
   display: flex;
@@ -185,14 +179,3 @@ figure figcaption button {
   cursor: pointer;
 }
 
-.exercise-buttons{
-  display: flex;
-  gap: 5px;
-}
-.exercise-button {
-  width: 40%;
-  cursor: pointer;
-  margin: 0 auto;
-  font-weight: 600;
-  font-size: 14px;
-}

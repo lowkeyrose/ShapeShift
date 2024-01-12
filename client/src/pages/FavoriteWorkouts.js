@@ -42,7 +42,10 @@ export default function FavoirteWorkouts() {
     if (token) {
       favoriteWorkouts()
     }
-  }, [token, favoriteWorkouts]);
+    return () => {
+      dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+  }
+  }, [token, favoriteWorkouts, dispatch]);
 
   return (
     <div className='favorites-page'>
