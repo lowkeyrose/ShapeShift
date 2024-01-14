@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import logo from '../assets/robots/workouts.png'
-import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
+import './style/Pages.css'
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'

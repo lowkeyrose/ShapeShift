@@ -1,9 +1,10 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
+// import React, { useCallback, useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import logo from '../assets/robots/favorites.png'
+import '../components/style/WorkoutDetails.css'
 import './style/Pages.css'
-
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
@@ -14,38 +15,62 @@ export default function FavoirteWorkouts() {
   const { token, setLoading } = useGlobalContext()
   const { workouts, dispatch } = useWorkoutContext()
 
-  const favoriteWorkouts = useCallback(async () => {
-    setLoading(true);
-    try {
-      console.log('favoriteWorkouts start');
-      const response = await fetch('/api/workouts/favoriteworkouts', {
-        headers: {
-          'Authorization': token,
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data });
-      } else {
-        console.log('response failed');
-        throw new Error(`Failed to fetch workouts: ${response.statusText}`);
-      }
-    } catch (error) {
-      console.error('Error fetching workouts:', error);
-    } finally {
-      setLoading(false);
-      console.log('favoriteWorkouts end');
-    }
-  }, [dispatch, token, setLoading]);
-
   useEffect(() => {
     if (token) {
+      const favoriteWorkouts = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch('/api/workouts/favoriteworkouts', {
+            headers: {
+              'Authorization': token,
+            },
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(`Failed to fetch workouts: ${response.statusText}`)
+          } 
+          dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data });
+        } catch (error) {
+          console.error('Error fetching workouts:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
       favoriteWorkouts()
     }
     return () => {
       dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
   }
-  }, [token, favoriteWorkouts, dispatch]);
+  }, [token, setLoading, dispatch]);
+
+  // const favoriteWorkouts = useCallback(async () => {
+  //    setLoading(true);
+  //    try {
+  //      const response = await fetch('/api/workouts/favoriteworkouts', {
+  //        headers: {
+  //          'Authorization': token,
+  //        },
+  //      });
+  //      const data = await response.json();
+  //      if (!response.ok) {
+  //        throw new Error(`Failed to fetch workouts: ${response.statusText}`)
+  //      } 
+  //      dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data });
+  //    } catch (error) {
+  //      console.error('Error fetching workouts:', error);
+  //    } finally {
+  //      setLoading(false);
+  //    }
+  //  }, [dispatch, setLoading, token])
+
+  // useEffect(() => {
+  //   if (token) {
+  //     favoriteWorkouts()
+  //   }
+  //   return () => {
+  //     dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+  // }
+  // }, [favoriteWorkouts, dispatch, token]);
 
   return (
     <div className='favorites-page'>
@@ -59,7 +84,8 @@ export default function FavoirteWorkouts() {
 
       <div className="workouts">
         {workouts && workouts.map((workout) => (
-          <WorkoutDetails key={workout._id} workout={workout} favoriteWorkouts={favoriteWorkouts} />
+          // <WorkoutDetails key={workout._id} workout={workout} favoriteWorkouts={favoriteWorkouts} />
+          <WorkoutDetails key={workout._id} workout={workout} />
         ))}
       </div>
 

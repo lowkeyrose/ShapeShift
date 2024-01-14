@@ -2,7 +2,7 @@ export const ACTIONS = {
   SET_WORKOUTS: 'set-workout',
   SET_SINGLE_WORKOUT: 'set-single-workout',
   CREATE_WORKOUT: 'create-workout',
-  DELETE_WORKOUT: 'delete-workout',
+  REMOVE_WORKOUT: 'delete-workout',
   UPDATE_WORKOUT: 'update-workout',
   INCREMENT_LIKES : 'increment-likes',
   DECREMENT_LIKES : 'decrememnt-likes',

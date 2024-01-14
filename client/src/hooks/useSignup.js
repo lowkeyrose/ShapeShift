@@ -19,7 +19,7 @@ export const useSignup = () => {
       const json = await response.json()
 
       if (!response.ok) {
-        setError(json.error)
+        throw new Error(json.error);
       }
       if (response.ok) {
         console.log('json: ', json);
@@ -40,7 +40,16 @@ export const useSignup = () => {
         // update loading state
       }
     } catch (error) {
-      console.log("The Promise is rejected!", error)
+      // Handle specific error cases
+      if (error.message === 'email already in use') {
+        setError('email is already in use.');
+      } else if (error.message === 'username already in use') {
+        setError('username is already in use.');
+      } else {
+        // Handle other types of errors
+        setError('Signup failed. Please try again.');
+        console.error('Signup error:', error);
+      }
     } finally {
       setLoading(false)
     }

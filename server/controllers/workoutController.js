@@ -2,7 +2,6 @@ const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
 const Exercise = require('../models/exerciseModel')
 const User = require('../models/userModel')
-const { ObjectId } = require('mongoose').Types;
 
 // Get all workouts
 const getAllWorkouts = async (_, res) => {

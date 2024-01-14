@@ -21,6 +21,8 @@ export default function SignUp() {
   const [isValid, setIsValid] = useState(false);
   const [value, setValue] = useState('');
 
+  console.log('error:', error);
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -43,13 +45,13 @@ export default function SignUp() {
   ]
 
   const userSchema = Joi.object({
-    firstName: Joi.string().min(3).max(20).required(),
-    lastName: Joi.string().min(3).max(20).required(),
+    firstName: Joi.string().min(3).max(20).required().regex(/^[a-zA-Z]+$/).message('"first name" must contain only alphanumeric characters'),
+    lastName: Joi.string().min(3).max(20).required().regex(/^[a-zA-Z]+$/).message('"last name" must contain only alphanumeric characters'),
     username: Joi.string().min(3).max(20).required(),
     email: Joi.string().max(62).required().email({ tlds: false }),
     password: Joi.string().required()
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{9,30}$/)
-      .message('user "password" must be at least nine characters long and contain an uppercase letter, a lowercase letter, 4 numbers and one of the following characters !@#$%^&*'),
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[!@%$#^&*-_*])[A-Za-z\d!@%$#^&*-_*]{8,30}$/)
+      .message('user "password" must be at least 8 characters long and contain an uppercase letter, a lowercase letter, 4 numbers and one of the following characters !@#$%^&*_-'),
     phone: Joi.string().regex(/^[0-9]{10,15}$/).messages({ 'string.pattern.base': `Phone number must have between 10-15 digits.` }).required(),
     gender: Joi.string().required(),
     profilePic: Joi.any()
@@ -116,9 +118,18 @@ export default function SignUp() {
                 <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
                   <TextField
                     autoComplete={item.autoComplete}
-                    // error={Boolean(errors[item.name])}
-                    error={!!errors[item.name]}
-                    helperText={errors[item.name]}
+                    error={
+                      (error?.includes('email') && item.name === 'email') ||
+                        (error?.includes('username') && item.name === 'username')
+                        ? error
+                        : !!errors[item.name]
+                    }
+                    helperText={
+                      (error?.includes('email') && item.name === 'email') ||
+                        (error?.includes('username') && item.name === 'username')
+                        ? error
+                        : errors[item.name]
+                    }
                     onChange={handleInput}
                     value={formData[item.name]}
                     name={item.name}
@@ -147,11 +158,14 @@ export default function SignUp() {
               </FormControl>
             </Grid>
           </Grid>
+          {/* <Grid container justifyContent="center">
           {error && (
             <Typography color="error" variant="body2">
               {error}
             </Typography>
           )}
+          </Grid> */}
+
           <Button
             disabled={!isValid}
             type="submit"

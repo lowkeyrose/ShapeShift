@@ -4,18 +4,16 @@ import { useGlobalContext } from '../hooks/useGlobalContext'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
-
 import { memo } from 'react'
 // date fns
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-const WorkoutDetails = ({ workout, favoriteWorkouts, redHeart }) => {
+const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutContext()
-  const { user, token, setLoading, snackbar, navigate, location } = useGlobalContext()
+  const { user, token, snackbar, navigate, location } = useGlobalContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
 
   const handleDelete = async () => {
-    setLoading(true)
     try {
       const response = await fetch(`/api/workouts/myworkouts/${workout._id}`, {
         method: 'DELETE',
@@ -29,49 +27,66 @@ const WorkoutDetails = ({ workout, favoriteWorkouts, redHeart }) => {
       }
 
       const json = await response.json()
-      dispatch({ type: ACTIONS.DELETE_WORKOUT, payload: json })
+      console.log('json', json);
+      dispatch({ type: ACTIONS.REMOVE_WORKOUT, payload: { workoutId: workout._id } })
     } catch (error) {
       console.error('Error deleting workout:', error)
       snackbar('Failed to delete workout. Please try again.')
-    } finally {
-      setLoading(false)
     }
   }
 
-  const favorite = async (workout) => {
-    setLoading(true)
+  // const favorite = async () => {
+  //   try {
+  //     setIsFavorited(true)
+  //     const response = await fetch(`/api/workouts/favorite/${workout._id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Authorization': token
+  //       }
+  //     })
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to favorite workout: ${response.statusText}`);
+  //     }
+  //     // Update the state to reflect the added workout inside favorites array
+  //     dispatch({ type: ACTIONS.FAVORITE, payload: workout._id })
+  //     dispatch({ type: ACTIONS.INCREMENT_LIKES, payload: workout._id })
+  //     snackbar("Workout added to favorites");
+
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
+  const favorite = async () => {
     try {
       setIsFavorited(true)
+      // Update the state to reflect the added workout inside favorites array
+      dispatch({ type: ACTIONS.FAVORITE, payload: workout._id })
+      dispatch({ type: ACTIONS.INCREMENT_LIKES, payload: workout._id })
+      snackbar("Workout added to favorites");
       const response = await fetch(`/api/workouts/favorite/${workout._id}`, {
         method: 'PUT',
         headers: {
           'Authorization': token
         }
       })
-
-      if (response.ok) {
-        // Update the state to reflect the added workout inside favorites array
-        dispatch({ type: ACTIONS.FAVORITE, payload: workout._id })
-        // console.log('before dispatch INCREMENT_LIKES, workout: ', workout);
-
-        dispatch({ type: ACTIONS.INCREMENT_LIKES, payload: workout._id })
-        // console.log('after dispatch INCREMENT_LIKES, workout: ', workout);
-        snackbar("Workout added to favorites");
+      if (!response.ok) {
+        throw new Error(`Failed to favorite workout: ${response.statusText}`);
       }
-
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoading(false)
     }
-
   }
 
-  const unfavorite = async (workout) => {
-    setLoading(true)
+  const unfavorite = async () => {
     try {
-      console.log('details unfavorite start');
+      if (location.pathname === '/workouts/favorites') {
+        dispatch({ type: ACTIONS.REMOVE_WORKOUT, payload: { workoutId: workout._id } })
+      }
+      // Update the state to reflect the removed workout
+      dispatch({ type: ACTIONS.UNFAVORITE, payload: workout._id });
+      dispatch({ type: ACTIONS.DECREMENT_LIKES, payload: workout._id });
       setIsFavorited(false);
+      snackbar('Workout removed from favorites');
       const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
         method: 'PUT',
         headers: {
@@ -82,21 +97,35 @@ const WorkoutDetails = ({ workout, favoriteWorkouts, redHeart }) => {
       if (!response.ok) {
         throw new Error(`Failed to unfavorite workout: ${response.statusText}`);
       }
-      // Call the callback to refetch favorite workouts in FavoriteWorkouts.js
-      favoriteWorkouts()
-      
-      // Update the state to reflect the removed workout
-      dispatch({ type: ACTIONS.UNFAVORITE, payload: workout._id });
-      dispatch({ type: ACTIONS.DECREMENT_LIKES, payload: workout._id });
-      snackbar('Workout removed from favorites');
-
     } catch (error) {
       console.error('Error unfavorite workout:', error);
-    } finally {
-      setLoading(false)
-      console.log('details unfavorite end');
     }
   }
+
+  // const unfavorite = async () => {
+  //   try {
+  //     const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Authorization': token,
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to unfavorite workout: ${response.statusText}`);
+  //     }
+  //     if (location.pathname === '/workouts/favorites') {
+  //       dispatch({ type: ACTIONS.REMOVE_WORKOUT,  payload: { workoutId: workout._id } })
+  //     }
+  //     // Update the state to reflect the removed workout
+  //     dispatch({ type: ACTIONS.UNFAVORITE, payload: workout._id });
+  //     dispatch({ type: ACTIONS.DECREMENT_LIKES, payload: workout._id });
+  //     setIsFavorited(false);
+  //     snackbar('Workout removed from favorites');
+  //   } catch (error) {
+  //     console.error('Error unfavorite workout:', error);
+  //   }
+  // }
 
   const handleEdit = () => {
     navigate(`/workouts/myworkouts/edit/${workout._id}`)
@@ -131,7 +160,7 @@ const WorkoutDetails = ({ workout, favoriteWorkouts, redHeart }) => {
           </>
 
         }
-        <button style={{ color:(location.pathname === '/workouts/favorites' && 'red') || (!user ? "grey" : (isFavorited ? "red" : "grey")) }} onClick={() => user ? (isFavorited ? unfavorite(workout) : favorite(workout)) : snackbar("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
+        <button style={{ color: (location.pathname === '/workouts/favorites' && 'red') || (!user ? "grey" : (isFavorited ? "red" : "grey")) }} onClick={() => user ? (isFavorited ? unfavorite() : favorite()) : snackbar("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
       </div>
     </div>
   )

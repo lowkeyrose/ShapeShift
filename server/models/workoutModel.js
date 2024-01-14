@@ -1,6 +1,14 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 const Exercise = require('./exerciseModel')
+const Schema = mongoose.Schema
+// const Joi = require('joi');
+
+// const workoutValidationSchema = Joi.object({
+//   title: Joi.string().min(3).max(20).required(),
+//   imgUrl: Joi.string().uri().max(2000).optional(),
+//   exercises: Joi.array().min(1).max(30).required(),
+//   Private: Joi.boolean().default(false).optional(),
+// });
 
 const workoutSchema = new Schema({
   title: {
@@ -26,8 +34,14 @@ const workoutSchema = new Schema({
     type: String
   },
   likes: {
-    type: Number
+    type: Number,
+    default: 0
   }
 }, { timestamps: true })
 
 module.exports = mongoose.model('Workout', workoutSchema)
+
+// module.exports = {
+//   Workout: mongoose.model('Workout', workoutSchema),
+//   workoutValidationSchema: workoutValidationSchema
+// };

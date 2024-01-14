@@ -1,8 +1,21 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const validator = require('validator')
-
 const Schema = mongoose.Schema
+const Joi = require('joi');
+
+const userValidationSchema = Joi.object({
+  firstName: Joi.string().min(3).max(20).required().pattern(/^[a-zA-Z]+$/).messages({ 'string.pattern.base': '"first name" must contain only alphanumeric characters' }),
+  lastName: Joi.string().min(3).max(20).required().pattern(/^[a-zA-Z]+$/).messages({ 'string.pattern.base': '"last name" must contain only alphanumeric characters' }),
+  username: Joi.string().min(3).max(20).required(),
+  email: Joi.string().max(62).required().email({ tlds: false }),
+  password: Joi.string().required()
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[!@%$#^&*-_*])[A-Za-z\d!@%$#^&*-_*]{8,30}$/)
+    .message('user "password" must be at least 8 characters long and contain an uppercase letter, a lowercase letter, 4 numbers, and one of the following characters !@#$%^&*_-'),
+  phone: Joi.string().pattern(/^[0-9]{10,15}$/).messages({ 'string.pattern.base': 'Phone number must have between 10-15 digits.' }).required(),
+  gender: Joi.string().required(),
+  roleType: Joi.any(),
+  profilePic: Joi.any()
+});
 
 const userSchema = new Schema({
   firstName: {
@@ -50,60 +63,54 @@ const userSchema = new Schema({
 
 // static signup method
 userSchema.statics.signup = async function (firstName, lastName, email, password, username, phone, profilePic, gender, roleType) {
+  try {
+    await userValidationSchema.validateAsync({ firstName, lastName, email, password, username, phone, profilePic, gender, roleType });
 
-  // validation
-  if (!firstName || !lastName || !email || !password || !username || !phone || !gender) {
-    throw Error('All fields must be filled')
+    const emailTaken = await this.findOne({ email });
+
+    if (emailTaken) {
+      throw new Error('email already in use');
+    }
+
+    const usernameTaken = await this.findOne({ username });
+
+    if (usernameTaken) {
+      throw new Error('username already in use');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType });
+
+    return user;
+  } catch (error) {
+    throw error;
   }
-
-  if (!validator.isEmail(email)) {
-    throw Error('Email is not valid')
-  }
-  if (!validator.isStrongPassword(password)) {
-    throw Error('Password is not strong enough')
-  }
-
-  const emailTaken = await this.findOne({ email })
-
-  if (emailTaken) {
-    throw Error('Email already in use')
-  }
-
-  const usernameTaken = await this.findOne({ username })
-
-  if (usernameTaken) {
-    throw Error('username already in use')
-  }
-
-  const salt = await bcrypt.genSalt(10)
-  const hash = await bcrypt.hash(password, salt)
-
-  const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType })
-
-  return user
 }
 
-//  static login method
+// static login method
 userSchema.statics.login = async function (email, password) {
+  try {
+    await Joi.object({
+      email: Joi.string().max(62).required().email({ tlds: false }),
+      password: Joi.string().required(),
+    }).validateAsync({ email, password });
 
-  // validation
-  if (!email || !password) {
-    throw Error('All fields must be filled')
+    const user = await this.findOne({ email });
+    if (!user) {
+      throw new Error('Invalid login credentials');
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      throw new Error('Invalid login credentials');
+    }
+
+    return user;
+  } catch (error) {
+    throw error;
   }
-
-  const user = await this.findOne({ email })
-
-  if (!user) {
-    throw Error('Invalid login credentials')
-  }
-
-  const match = await bcrypt.compare(password, user.password)
-
-  if (!match) {
-    throw Error('Invalid login credentials')
-  }
-
-  return user
-}
+};
 
 module.exports = mongoose.model('User', userSchema)

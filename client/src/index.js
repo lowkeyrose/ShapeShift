@@ -9,7 +9,8 @@ import { GlobalContextProvider } from './context/GlobalContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
+  <React.StrictMode>
+    <BrowserRouter>
       <GlobalContextProvider>
         <WorkoutContextProvider>
           <ExerciseContextProvider>
@@ -18,4 +19,5 @@ root.render(
         </WorkoutContextProvider>
       </GlobalContextProvider>
     </BrowserRouter>
+  </React.StrictMode>
 )

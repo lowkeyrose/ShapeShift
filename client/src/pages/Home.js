@@ -3,8 +3,8 @@ import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import { memo } from 'react'
 import logo from '../assets/robots/home.png'
-import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
+import './style/Pages.css'
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'

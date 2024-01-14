@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import Button from '@mui/material/Button'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import logo from '../assets/robots/myworkouts.png'
 import '../components/style/WorkoutDetails.css'
-import './style/Workouts.css'
+import './style/Pages.css'
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
@@ -15,7 +15,6 @@ import { useGlobalContext } from '../hooks/useGlobalContext'
 export default function MyWorkouts() {
     const { navigate, setLoading, token } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
-    const [redHeart, setRedHeart] = useState(true)
     // console.log("MyWorkouts component rendered"); // Add this line
 
     useEffect(() => {
@@ -43,7 +42,6 @@ export default function MyWorkouts() {
             }
             fetchWorkouts()
         }
-
         return () => {
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
         }
@@ -63,15 +61,13 @@ export default function MyWorkouts() {
                 {workouts &&
                     workouts.map((workout) => {
                         // use String(workout._id) because i kept getting a Each child in a list should have a unique "key" prop. warning
-                        return <WorkoutDetails key={String(workout._id)} workout={workout} redHeart={redHeart} />;
+                        return <WorkoutDetails key={String(workout._id)} workout={workout} />;
                     })}
             </div>
 
             <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/create/new')} >Create A New Workout</Button>
 
             <img className='bottom-left-icon' src={logo} alt="logo" />
-
-
         </div>
     )
 }

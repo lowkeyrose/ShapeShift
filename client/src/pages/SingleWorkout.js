@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import ErrorPage from './ErrorPage';
 import { useGlobalContext } from '../hooks/useGlobalContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 // import Button from '@mui/material/Button'
 // import DeleteIcon from '@mui/icons-material/Delete';
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
-// import ExerciseForm from '../components/ExerciseForm';
+import './style/SingleWorkout.css'
 
 const isValidObjectId = (id) => {
   const objectIdPattern = /^[0-9a-fA-F]{24}$/;
@@ -19,96 +18,62 @@ export default function SingleWorkout() {
   const { user, setLoading, snackbar, navigate, token } = useGlobalContext()
   const { workout, dispatch } = useWorkoutContext()
 
+  // const fetchWorkout = useCallback(
+  //   async () => {
+  //     setLoading(true);
+
+  //     try {
+  //       const response = await fetch(`/api/workouts/workout/${id}`);
+  //       if (!response.ok) {
+  //         throw new Error(`Workout not found: ${response.statusText}`);
+  //       }
+  //       const data = await response.json();
+
+  //       dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
+  //     } catch (error) {
+  //       console.error('Error fetching workout:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }, [dispatch, id, setLoading]);
+
+  // useEffect(() => {
+  //   if (isValidObjectId(id)) {
+  //     // Proceed with fetching the workout
+  //     fetchWorkout()
+  //   } else {
+  //     navigate('/errorPage')
+  //   }
+  // }, [id, fetchWorkout, navigate]);
+
   useEffect(() => {
     if (isValidObjectId(id)) {
-      // Proceed with fetching the workout
       const fetchWorkout = async () => {
-        setLoading(true);
-
-        try {
-          const response = await fetch(`/api/workouts/workout/${id}`);
-          if (!response.ok) {
-            throw new Error(`Workout not found: ${response.statusText}`);
+          setLoading(true);
+    
+          try {
+            const response = await fetch(`/api/workouts/workout/${id}`);
+            if (!response.ok) {
+              throw new Error(`Workout not found: ${response.statusText}`);
+            }
+            const data = await response.json();
+    
+            dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
+          } catch (error) {
+            console.error('Error fetching workout:', error);
+          } finally {
+            setLoading(false);
           }
-          const data = await response.json();
-
-          dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
-        } catch (error) {
-          console.error('Error fetching workout:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchWorkout();
+        };
+      fetchWorkout()
     } else {
       navigate('/errorPage')
     }
-  }, [id, setLoading, dispatch, navigate]);
+  }, [id, dispatch, setLoading, navigate]);
 
-  const deleteExercise = async (id) => {
-    if (workout.exercises.length === 1) {
-      snackbar('A workout must contain at least one exercise')
-      return
-    }
 
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/exercises/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': token
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to delete exercise: ${response.statusText}`)
-      }
-
-      const json = await response.json()
-      dispatch({ type: ACTIONS.DELETE_EXERCISE, payload: json })
-
-    } catch (error) {
-      console.error('Error deleting exercise:', error)
-      snackbar('Failed to delete exercise. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const addExercise = async (exercise) => {
-    exercise.workout_id = workout._id
-    console.log('exercise: ', exercise)
-
-    try {
-      setLoading(true)
-      const response = await fetch('/api/exercises/new', {
-        method: 'POST',
-        body: JSON.stringify(exercise),
-        headers: {
-          'Authorization': token,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to add exercise: ${response.statusText}`);
-      }
-
-      const json = await response.json();
-
-      // Update the local state (workout) after successfully adding the exercise
-      dispatch({ type: ACTIONS.CREATE_EXERCISE, payload: json });
-
-    } catch (error) {
-      console.error('Error adding exercise:', error);
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const editExercise = async () => {
-
+  const editWorkout = () => {
+    navigate(`/workouts/myworkouts/edit/${workout._id}`)
   }
 
   const deleteWorkout = async () => {
@@ -134,8 +99,8 @@ export default function SingleWorkout() {
   }
 
   return (
-    <div className='SingleWorkout'>
-      {workout ?
+    <div className='single-workout-page'>
+      {workout &&
         <div>
           <div>Workout Title: {[workout.title]}</div>
           <img src={workout.imgUrl} alt={workout.title} />
@@ -143,13 +108,7 @@ export default function SingleWorkout() {
             <div className="exercise" key={exercise._id}>
               <br />
               <div>Title: {exercise.title}</div>
-              {
-                ((user?.roleType === 'admin') || (user?._id === workout?.user_id)) &&
-                <>
-                  <p className="material-symbols-outlined" onClick={() => deleteExercise(exercise._id)}>delete</p>
-                  <p className="material-symbols-outlined" onClick={() => editExercise}>edit</p>
-                </>
-              }
+              {/* Add exercises info as cards maybe */}
             </div>
           )}</div>
 
@@ -160,13 +119,11 @@ export default function SingleWorkout() {
           {
             ((user?.roleType === 'admin') || (user?._id === workout?.user_id)) &&
             <>
-              <button onClick={addExercise}>Add Exercise</button>
+              <button onClick={editWorkout}>Edit Workout</button>
               <button onClick={deleteWorkout}>Delete Workout</button>
             </>
           }
         </div>
-        :
-        <ErrorPage />
       }
 
 

@@ -51,7 +51,7 @@ export default function WorkoutForm() {
     const workoutSchema = Joi.object({
         title: Joi.string().min(3).max(20).required(),
         imgUrl: Joi.string().min(0).max(2000).optional(),
-        exercises: Joi.array().min(1).max(20).required(),
+        exercises: Joi.array().min(1).max(30).required(),
         Private: Joi.boolean().default(false).optional()
     })
 
@@ -316,7 +316,7 @@ export default function WorkoutForm() {
                             <Typography variant="subtitle1">Exercises Preview: 
                                 <div className='exercise-preview'>{
                                     workoutFormData?.exercises?.map((exercise, index) =>
-                                        <div className="exercise-card">
+                                        <div className="exercise-card" key={index}>
                                             <figure className="exercise-figure">
                                                 <h1>{exercise.title}</h1>
                                                 <img className='exercise-img' src={exercise.imgUrl} alt={exercise.imgUrl} />
