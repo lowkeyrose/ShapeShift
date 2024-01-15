@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import Button from '@mui/material/Button'
@@ -11,41 +11,71 @@ import './style/Pages.css'
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
+import { search } from '../components/Searchbar';
 
 export default function MyWorkouts() {
-    const { navigate, setLoading, token } = useGlobalContext()
+    const { navigate, setLoading, token, searchWord } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
     // console.log("MyWorkouts component rendered"); // Add this line
 
+    const fetchWorkouts = useCallback(async () => {
+        // console.log("Fetching My-workouts...");
+        setLoading(true)
+        try {
+            const response = await fetch('/api/workouts/myworkouts', {
+                headers: {
+                    'Authorization': token
+                }
+            })
+            const data = await response.json()
+            if (!response.ok) {
+                throw new Error(`Failed to fetch workouts: ${response.statusText}`);
+            }
+            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
+        } catch (error) {
+            console.error('Error fetching workouts:', 'error:', error, 'error.message:', error.message, 'error.stack:', error.stack);
+        } finally {
+            setLoading(false)
+        }
+    }, [dispatch, setLoading, token])
+
     useEffect(() => {
         if (token) {
-            const fetchWorkouts = async () => {
-                // console.log("Fetching My-workouts...");
-
-                setLoading(true)
-                try {
-                    const response = await fetch('/api/workouts/myworkouts', {
-                        headers: {
-                            'Authorization': token
-                        }
-                    })
-                    const data = await response.json()
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch workouts: ${response.statusText}`);
-                    }
-                    dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
-                } catch (error) {
-                    console.error('Error fetching workouts:', 'error:', error, 'error.message:', error.message, 'error.stack:', error.stack);
-                } finally {
-                    setLoading(false)
-                }
-            }
             fetchWorkouts()
         }
         return () => {
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
         }
-    }, [dispatch, token, setLoading])
+    }, [dispatch, token, fetchWorkouts])
+
+    // useEffect(() => {
+    //     if (token) {
+    //         const fetchWorkouts = async () => {
+    //             // console.log("Fetching My-workouts...");
+    //             setLoading(true)
+    //             try {
+    //                 const response = await fetch('/api/workouts/myworkouts', {
+    //                     headers: {
+    //                         'Authorization': token
+    //                     }
+    //                 })
+    //                 const data = await response.json()
+    //                 if (!response.ok) {
+    //                     throw new Error(`Failed to fetch workouts: ${response.statusText}`);
+    //                 }
+    //                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
+    //             } catch (error) {
+    //                 console.error('Error fetching workouts:', 'error:', error, 'error.message:', error.message, 'error.stack:', error.stack);
+    //             } finally {
+    //                 setLoading(false)
+    //             }
+    //         }
+    //         fetchWorkouts()
+    //     }
+    //     return () => {
+    //         dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+    //     }
+    // }, [dispatch, token, setLoading])
 
     return (
         <div className='my-workouts-page'>
@@ -59,13 +89,16 @@ export default function MyWorkouts() {
 
             <div className="workouts">
                 {workouts &&
-                    workouts.map((workout) => {
+                    workouts.filter(workout => search(searchWord, workout.title)).map((workout) => {
                         // use String(workout._id) because i kept getting a Each child in a list should have a unique "key" prop. warning
                         return <WorkoutDetails key={String(workout._id)} workout={workout} />;
                     })}
             </div>
 
-            <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/create/new')} >Create A New Workout</Button>
+            <Button sx={{ display:'flex', justifyContent:'center', alignItems:'center', position: 'fixed', right: 20, bottom: 20, borderRadius:'100%', padding:'10px 0px', border:'2px solid darkgreen', zIndex:999 }} variant="contained" color="success" onClick={() => navigate('/workouts/myworkouts/create/new')} >
+            <AddCircleIcon sx={{fontSize:'40px'}} />
+            </Button>
+            {/* <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/create/new')} >Create A New Workout</Button> */}
 
             <img className='bottom-left-icon' src={logo} alt="logo" />
         </div>

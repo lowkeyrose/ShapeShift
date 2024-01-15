@@ -4,7 +4,6 @@ const dbConnection = require("./utils/db")
 const cors = require('cors');
 const userRoutes = require('./routes/user')
 const workoutRoutes = require('./routes/workouts')
-const exerciseRoutes = require('./routes/exercise')
 
 // Connecting to database
 dbConnection();
@@ -30,7 +29,6 @@ app.use((req, _, next) => {
 
 // routes
 app.use('/api/workouts', workoutRoutes)
-app.use('/api/exercises', exerciseRoutes)
 app.use('/api/user', userRoutes)
 
 // Error handling middleware

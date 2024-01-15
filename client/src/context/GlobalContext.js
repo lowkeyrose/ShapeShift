@@ -39,6 +39,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [snackbarText, setSnackbarText] = useState('');
+  const [searchWord, setSearchWord] = useState('');
   const [roleType, setRoleType] = useState(RoleTypes.none);
   const [loading, setLoading] = useState(false);
 
@@ -53,40 +54,73 @@ export const GlobalContextProvider = React.memo(({ children }) => {
 
   const memoizedDispatch = useCallback(dispatch, [dispatch]);
 
+  const authenticate = useCallback(async () => {
+    try {
+      const response = await fetch('/api/user/authenticate', {
+        method: 'POST',
+        headers: {
+          'Authorization': token
+        }
+      });
+
+      if (response.ok) {
+        const json = await response.json()
+        memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
+        const userRoleType = json.roleType
+        const mappedRoleType = RoleTypes[userRoleType]
+        setRoleType(mappedRoleType)
+      } else {
+        snackbar('Session expired');
+        memoizedDispatch({ type: ACTIONS.LOGOUT })
+        localStorage.removeItem('token')
+        setRoleType(RoleTypes.none)
+        navigate('/')
+      }
+    } catch (error) {
+      console.log("The Promise is rejected!", error)
+    }
+  }, [memoizedDispatch, navigate, token])
+
   useEffect(() => {
     if (token) {
-      const authenticate = async () => {
-        try {
-          const response = await fetch('/api/user/authenticate', {
-            method: 'POST',
-            headers: {
-              'Authorization': token
-            }
-          });
-
-          if (response.ok) {
-            const json = await response.json()
-            memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
-            const userRoleType = json.roleType
-            const mappedRoleType = RoleTypes[userRoleType]
-            setRoleType(mappedRoleType)
-          } else {
-            snackbar('Session expired');
-            memoizedDispatch({ type: ACTIONS.LOGOUT })
-            localStorage.removeItem('token')
-            setRoleType(RoleTypes.none)
-            navigate('/')
-          }
-        } catch (error) {
-          console.log("The Promise is rejected!", error)
-        }
-      };
-
       authenticate()
     }
-  }, [memoizedDispatch, location.pathname, token, navigate, setRoleType]);
+  }, [authenticate, location.pathname, token]);
 
-  // console.log('GlobalContextProvider state: ', state);
+  // useEffect(() => {
+  //   if (token) {
+  //     const authenticate = async () => {
+  //       try {
+  //         const response = await fetch('/api/user/authenticate', {
+  //           method: 'POST',
+  //           headers: {
+  //             'Authorization': token
+  //           }
+  //         });
+
+  //         if (response.ok) {
+  //           const json = await response.json()
+  //           memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
+  //           const userRoleType = json.roleType
+  //           const mappedRoleType = RoleTypes[userRoleType]
+  //           setRoleType(mappedRoleType)
+  //         } else {
+  //           snackbar('Session expired');
+  //           memoizedDispatch({ type: ACTIONS.LOGOUT })
+  //           localStorage.removeItem('token')
+  //           setRoleType(RoleTypes.none)
+  //           navigate('/')
+  //         }
+  //       } catch (error) {
+  //         console.log("The Promise is rejected!", error)
+  //       }
+  //     };
+
+  //     authenticate()
+  //   }
+  // }, [memoizedDispatch, location.pathname, token, navigate, setRoleType]);
+
+  console.log('GlobalContextProvider state: ', state);
 
   const memoizedValue = useMemo(() => ({
     ...state,
@@ -100,8 +134,10 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     setRoleType,
     snackbar,
     loading,
-    setLoading
-  }), [state, token, navigate, location, snackbarText, roleType, loading]);
+    setLoading,
+    searchWord, 
+    setSearchWord
+  }), [state, token, navigate, location, snackbarText, roleType, loading, searchWord]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>

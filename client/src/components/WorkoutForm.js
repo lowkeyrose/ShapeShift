@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { useGlobalContext } from '../hooks/useGlobalContext'
 import { ACTIONS } from "../context/Actions"
@@ -55,28 +55,52 @@ export default function WorkoutForm() {
         Private: Joi.boolean().default(false).optional()
     })
 
+    const fetchWorkout = useCallback(async () => {
+        setLoading(true)
+        try {
+            const response = await fetch(`/api/workouts/workout/${id}`)
+            const data = await response.json()
+            setWorkoutFormData(data)
+            console.log('data: ', data);
+            setInitialWorkoutData(data)
+        } catch (error) {
+            console.error('Error fetching workout:', error);
+        } finally {
+            setLoading(false)
+        }
+    }, [id, setLoading])
+
     useEffect(() => {
         if (isValidObjectId(id)) {
-            const fetchWorkout = async () => {
-                setLoading(true)
-                try {
-                    const response = await fetch(`/api/workouts/workout/${id}`)
-                    const data = await response.json()
-                    setWorkoutFormData(data)
-                    console.log('data: ', data);
-                    setInitialWorkoutData(data)
-                } catch (error) {
-                    console.error('Error fetching workout:', error);
-                } finally {
-                    setLoading(false)
-                }
-            }
             fetchWorkout()
             // if the id is new for CreateWorkout, then it comes as undefined
         } else if (id !== undefined) {
             navigate('/errorPage')
         }
-    }, [id, setLoading, setWorkoutFormData, navigate])
+    }, [id, fetchWorkout, navigate])
+
+    // useEffect(() => {
+    //     if (isValidObjectId(id)) {
+    //         const fetchWorkout = async () => {
+    //             setLoading(true)
+    //             try {
+    //                 const response = await fetch(`/api/workouts/workout/${id}`)
+    //                 const data = await response.json()
+    //                 setWorkoutFormData(data)
+    //                 console.log('data: ', data);
+    //                 setInitialWorkoutData(data)
+    //             } catch (error) {
+    //                 console.error('Error fetching workout:', error);
+    //             } finally {
+    //                 setLoading(false)
+    //             }
+    //         }
+    //         fetchWorkout()
+    //         // if the id is new for CreateWorkout, then it comes as undefined
+    //     } else if (id !== undefined) {
+    //         navigate('/errorPage')
+    //     }
+    // }, [id, setLoading, setWorkoutFormData, navigate])
 
     // const handleInput = ev => {
     //     let id, value;
@@ -271,7 +295,7 @@ export default function WorkoutForm() {
     }
 
     return (
-        <Container component="main" maxWidth="sm">
+        <Container component="main" maxWidth="sm" className='form'>
             <CssBaseline />
             <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
@@ -313,7 +337,7 @@ export default function WorkoutForm() {
                         </Grid>
 
                         <Grid item xs={12} >
-                            <Typography variant="subtitle1">Exercises Preview: 
+                            <Typography variant="subtitle1">Exercises Preview:
                                 <div className='exercise-preview'>{
                                     workoutFormData?.exercises?.map((exercise, index) =>
                                         <div className="exercise-card" key={index}>
@@ -334,7 +358,7 @@ export default function WorkoutForm() {
                             </Typography>
                         </Grid>
 
-                        <ExerciseForm
+                        <ExerciseForm Use role = "dialog" aria-modal="true"
                             id="exercise-form"
                             onAddExercise={handleAddExercise}
                             onEditExercise={handleEditExercise}

@@ -6,13 +6,8 @@ export const ACTIONS = {
   UPDATE_WORKOUT: 'update-workout',
   INCREMENT_LIKES : 'increment-likes',
   DECREMENT_LIKES : 'decrememnt-likes',
-  CREATE_EXERCISE: 'create-exercise',
-  DELETE_EXERCISE: 'delete-exercise',
-  UPDATE_EXERCISE: 'update-exercise',
   FAVORITE: 'favorites',
   UNFAVORITE: 'unfavorite',
   SET_USER: 'set-user',
   LOGOUT: 'logout'
-  // SET_EXERCISES: 'set-exercises',
-  // SET_SINGLE_EXERCISE: 'set-single-exercise',
 }

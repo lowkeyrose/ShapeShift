@@ -48,26 +48,6 @@ export const workoutReducer = (state, action) => {
           w._id === action.payload ? { ...w, likes: Math.max((w.likes || 0) - 1, 0) } : w
         ),
       }
-    case ACTIONS.DELETE_EXERCISE:
-      return {
-        workout: {
-          ...state.workout,
-          exercises: state.workout.exercises.filter((e) => e._id !== action.payload._id)
-        }
-      }
-    case ACTIONS.UPDATE_EXERCISE:
-      return {
-
-      }
-    case ACTIONS.CREATE_EXERCISE:
-      return {
-        workout: {
-          ...state.workout,
-          exercises: state.workout.exercises
-            ? [...state.workout.exercises, action.payload]
-            : [action.payload],
-        },
-      }
     default:
       return state;
   }

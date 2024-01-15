@@ -1,6 +1,7 @@
 import { useGlobalContext } from './hooks/useGlobalContext';
 import Navbar from './components/Navbar'
 import Router from './routers/Router';
+import Footer from './components/Footer'
 import AuthRouter from './routers/AuthRouter';
 
 export default function App() {
@@ -9,6 +10,7 @@ export default function App() {
     <div className="App">
       <Navbar />
       {user ? <AuthRouter /> : <Router />}
+      <Footer />
     </div>
   )
 }

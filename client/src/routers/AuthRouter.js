@@ -7,6 +7,8 @@ import ErrorPage from '../pages/ErrorPage';
 import Workouts from '../pages/Workouts';
 import SingleWorkout from '../pages/SingleWorkout';
 import { useGlobalContext } from '../hooks/useGlobalContext';
+import Account from '../pages/Account';
+import EditAccount from '../pages/EditAccount';
 
 export default function AuthRouter() {
   const { user } = useGlobalContext()
@@ -25,7 +27,8 @@ export default function AuthRouter() {
           <Route path="/workouts/favorites" element={<FavoriteWorkouts />} user={user} />
           <Route path='/workouts/myworkouts/create/new' element={<WorkoutForm />} />
           <Route path='/workouts/myworkouts/edit/:id' element={<WorkoutForm />} />
-          {/* <Route path="/account" element={<Account />} /> */}
+          <Route path="/account" element={<Account />} />
+          <Route path="/account/edit/:id" element={<EditAccount />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
         </>
       ) :

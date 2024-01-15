@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { useGlobalContext } from '../hooks/useGlobalContext';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
@@ -18,59 +18,33 @@ export default function SingleWorkout() {
   const { user, setLoading, snackbar, navigate, token } = useGlobalContext()
   const { workout, dispatch } = useWorkoutContext()
 
-  // const fetchWorkout = useCallback(
-  //   async () => {
-  //     setLoading(true);
+  const fetchWorkout = useCallback(
+    async () => {
+      setLoading(true);
 
-  //     try {
-  //       const response = await fetch(`/api/workouts/workout/${id}`);
-  //       if (!response.ok) {
-  //         throw new Error(`Workout not found: ${response.statusText}`);
-  //       }
-  //       const data = await response.json();
+      try {
+        const response = await fetch(`/api/workouts/workout/${id}`);
+        if (!response.ok) {
+          throw new Error(`Workout not found: ${response.statusText}`);
+        }
+        const data = await response.json();
 
-  //       dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
-  //     } catch (error) {
-  //       console.error('Error fetching workout:', error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }, [dispatch, id, setLoading]);
-
-  // useEffect(() => {
-  //   if (isValidObjectId(id)) {
-  //     // Proceed with fetching the workout
-  //     fetchWorkout()
-  //   } else {
-  //     navigate('/errorPage')
-  //   }
-  // }, [id, fetchWorkout, navigate]);
+        dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
+      } catch (error) {
+        console.error('Error fetching workout:', error);
+      } finally {
+        setLoading(false);
+      }
+    }, [dispatch, id, setLoading]);
 
   useEffect(() => {
     if (isValidObjectId(id)) {
-      const fetchWorkout = async () => {
-          setLoading(true);
-    
-          try {
-            const response = await fetch(`/api/workouts/workout/${id}`);
-            if (!response.ok) {
-              throw new Error(`Workout not found: ${response.statusText}`);
-            }
-            const data = await response.json();
-    
-            dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
-          } catch (error) {
-            console.error('Error fetching workout:', error);
-          } finally {
-            setLoading(false);
-          }
-        };
+      // Proceed with fetching the workout
       fetchWorkout()
     } else {
       navigate('/errorPage')
     }
-  }, [id, dispatch, setLoading, navigate]);
-
+  }, [id, fetchWorkout, navigate]);
 
   const editWorkout = () => {
     navigate(`/workouts/myworkouts/edit/${workout._id}`)
@@ -102,13 +76,20 @@ export default function SingleWorkout() {
     <div className='single-workout-page'>
       {workout &&
         <div>
-          <div>Workout Title: {[workout.title]}</div>
-          <img src={workout.imgUrl} alt={workout.title} />
-          <div>Exercises: {workout.exercises && workout.exercises.map((exercise) =>
+          <div className='workout-title'>{[workout.title]}</div>
+          <img className='workout-img' src={workout.imgUrl} alt={workout.title} />
+          <br />
+          <br />
+          <div className='exercises-title'>Exercises: {workout.exercises && workout.exercises.map((exercise) =>
             <div className="exercise" key={exercise._id}>
-              <br />
-              <div>Title: {exercise.title}</div>
-              {/* Add exercises info as cards maybe */}
+              <div>{exercise.title}</div>
+              <img className='exercise-img' src={exercise.imgUrl} alt={exercise.title} />
+              <div className='exercise-info'>
+              <div>Weight: {exercise.weight}</div>
+              <div>Reps: {exercise.reps}</div>
+              <div>Sets: {exercise.sets}</div>
+              </div>
+              
             </div>
           )}</div>
 

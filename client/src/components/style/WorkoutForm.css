@@ -99,3 +99,7 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+.form {
+  min-height: 100vh;
+}

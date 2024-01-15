@@ -73,7 +73,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       // [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) : value,
          [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value,
     }
-    const hasChanges = Object.keys(obj).some(key => obj[key] !== initialExerciseData[key]);
+    const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialExerciseData);
     const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true });
     const err = { ...errors, [id]: undefined };
 

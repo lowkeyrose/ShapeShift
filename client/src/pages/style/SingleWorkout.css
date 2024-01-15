@@ -1,3 +1,33 @@
 .single-workout-page{
-  background-color: rgba(0, 0, 0, 0.295);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.141);
+}
+
+.single-workout-page .workout-title{
+  font-size: 3.5em;
+}
+.single-workout-page .workout-img{
+  height: 90vh;
+  border-radius: 10px;
+}
+
+.single-workout-page .exercises-title{
+  font-size: 1.5em;
+}
+.single-workout-page .exercise-img{
+  border-radius: 10px ;
+  height: 30vh;
+}
+
+
+.single-workout-page .exercise{
+  margin: 100px 0;
+}
+.single-workout-page .exercise-info{
+  display: flex;
+  justify-content: center;
+  column-gap: 55px;
 }

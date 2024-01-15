@@ -41,7 +41,7 @@ const userSchema = new Schema({
     unique: true
   },
   phone: {
-    type: Number,
+    type: String,
     required: true
   },
   gender: {
@@ -83,6 +83,9 @@ userSchema.statics.signup = async function (firstName, lastName, email, password
 
     const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType });
 
+    
+    console.log('user: ', user);
+
     return user;
   } catch (error) {
     throw error;
@@ -96,17 +99,17 @@ userSchema.statics.login = async function (email, password) {
       email: Joi.string().max(62).required().email({ tlds: false }),
       password: Joi.string().required(),
     }).validateAsync({ email, password });
-
+    
     const user = await this.findOne({ email });
     if (!user) {
       throw new Error('Invalid login credentials');
     }
-
+    
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       throw new Error('Invalid login credentials');
     }
-
+    console.log('user: ', user);
     return user;
   } catch (error) {
     throw error;

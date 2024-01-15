@@ -68,7 +68,7 @@ export default function Login() {
   };
 
   return (
-    <Grid container component="main" sx={{ minHeight: '92.2vh' }}>
+    <Grid container component="main" sx={{ minHeight: '93vh' }}>
       <CssBaseline />
       <Grid
         item
@@ -114,7 +114,6 @@ export default function Login() {
               value={formData.email}
               autoFocus
               onChange={handleInput}
-
             />
             <TextField
               error={Boolean(errors.password)}
@@ -129,7 +128,6 @@ export default function Login() {
               value={formData.password}
               autoComplete="current-password"
               onChange={handleInput}
-
             />
             {error && (
               <Typography color="error" variant="body2">

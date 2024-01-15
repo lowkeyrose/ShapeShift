@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import { memo } from 'react'
@@ -16,27 +16,50 @@ const Home = () => {
     const { setLoading } = useGlobalContext()
     // console.log("Home component rendered"); // Add this line
 
-    useEffect(() => {
-        const fetchWorkouts = async () => {
-            // console.log("Fetching workouts...");
-            setLoading(true)
-            try {
-                const response = await fetch('/api/workouts')
-                const data = await response.json()
-                if (response.ok) {
-                    dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
-                }
-            } catch (error) {
-                console.error('Error fetching workouts:', error);
-            } finally {
-                setLoading(false)
+    const fetchWorkouts = useCallback(async () => {
+        // console.log("Fetching workouts...");
+        setLoading(true)
+        try {
+            const response = await fetch('/api/workouts')
+            const data = await response.json()
+            if (response.ok) {
+                dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
             }
+        } catch (error) {
+            console.error('Error fetching workouts:', error);
+        } finally {
+            setLoading(false)
         }
+    }, [dispatch, setLoading])
+
+    useEffect(() => {
         fetchWorkouts()
         return () => {
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
         }
-    }, [dispatch, setLoading])
+    }, [dispatch, fetchWorkouts])
+
+    // useEffect(() => {
+    //     const fetchWorkouts = async () => {
+    //         // console.log("Fetching workouts...");
+    //         setLoading(true)
+    //         try {
+    //             const response = await fetch('/api/workouts')
+    //             const data = await response.json()
+    //             if (response.ok) {
+    //                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching workouts:', error);
+    //         } finally {
+    //             setLoading(false)
+    //         }
+    //     }
+    //     fetchWorkouts()
+    //     return () => {
+    //         dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+    //     }
+    // }, [dispatch, setLoading])
 
     return (
         <div className='home'>
@@ -48,14 +71,15 @@ const Home = () => {
                 {workouts && workouts.length > 0 ? "Here you can find all the workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
             <div className="workouts">
-                {workouts && workouts.map((workout) => {
-                    if (!workout.Private) {
-                        return <WorkoutDetails key={workout._id} workout={workout} />
-                    } else {
-                        return null
+                {workouts &&
+                    workouts.map((workout) => {
+                        if (!workout.Private) {
+                            return <WorkoutDetails key={workout._id} workout={workout} />
+                        } else {
+                            return null
+                        }
                     }
-                }
-                )}
+                    )}
             </div>
             <img className='home-icon' src={logo} alt="logo" />
         </div>

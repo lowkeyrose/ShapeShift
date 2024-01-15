@@ -17,8 +17,9 @@ import { useLogout } from '../hooks/useLogout'
 import { checkPermissions, pages, settings } from './Navbar-config'
 import { useGlobalContext } from '../hooks/useGlobalContext'
 import { memo } from 'react'
+import Searchbar from './Searchbar'
 
-const ResponsiveAppBar = () => {
+const Navbar = () => {
   const { user, roleType } = useGlobalContext()
   const { logout } = useLogout()
   const handleLogout = (ev) => {
@@ -50,7 +51,7 @@ const ResponsiveAppBar = () => {
         <Toolbar disableGutters>
 
           {/* LOGO */}
-          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: 'black', fontSize: '30px' }} />
+          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'none', lg: 'flex' }, mr: 1, color: 'black', fontSize: '30px' }} />
           <Typography
             variant="h6"
             noWrap
@@ -58,7 +59,7 @@ const ResponsiveAppBar = () => {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
+              display: { xs: 'none', md: 'none', lg: 'flex' },
               fontFamily: 'Kanit',
               fontWeight: 600,
               fontSize: '34px',
@@ -69,8 +70,8 @@ const ResponsiveAppBar = () => {
             ShapeShift
           </Typography>
 
-            {/* Hamburger Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          {/* Hamburger Menu */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex', lg: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -109,8 +110,9 @@ const ResponsiveAppBar = () => {
             </Menu>
           </Box>
 
+
           {/* Middle Section when small screen */}
-          <FitnessCenterIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: 'black' }} />
+          <FitnessCenterIcon sx={{ display: { xs: 'none', sm:'flex', md: 'flex', lg: 'none' }, mr: 1, color: 'black' }} />
           <Typography
             variant="h5"
             noWrap
@@ -119,7 +121,7 @@ const ResponsiveAppBar = () => {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: 'flex', md: 'none' },
+              display: { xs: 'flex', md: 'flex', lg: 'none' },
               flexGrow: 1,
               fontFamily: 'Kanit',
               fontWeight: 500,
@@ -132,13 +134,13 @@ const ResponsiveAppBar = () => {
           </Typography>
 
           {/* Nav Links */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'none', lg: 'flex' } }}>
             {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
               <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
                 <Button
                   key={page.route}
                   onClick={handleCloseNavMenu}
-                  sx={{ mx: 2, color: 'black', display: 'block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize', backgroundColor: page.route === path ? '#cebd9640' : '#fff1d0'}}
+                  sx={{ mx: 2, color: 'black', display: 'block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize', backgroundColor: page.route === path ? '#cebd9640' : '#fff1d0' }}
                 >
                   {page.title}
                 </Button>
@@ -146,6 +148,7 @@ const ResponsiveAppBar = () => {
             ))}
           </Box>
 
+          {['/workouts', '/workouts/favorites', '/workouts/myworkouts'].includes(path) && <Searchbar />}
 
           {/* User Section */}
           {user &&
@@ -154,7 +157,7 @@ const ResponsiveAppBar = () => {
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   {/* <span>{roleType},</span>
                   <span>{user.username}</span> */}
-                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{  width: '40px', height: '40px' }} />
+                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '40px', height: '40px' }} />
 
                 </IconButton>
               </Tooltip>
@@ -194,4 +197,4 @@ const ResponsiveAppBar = () => {
     </AppBar>
   );
 }
-export default memo(ResponsiveAppBar)
+export default memo(Navbar)

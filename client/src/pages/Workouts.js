@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import logo from '../assets/robots/workouts.png'
@@ -9,32 +9,56 @@ import './style/Pages.css'
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
+import { search } from '../components/Searchbar'
 
 export default function Workouts() {
     const { workouts, dispatch } = useWorkoutContext()
-    const { setLoading } = useGlobalContext()
+    const { setLoading, searchWord } = useGlobalContext()
+
+    const fetchWorkouts = useCallback(async () => {
+        setLoading(true)
+        try {
+            const response = await fetch('/api/workouts')
+            const json = await response.json()
+
+            if (response.ok) {
+                dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
+            }
+        } catch (error) {
+            console.log("The Promise is rejected!", error)
+        } finally {
+            setLoading(false)
+        }
+    }, [dispatch, setLoading])
 
     useEffect(() => {
-        const fetchWorkouts = async () => {
-            setLoading(true)
-            try {
-                const response = await fetch('/api/workouts')
-                const json = await response.json()
-
-                if (response.ok) {
-                    dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
-                }
-            } catch (error) {
-                console.log("The Promise is rejected!", error)
-            } finally {
-                setLoading(false)
-            }
-        }
         fetchWorkouts()
         return () => {
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
         }
-    }, [dispatch, setLoading])
+    }, [dispatch, fetchWorkouts])
+
+    // useEffect(() => {
+    //     const fetchWorkouts = async () => {
+    //         setLoading(true)
+    //         try {
+    //             const response = await fetch('/api/workouts')
+    //             const json = await response.json()
+
+    //             if (response.ok) {
+    //                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
+    //             }
+    //         } catch (error) {
+    //             console.log("The Promise is rejected!", error)
+    //         } finally {
+    //             setLoading(false)
+    //         }
+    //     }
+    //     fetchWorkouts()
+    //     return () => {
+    //         dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+    //     }
+    // }, [dispatch, setLoading])
 
     return (
         <div className='workouts-page'>
@@ -45,8 +69,9 @@ export default function Workouts() {
                 <br />
                 {workouts && workouts.length > 0 ? "Here you can find all the workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
+            
             <div className="workouts">
-                {workouts && workouts.map((workout) => {
+                {workouts && workouts.filter(workout => search(searchWord, workout.title)).map((workout) => {
                     if (!workout.Private) {
                         return <WorkoutDetails key={workout._id} workout={workout} />
                     } else {
