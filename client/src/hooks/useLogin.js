@@ -4,7 +4,7 @@ import { useGlobalContext } from './useGlobalContext'
 import { RoleTypes } from '../components/Navbar-config'
 
 export const useLogin = () => {
-  const { dispatch, setLoading, snackbar, navigate, setRoleType } = useGlobalContext()
+  const { dispatch, setLoading, showToastSuccess, navigate, setRoleType } = useGlobalContext()
   const [error, setError] = useState(null)
 
   const login = async (email, password) => {
@@ -34,7 +34,7 @@ export const useLogin = () => {
         setRoleType(mappedRoleType)
 
         // Popup message for UX
-        snackbar("Login successful")
+        showToastSuccess("Login successful")
         // Navigate home
         navigate('/')
         // update loading state

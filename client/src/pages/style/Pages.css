@@ -4,18 +4,47 @@
 }
 .favorites-page {
   background-image: linear-gradient(to bottom right, #eda2bd73, #45173679);
+  /* background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #eda2bd73  ,#45173679) ; */
 }
 
 .my-workouts-page {
   background-image: linear-gradient(to bottom right, #86df897d, #21672472);
+  /* background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #86df897d  ,#21672472) ; */
 }
 
 .workouts-page {
   background-image: linear-gradient(to bottom right, #7cc1e372, #104a6772);
+  /* background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #7cc1e372  ,#104a6772) ; */
 }
 
 .home {
-  background-image: linear-gradient(to bottom right, #ff800091  ,#ff810382);
+  background-image: linear-gradient(to bottom right, #ff800077  ,#ff810374);
+  /* background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #ff800091  ,#ff810382) ; */
+}
+
+.about-page {
+  background-color: aqua;
+  background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, aqua  ,rgba(0, 255, 255, 0.484)) ;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  padding: 40px;
+}
+.about-page img {
+  width: 100%;
+}
+.about-page .img-div {
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (max-width: 888px) {
+  .about-page {
+    flex-direction: column;
+  }
+  .about-page img {
+    width: 50%;
+  }
 }
 
 .home-icon {
@@ -43,3 +72,22 @@
   padding-bottom: 150px;
   padding-top: 15px;
   }
+
+.page-title {
+  font-size: 40px !important;
+  margin: 15px auto !important;
+  width: 35%;
+  padding: 10px;
+  font-family: "Kanit" !important;
+  text-align: center;
+  background-color: #fff;
+  border: 2px solid black;
+  box-shadow: rgba(0, 0, 0, 0.2) 15px 28px 25px -18px !important;
+  box-sizing: border-box;
+  color: #000000;
+  font-weight: 500 !important;
+  border-bottom-left-radius: 15px 255px;
+  border-bottom-right-radius: 225px 15px;
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+}

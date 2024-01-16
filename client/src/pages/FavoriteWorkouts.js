@@ -1,4 +1,3 @@
-// import React, { useEffect } from 'react'
 import React, { useCallback, useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
@@ -15,34 +14,6 @@ import { search } from '../components/Searchbar'
 export default function FavoirteWorkouts() {
   const { token, setLoading, searchWord } = useGlobalContext()
   const { workouts, dispatch } = useWorkoutContext()
-
-  // useEffect(() => {
-  //   if (token) {
-  //     const favoriteWorkouts = async () => {
-  //       setLoading(true);
-  //       try {
-  //         const response = await fetch('/api/workouts/favoriteworkouts', {
-  //           headers: {
-  //             'Authorization': token,
-  //           },
-  //         });
-  //         const data = await response.json();
-  //         if (!response.ok) {
-  //           throw new Error(`Failed to fetch workouts: ${response.statusText}`)
-  //         } 
-  //         dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data });
-  //       } catch (error) {
-  //         console.error('Error fetching workouts:', error);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     }
-  //     favoriteWorkouts()
-  //   }
-  //   return () => {
-  //     dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
-  // }
-  // }, [token, setLoading, dispatch]);
 
   const favoriteWorkouts = useCallback(async () => {
     setLoading(true);

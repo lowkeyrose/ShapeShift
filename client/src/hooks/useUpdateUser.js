@@ -4,7 +4,7 @@ import { useGlobalContext } from './useGlobalContext'
 
 export const useUpdateUser = () => {
   const [error, setError] = useState(null)
-  const { dispatch, setLoading, snackbar, navigate, user, token } = useGlobalContext()
+  const { dispatch, setLoading, showToastSuccess, navigate, user, token } = useGlobalContext()
 
   const updateUser = async (firstName, lastName, email, username, phone, gender, profilePic) => {
     setError(null)
@@ -30,7 +30,7 @@ export const useUpdateUser = () => {
         // update the user context
         dispatch({ type: ACTIONS.SET_USER, payload: json })
         // Popup message for UX
-        snackbar("Updated user info successfully!")
+        showToastSuccess("Updated user info successfully!")
         // Navigate home
         navigate('/account')
         // update loading state

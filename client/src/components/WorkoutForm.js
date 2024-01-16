@@ -27,7 +27,7 @@ const isValidObjectId = (id) => {
 
 export default function WorkoutForm() {
     const { id } = useParams()
-    const { token, setLoading, snackbar, navigate } = useGlobalContext()
+    const { token, setLoading, showToastSuccess, showToastError, navigate } = useGlobalContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
@@ -78,29 +78,6 @@ export default function WorkoutForm() {
             navigate('/errorPage')
         }
     }, [id, fetchWorkout, navigate])
-
-    // useEffect(() => {
-    //     if (isValidObjectId(id)) {
-    //         const fetchWorkout = async () => {
-    //             setLoading(true)
-    //             try {
-    //                 const response = await fetch(`/api/workouts/workout/${id}`)
-    //                 const data = await response.json()
-    //                 setWorkoutFormData(data)
-    //                 console.log('data: ', data);
-    //                 setInitialWorkoutData(data)
-    //             } catch (error) {
-    //                 console.error('Error fetching workout:', error);
-    //             } finally {
-    //                 setLoading(false)
-    //             }
-    //         }
-    //         fetchWorkout()
-    //         // if the id is new for CreateWorkout, then it comes as undefined
-    //     } else if (id !== undefined) {
-    //         navigate('/errorPage')
-    //     }
-    // }, [id, setLoading, setWorkoutFormData, navigate])
 
     // const handleInput = ev => {
     //     let id, value;
@@ -253,13 +230,13 @@ export default function WorkoutForm() {
     const handleSubmit = async (ev) => {
         ev.preventDefault()
         if (!token) {
-            snackbar('You must be logged in')
+            showToastError('You must be logged in')
             return
         }
         setLoading(true)
 
         if (workoutFormData.imgUrl === '') {
-            workoutFormData.imgUrl = 'https://images.unsplash.com/photo-1600026453346-a44501602a02?q=80&w=1970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+            workoutFormData.imgUrl = 'https://hips.hearstapps.com/hmg-prod/images/fitness-man-is-sitting-in-a-gym-and-flexing-muscles-royalty-free-image-1694520015.jpg?crop=0.668xw:1.00xh;0.187xw,0&resize=1200:*'
         }
 
         try {
@@ -273,19 +250,18 @@ export default function WorkoutForm() {
             })
             const workoutData = await workoutResponse.json()
             // console.log('workoutFormData:', workoutFormData);
-            // console.log('workoutResponse:', workoutResponse);
+            // console.log('workoutData:', workoutData);
 
             if (workoutResponse.ok) {
                 // We currently don't have an update action, nor do we need to since we are using dispatch SET_WORKOUT in MyWorkouts.js where we are navigated to anyways and updating the workouts state to the workouts from the db, 
                 // workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 navigate('/workouts/myworkouts')
-                snackbar(id ? 'Workout updated successfully' : 'New workout added successfully')
+                showToastSuccess(id ? 'Workout updated successfully' : 'New workout added successfully')
             } else if (workoutResponse.status === 420) {
-                // snackbar(workoutData.error)
-                snackbar('Title already in use for this user')
+                showToastError('Title already in use for this user')
             } else {
-                snackbar(id ? 'Failed to update workout' : 'Failed to create workout');
+                showToastError(id ? 'Failed to update workout' : 'Failed to create workout');
             }
         } catch (error) {
             console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
@@ -324,13 +300,6 @@ export default function WorkoutForm() {
                                 </Grid>
                             )
                         }
-
-                        {/* instead of snackbar "Title already in use for this user" line 261  to display the error under the field*/}
-                        {/* {errors && (
-                            <Typography color="error" variant="body2">
-                                {errors}
-                            </Typography>
-                        )} */}
 
                         <Grid item xs={12}>
                             <Typography variant="h6">Number of Exercises: {workoutFormData?.exercises?.length}</Typography>

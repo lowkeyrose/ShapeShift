@@ -39,30 +39,9 @@ const Home = () => {
         }
     }, [dispatch, fetchWorkouts])
 
-    // useEffect(() => {
-    //     const fetchWorkouts = async () => {
-    //         // console.log("Fetching workouts...");
-    //         setLoading(true)
-    //         try {
-    //             const response = await fetch('/api/workouts')
-    //             const data = await response.json()
-    //             if (response.ok) {
-    //                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching workouts:', error);
-    //         } finally {
-    //             setLoading(false)
-    //         }
-    //     }
-    //     fetchWorkouts()
-    //     return () => {
-    //         dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
-    //     }
-    // }, [dispatch, setLoading])
-
     return (
         <div className='home'>
+            {/* <Typography className='page-title'> */}
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
                 Your Personal Workout Buddy
             </Typography>

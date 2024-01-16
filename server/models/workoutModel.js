@@ -33,6 +33,9 @@ const workoutSchema = new Schema({
   username: {
     type: String
   },
+  userProfilePic:{
+    type: String
+  },
   likes: {
     type: Number,
     default: 0

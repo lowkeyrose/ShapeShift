@@ -15,27 +15,25 @@ const isValidObjectId = (id) => {
 
 export default function SingleWorkout() {
   const { id } = useParams()
-  const { user, setLoading, snackbar, navigate, token } = useGlobalContext()
+  const { user, setLoading, showToastError, showToastSuccess, navigate, token } = useGlobalContext()
   const { workout, dispatch } = useWorkoutContext()
 
-  const fetchWorkout = useCallback(
-    async () => {
-      setLoading(true);
-
-      try {
-        const response = await fetch(`/api/workouts/workout/${id}`);
-        if (!response.ok) {
-          throw new Error(`Workout not found: ${response.statusText}`);
-        }
-        const data = await response.json();
-
-        dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
-      } catch (error) {
-        console.error('Error fetching workout:', error);
-      } finally {
-        setLoading(false);
+  const fetchWorkout = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/workouts/workout/${id}`);
+      if (!response.ok) {
+        throw new Error(`Workout not found: ${response.statusText}`);
       }
-    }, [dispatch, id, setLoading]);
+      const data = await response.json();
+
+      dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
+    } catch (error) {
+      console.error('Error fetching workout:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, id, setLoading]);
 
   useEffect(() => {
     if (isValidObjectId(id)) {
@@ -63,10 +61,11 @@ export default function SingleWorkout() {
       if (!response.ok) {
         throw new Error(`Failed to delete workout: ${response.statusText}`)
       }
+      showToastSuccess('Workout deleted successfully')
       navigate('/workouts/myworkouts')
     } catch (error) {
       console.error('Error deleting workout:', error)
-      snackbar('Failed to delete workout. Please try again.')
+      showToastError( showToastSuccess,'Failed to delete workout. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -85,11 +84,11 @@ export default function SingleWorkout() {
               <div>{exercise.title}</div>
               <img className='exercise-img' src={exercise.imgUrl} alt={exercise.title} />
               <div className='exercise-info'>
-              <div>Weight: {exercise.weight}</div>
-              <div>Reps: {exercise.reps}</div>
-              <div>Sets: {exercise.sets}</div>
+                <div>Weight: {exercise.weight}</div>
+                <div>Reps: {exercise.reps}</div>
+                <div>Sets: {exercise.sets}</div>
               </div>
-              
+
             </div>
           )}</div>
 

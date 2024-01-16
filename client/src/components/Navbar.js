@@ -20,7 +20,7 @@ import { memo } from 'react'
 import Searchbar from './Searchbar'
 
 const Navbar = () => {
-  const { user, roleType } = useGlobalContext()
+  const { user, roleType, navigate } = useGlobalContext()
   const { logout } = useLogout()
   const handleLogout = (ev) => {
     ev.preventDefault()
@@ -56,7 +56,7 @@ const Navbar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            onClick={() => navigate('/')}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'none', lg: 'flex' },
@@ -65,6 +65,7 @@ const Navbar = () => {
               fontSize: '34px',
               color: 'black',
               textDecoration: 'none',
+              cursor: 'pointer'
             }}
           >
             ShapeShift

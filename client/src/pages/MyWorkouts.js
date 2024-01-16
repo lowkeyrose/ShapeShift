@@ -48,35 +48,6 @@ export default function MyWorkouts() {
         }
     }, [dispatch, token, fetchWorkouts])
 
-    // useEffect(() => {
-    //     if (token) {
-    //         const fetchWorkouts = async () => {
-    //             // console.log("Fetching My-workouts...");
-    //             setLoading(true)
-    //             try {
-    //                 const response = await fetch('/api/workouts/myworkouts', {
-    //                     headers: {
-    //                         'Authorization': token
-    //                     }
-    //                 })
-    //                 const data = await response.json()
-    //                 if (!response.ok) {
-    //                     throw new Error(`Failed to fetch workouts: ${response.statusText}`);
-    //                 }
-    //                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
-    //             } catch (error) {
-    //                 console.error('Error fetching workouts:', 'error:', error, 'error.message:', error.message, 'error.stack:', error.stack);
-    //             } finally {
-    //                 setLoading(false)
-    //             }
-    //         }
-    //         fetchWorkouts()
-    //     }
-    //     return () => {
-    //         dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
-    //     }
-    // }, [dispatch, token, setLoading])
-
     return (
         <div className='my-workouts-page'>
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>

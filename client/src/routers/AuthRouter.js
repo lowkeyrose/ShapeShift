@@ -9,6 +9,7 @@ import SingleWorkout from '../pages/SingleWorkout';
 import { useGlobalContext } from '../hooks/useGlobalContext';
 import Account from '../pages/Account';
 import EditAccount from '../pages/EditAccount';
+import About from '../pages/About';
 
 export default function AuthRouter() {
   const { user } = useGlobalContext()
@@ -20,7 +21,6 @@ export default function AuthRouter() {
       <Route path='/workouts' element={<Workouts />} />
       <Route path="/workouts/workout/:id" element={<SingleWorkout />} />
 
-      {/* Additional check for the user inside the AuthRouter. It provides an extra layer of security. If, for some reason, the AuthRouter is rendered when there's no user, the routes within it won't be accessible due to the conditional rendering.*/}
       {user ? (
         <>
           <Route path='/workouts/myworkouts' element={<MyWorkouts />} user={user} />
@@ -36,8 +36,7 @@ export default function AuthRouter() {
       }
 
       <Route path="/errorPage" element={<ErrorPage />} />
-      {/* <Route path="/about" element={<About />} /> */}
-      {/* <Route path="/TermsAndPrivacy" element={<TermsAndPrivacy />} /> */}
+      <Route path="/about" element={<About />} />
 
       {/* {roleType === RoleTypes.admin &&
         <>

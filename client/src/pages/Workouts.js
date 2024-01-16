@@ -38,28 +38,6 @@ export default function Workouts() {
         }
     }, [dispatch, fetchWorkouts])
 
-    // useEffect(() => {
-    //     const fetchWorkouts = async () => {
-    //         setLoading(true)
-    //         try {
-    //             const response = await fetch('/api/workouts')
-    //             const json = await response.json()
-
-    //             if (response.ok) {
-    //                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
-    //             }
-    //         } catch (error) {
-    //             console.log("The Promise is rejected!", error)
-    //         } finally {
-    //             setLoading(false)
-    //         }
-    //     }
-    //     fetchWorkouts()
-    //     return () => {
-    //         dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
-    //     }
-    // }, [dispatch, setLoading])
-
     return (
         <div className='workouts-page'>
             <Typography variant="h1" component="h1" sx={{  fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>

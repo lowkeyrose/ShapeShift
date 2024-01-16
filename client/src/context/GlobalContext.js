@@ -2,8 +2,8 @@ import React, { createContext, useCallback, useEffect, useReducer, useMemo, useS
 import { ACTIONS } from "./Actions";
 import { RoleTypes } from '../components/Navbar-config';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Snackbar from '../components/Snackbar';
 import Loader from '../components/Loader';
+import { Toaster, toast } from 'sonner';
 
 export const GlobalContext = createContext();
 
@@ -38,14 +38,15 @@ export const GlobalContextProvider = React.memo(({ children }) => {
   const token = JSON.parse(localStorage.getItem('token'));
   const navigate = useNavigate();
   const location = useLocation();
-  const [snackbarText, setSnackbarText] = useState('');
   const [searchWord, setSearchWord] = useState('');
   const [roleType, setRoleType] = useState(RoleTypes.none);
   const [loading, setLoading] = useState(false);
 
-  const snackbar = text => {
-    setSnackbarText(text);
-    setTimeout(() => setSnackbarText(''), 3 * 1000);
+  const showToastError = text => {
+    toast.error(text);
+  };
+  const showToastSuccess = text => {
+    toast.success(text);
   };
 
   const [state, dispatch] = useReducer(authReducer, {
@@ -70,7 +71,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
         const mappedRoleType = RoleTypes[userRoleType]
         setRoleType(mappedRoleType)
       } else {
-        snackbar('Session expired');
+        showToastError('Session expired');
         memoizedDispatch({ type: ACTIONS.LOGOUT })
         localStorage.removeItem('token')
         setRoleType(RoleTypes.none)
@@ -87,40 +88,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     }
   }, [authenticate, location.pathname, token]);
 
-  // useEffect(() => {
-  //   if (token) {
-  //     const authenticate = async () => {
-  //       try {
-  //         const response = await fetch('/api/user/authenticate', {
-  //           method: 'POST',
-  //           headers: {
-  //             'Authorization': token
-  //           }
-  //         });
-
-  //         if (response.ok) {
-  //           const json = await response.json()
-  //           memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
-  //           const userRoleType = json.roleType
-  //           const mappedRoleType = RoleTypes[userRoleType]
-  //           setRoleType(mappedRoleType)
-  //         } else {
-  //           snackbar('Session expired');
-  //           memoizedDispatch({ type: ACTIONS.LOGOUT })
-  //           localStorage.removeItem('token')
-  //           setRoleType(RoleTypes.none)
-  //           navigate('/')
-  //         }
-  //       } catch (error) {
-  //         console.log("The Promise is rejected!", error)
-  //       }
-  //     };
-
-  //     authenticate()
-  //   }
-  // }, [memoizedDispatch, location.pathname, token, navigate, setRoleType]);
-
-  console.log('GlobalContextProvider state: ', state);
+   console.log('GlobalContextProvider state: ', state);
 
   const memoizedValue = useMemo(() => ({
     ...state,
@@ -128,20 +96,19 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     token,
     navigate,
     location,
-    snackbarText,
-    setSnackbarText,
     roleType,
     setRoleType,
-    snackbar,
     loading,
+    showToastError,
+    showToastSuccess,
     setLoading,
     searchWord, 
     setSearchWord
-  }), [state, token, navigate, location, snackbarText, roleType, loading, searchWord]);
+  }), [state, token, navigate, location, roleType, loading, searchWord]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>
-      {snackbarText && <Snackbar text={snackbarText} />}
+      <Toaster richColors/>
       {loading && <Loader />}
       {children}
     </GlobalContext.Provider>

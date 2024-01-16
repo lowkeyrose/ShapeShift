@@ -71,7 +71,9 @@ const createWorkout = async (req, res) => {
     // Extract workout and exercises data from the request body
     const workoutData = req.body
     let exercisesData = req.body.exercises
+    console.log('user details: ', req.user)
     workoutData.user_id = req.user._id
+    workoutData.userProfilePic = req.user.profilePic
     workoutData.username = req.user.username
     exercisesData = exercisesData.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
@@ -98,19 +100,6 @@ const createWorkout = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 }
-//   let emptyFields = []
-
-//   if (!title) {
-//     emptyFields.push('title')
-//   }
-//   if (!exercises || !Array.isArray(exercises) || exercises.length === 0) {
-//     return res.status(400).json({ error: 'Please provide at least one exercise' })
-//   }
-
-//   if (emptyFields.length) {
-//     return res.status(400).json({ error: 'Please fill in all fields', emptyFields })
-//   }
-// }
 
 
 
