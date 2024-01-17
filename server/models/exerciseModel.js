@@ -1,15 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-// const Joi = require('joi');
-
-// const exerciseValidationSchema = Joi.object({
-//   title: Joi.string().min(3).max(20).required(),
-//   imgUrl: Joi.string().uri().max(2000).optional(),
-//   videoUrl: Joi.string().uri().max(2000).optional(),
-//   sets: Joi.number().min(1).max(200).required(),
-//   weight: Joi.number().min(0).max(1000).required(),
-//   reps: Joi.number().min(1).max(200).required()
-// });
 
 const exerciseSchema = new Schema({
   title: {
@@ -47,8 +37,3 @@ const exerciseSchema = new Schema({
 }, { timestamps: true })
 
 module.exports = mongoose.model('Exercise', exerciseSchema)
-
-// module.exports = {
-//   Exercise: mongoose.model('Exercise', exerciseSchema),
-//   exerciseValidationSchema: exerciseValidationSchema
-// };

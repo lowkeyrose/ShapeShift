@@ -98,7 +98,7 @@ const Navbar = () => {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: 'block', md: 'block', lg: 'none' },
               }}
             >
               {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (

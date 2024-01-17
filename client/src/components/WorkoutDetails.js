@@ -89,7 +89,7 @@ const WorkoutDetails = ({ workout }) => {
   return (
     <div className="workout-card">
       <figure className="workout-figure">
-        <h1>{workout.title.toUpperCase()}</h1>
+        <h1>{workout.title?.toUpperCase()}</h1>
         <img className="workout-img" src={workout.imgUrl} alt={workout.imgUrl} />
         <figcaption className="workout-figcaption">
           <h3>
@@ -110,7 +110,7 @@ const WorkoutDetails = ({ workout }) => {
         <div className='private'><FontAwesomeIcon style={{ fontSize: '20px' }} icon={faLock} /></div>
         }
 
-        {workout.likes > 0 && <p className='likes'>{workout.likes} <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faThumbsUp} /></p>}
+        {workout.likes > 0 && <p className='likes'> <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faThumbsUp} /> {workout.likes}</p>}
 
         <img className='profilePic' src={workout.userProfilePic} alt={workout.username} />
 

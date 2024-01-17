@@ -240,7 +240,7 @@ export default function WorkoutForm() {
         }
 
         try {
-            const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? id : 'create/new'}`, {
+            const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? `edit/${id}` : 'create/new'}`, {
                 method: id ? 'PUT' : 'POST',
                 body: JSON.stringify(workoutFormData),
                 headers: {
@@ -264,7 +264,8 @@ export default function WorkoutForm() {
                 showToastError(id ? 'Failed to update workout' : 'Failed to create workout');
             }
         } catch (error) {
-            console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
+            console.error(id ? 'Error updating workout:' : 'Error creating workout:');
+            // console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
         } finally {
             setLoading(false)
         }

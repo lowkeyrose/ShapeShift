@@ -1,5 +1,5 @@
-const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
+const Workout = require('../models/workoutModel')
 const Exercise = require('../models/exerciseModel')
 const User = require('../models/userModel')
 
@@ -119,7 +119,11 @@ const deleteWorkout = async (req, res) => {
       return res.status(404).json({ error: 'Workout not found' })
     }
 
-    // check if this works properly
+    // find if the workout belongs to the user
+    // if (req.user._id === workout.user._id) {
+
+    // }
+
 
     // Find users with the workout in favorites
     const usersToUpdate = await User.find({ favorites: id });
@@ -200,8 +204,8 @@ const updateWorkout = async (req, res) => {
 
     // Identify exercises to be deleted
     const exercisesToDelete = workout.exercises
-    .map((exerciseId) => exerciseId.toString())
-    .filter((exerciseId) => !updatedExercisesIds.toString().includes(exerciseId));
+      .map((exerciseId) => exerciseId.toString())
+      .filter((exerciseId) => !updatedExercisesIds.toString().includes(exerciseId));
 
     // Delete exercises that are no longer present in the updated workout
     await Exercise.deleteMany({ _id: { $in: exercisesToDelete } });

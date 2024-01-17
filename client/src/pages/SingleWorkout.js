@@ -74,9 +74,12 @@ export default function SingleWorkout() {
   return (
     <div className='single-workout-page'>
       {workout &&
-        <div>
+        <div className='single-workout-container'>
           <div className='workout-title'>{[workout.title]}</div>
-          <img className='workout-img' src={workout.imgUrl} alt={workout.title} />
+          <div className='workout-img-container'
+           style={{ backgroundImage: `url(${workout.imgUrl})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}
+           alt={workout.title}>
+           </div>
           <br />
           <br />
           <div className='exercises-title'>Exercises: {workout.exercises && workout.exercises.map((exercise) =>
@@ -92,16 +95,15 @@ export default function SingleWorkout() {
             </div>
           )}</div>
 
-          {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
           <div>Creator: {workout.username}</div>
-          {workout.Private}
+          {workout.createdAt && <p>Created: {formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
 
           {
             ((user?.roleType === 'admin') || (user?._id === workout?.user_id)) &&
-            <>
-              <button onClick={editWorkout}>Edit Workout</button>
-              <button onClick={deleteWorkout}>Delete Workout</button>
-            </>
+            <div className='workout-buttons'>
+              <button className='workout-button' onClick={editWorkout}>Edit Workout</button>
+              <button className='workout-button' onClick={deleteWorkout}>Delete Workout</button>
+            </div>
           }
         </div>
       }
