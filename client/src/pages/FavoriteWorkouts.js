@@ -51,7 +51,7 @@ export default function FavoirteWorkouts() {
       </Typography>
       <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
         <br />
-        {workouts && workouts.length > 0 ? "Here are your favorite workouts" : "You current have no available workouts, Add your first one today!"}
+        {workouts && workouts.length > 0 ? "We've kept all you're favorite workouts ready for you!" : "You current have no available workouts, Add your first one today!"}
       </Typography>
 
       <div className="workouts">

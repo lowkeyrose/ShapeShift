@@ -28,11 +28,11 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
 
   const structure = [
     { name: 'title', type: 'text', label: 'Title', required: true, halfWidth: false },
-    { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: true, halfWidth: false },
-    { name: 'videoUrl', type: 'text', label: 'Video Url (Optional)', required: true, halfWidth: false },
-    { name: 'sets', type: 'number', label: 'Sets', required: true, halfWidth: true },
-    { name: 'weight', type: 'number', label: 'Weight (kg)', required: true, halfWidth: true },
-    { name: 'reps', type: 'number', label: 'Reps', required: true, halfWidth: true }
+    { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false },
+    { name: 'videoUrl', type: 'text', label: 'Video Url (Optional)', required: false, halfWidth: false },
+    { name: 'sets', type: 'number', label: 'Sets', required: false, halfWidth: true },
+    { name: 'weight', type: 'number', label: 'Weight (kg)', required: false, halfWidth: true },
+    { name: 'reps', type: 'number', label: 'Reps', required: false, halfWidth: true }
   ]
 
   const exerciseSchema = Joi.object({

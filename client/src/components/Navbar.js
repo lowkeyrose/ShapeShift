@@ -158,7 +158,7 @@ const Navbar = () => {
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   {/* <span>{roleType},</span>
                   <span>{user.username}</span> */}
-                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '40px', height: '40px' }} />
+                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '50px', height: '50px' }} />
 
                 </IconButton>
               </Tooltip>

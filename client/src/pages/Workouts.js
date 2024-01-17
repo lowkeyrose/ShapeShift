@@ -99,7 +99,7 @@ export default function Workouts() {
             </Typography>
             <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
-                {workouts && workouts.length > 0 ? "Here you can find all the workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
+                {workouts && workouts.length > 0 ? "Here you can find all the public workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
             <SortBy onSortChange={handleSortChange} />
             <Filter onFilterChange={handleFilterChange} />

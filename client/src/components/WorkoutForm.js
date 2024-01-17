@@ -272,11 +272,13 @@ export default function WorkoutForm() {
     }
 
     return (
-        <Container component="main" maxWidth="sm" className='form'>
+        <div className='workout-form'>
+        <Container component="main" maxWidth="sm" className='workout-form-container'>
+            <button className='return-button' onClick={() => navigate('workouts/myworkouts')}>X</button>
             <CssBaseline />
-            <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
-                <Typography component="h1" variant="h5"> {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Avatar sx={{ m: '10px 0', bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
+                <Typography component="h1" variant="h5" > {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
                         {
@@ -348,12 +350,7 @@ export default function WorkoutForm() {
                     <Button disabled={!isValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}> {id ? 'Update Workout' : 'Add Workout'} </Button>
                 </Box>
             </Box>
-            <button style={{
-                position: 'absolute',
-                top: '75px',
-                right: '10px',
-                padding: '5px 7px',
-            }} onClick={() => navigate('workouts/myworkouts')}>X</button>
         </Container>
+        </div>
     );
 }

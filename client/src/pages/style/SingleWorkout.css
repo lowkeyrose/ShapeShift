@@ -5,7 +5,7 @@
   align-items: center;
   text-align: center;
   background-color: #00000024;
-  background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #00000024  ,#00000010) ;
+  background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #ffffff24  ,#b5b5b510) ;
 
 }
 
@@ -17,7 +17,7 @@
   margin: 25px;
   width: 50%;
   box-shadow: 1px 1px 20px grey;
-  background-color: #c5c5c5;
+  background-color: #dfdfdf;
 }
 
 .single-workout-page .workout-title{

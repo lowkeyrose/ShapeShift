@@ -113,35 +113,34 @@ const deleteWorkout = async (req, res) => {
 
   try {
     // Find the workout and store its ID
-    const workout = await Workout.findOneAndDelete({ _id: id })
+    const workout = await Workout.findOne({ _id: id })
 
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' })
     }
 
     // find if the workout belongs to the user
-    // if (req.user._id === workout.user._id) {
+    if (req.user._id.equals(workout.user_id) || req.user.roleType === 'admin') {
 
-    // }
+      const deletedWorkout = await Workout.findByIdAndDelete(id);
 
+      // Find users with the workout in favorites
+      const usersToUpdate = await User.find({ favorites: id });
 
-    // Find users with the workout in favorites
-    const usersToUpdate = await User.find({ favorites: id });
+      // Remove workout ID from users' favorites
+      await Promise.all(usersToUpdate.map(async (user) => {
+        if (user && user.favorites) { // Check if user exists and has favorites
+          user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id);
+          await user.save();
+        }
+      }));
 
-    // Remove workout ID from users' favorites
-    await Promise.all(usersToUpdate.map(async (user) => {
-      if (user && user.favorites) { // Check if user exists and has favorites
-        user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id);
-        await user.save();
-      }
-    }));
+      // Delete all exercises with the corresponding workout_id
+      await Exercise.deleteMany({ workout_id: deletedWorkout._id })
+      // console.log('workout supppper: ', workout);
+      res.status(200).json(deletedWorkout)
+    }
 
-
-
-    // Delete all exercises with the corresponding workout_id
-    await Exercise.deleteMany({ workout_id: workout._id })
-    console.log('workout supppper: ', workout);
-    res.status(200).json(workout)
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: error.message });
@@ -153,6 +152,9 @@ const updateWorkout = async (req, res) => {
   const { id } = req.params
   const workoutData = req.body
   const exercisesData = req.body.exercises
+
+  console.log('req.user._id: ', req.user._id);
+  console.log('workoutData: ', workoutData);
 
   // instead of declaring maybe just write workoutData.exercises? but we have multiple cases
   // console.log('workoutData: ', workoutData);
@@ -167,10 +169,8 @@ const updateWorkout = async (req, res) => {
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' });
     }
-    // @@@@@@@@@@@@@@@@@@@@@@@@ STARTED HERE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     // Update or create exercises
-    // take code to sperate function
     const updatedExercisesIds = await Promise.all(exercisesData.map(async (exercise) => {
       if (exercise._id) {
         // Exercise already has an _id, update it
@@ -181,10 +181,8 @@ const updateWorkout = async (req, res) => {
           if (hasChanges) {
             Object.assign(existingExercise, exercise);
             await existingExercise.save();
-            console.log('existingExercise._id: ', existingExercise._id);
             return existingExercise._id;
           } else {
-            console.log('existingExercise._id: ', existingExercise._id);
             return existingExercise._id;
           }
         }
@@ -195,12 +193,12 @@ const updateWorkout = async (req, res) => {
           user_id: workoutData.user_id,
           workout_id: workoutData._id,
         })
-        console.log('newExercise._id: ', newExercise._id);
+        // console.log('newExercise._id: ', newExercise._id);
         return newExercise._id;
       }
     }))
 
-    console.log('updatedExercisesIds: ', updatedExercisesIds);
+    // console.log('updatedExercisesIds: ', updatedExercisesIds);
 
     // Identify exercises to be deleted
     const exercisesToDelete = workout.exercises

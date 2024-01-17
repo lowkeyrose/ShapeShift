@@ -6,8 +6,9 @@ export default function Account() {
   const { user, navigate } = useContext(GlobalContext)
 
   return (
-    <div className='account-page'>
+    <div className="account-page">
 
+    <div className='account-page-container'>
       <div className='top'>
         <img src={user.profilePic} alt="img" />
         <div className='username'>
@@ -23,7 +24,8 @@ export default function Account() {
         <div className='box'>Phone: {user.phone}</div>
         <div className='box'>Gender: {user.gender}</div>
       </div>
-      <button onClick={() => navigate(`/account/edit/${user._id}`)}>Edit Account Info</button>
+      {user.roleType !== 'admin' && <button onClick={() => navigate(`/account/edit/${user._id}`)}>Edit Account Info</button>}
+    </div>
     </div>
   )
 }

@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Joi from 'joi'
+import './style/Forms.css'
 import { FormControl, FormLabel, Radio, RadioGroup } from '@mui/material'
 
 
@@ -60,9 +61,13 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    
+    if (formData.profilePic === '') {
+      formData.profilePic = 'https://img.freepik.com/premium-vector/strong-arm-muscles-cartoon-illustration_584573-737.jpg?w=740'
+  }
+
     await signup(formData.firstName, formData.lastName, formData.email, formData.password, formData.username, formData.phone, formData.gender, formData.profilePic)
 
-    // await signup({...formData})
   }
 
   const handleInput = ev => {
@@ -95,11 +100,11 @@ export default function SignUp() {
 
 
   return (
-    <Container component="main" maxWidth="sm" sx={{minHeight:'100vh'}}>
+    <div className="form">
+    <Container className='form-container' component="main" maxWidth="sm" sx={{minHeight:'100vh'}}>
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -177,5 +182,6 @@ export default function SignUp() {
         </Box>
       </Box>
     </Container>
+    </div>
   );
 }

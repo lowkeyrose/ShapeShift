@@ -28,7 +28,7 @@ export default function AuthRouter() {
           <Route path='/workouts/myworkouts/create/new' element={<WorkoutForm />} />
           <Route path='/workouts/myworkouts/edit/:id' element={<WorkoutForm />} />
           <Route path="/account" element={<Account />} />
-          <Route path="/account/edit/:id" element={<EditAccount />} />
+          {user.roleType !== 'admin' && <Route path="/account/edit/:id" element={<EditAccount />} />}
           {/* <Route path="/profile" element={<Profile />} /> */}
         </>
       ) :
@@ -38,10 +38,10 @@ export default function AuthRouter() {
       <Route path="/errorPage" element={<ErrorPage />} />
       <Route path="/about" element={<About />} />
 
-      {/* {roleType === RoleTypes.admin &&
+      {/* {user.roleType === 'admin' &&
         <>
+        <Route path="/admin/users" element={<UsersManagement />} />
           <Route path="/admin/users/:id" element={<EditUser />} />
-          <Route path="/admin/users" element={<UsersManagement />} />
         </>
       } */}
 

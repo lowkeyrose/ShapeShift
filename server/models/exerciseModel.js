@@ -26,6 +26,9 @@ const exerciseSchema = new Schema({
     type: Number,
     required: true
   },
+  // duration: {
+  //   type: Number,
+  // },
   workout_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true

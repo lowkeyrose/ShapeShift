@@ -36,6 +36,10 @@
 
 .close-modal {
   position: absolute;
+  cursor: pointer;
+  border: none;
+  color: grey;
+  font-size: 20px;
   top: 10px;
   right: 10px;
   padding: 5px 7px;

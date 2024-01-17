@@ -20,17 +20,12 @@ const exerciseValidationSchema = Joi.object({
 module.exports = async (req, res, next) => {
   try {
     const { title, imgUrl, exercises, Private } = req.body
-    // Validate the request body against the schema
-
     const exerciseErrors = [];
 
     exercises.map((exercise) => {
       const { title, imgUrl, videoUrl, sets, weight, reps } = exercise
       const { error: exercisesError, value: exercisesValue } = exerciseValidationSchema.validate({title, imgUrl, videoUrl, sets, weight, reps });
-      console.log('exercisesError: ', exercisesError);
-      console.log('exercisesValue: ', exercisesValue);
       if (exercisesError) {
-        console.log('exercisesError.message: ', exercisesError.message);
         exerciseErrors.push(exercisesError.message);
       }
     })
@@ -38,24 +33,15 @@ module.exports = async (req, res, next) => {
     if (exerciseErrors.length > 0) {
       return res.status(400).json({ error: exerciseErrors });
     }
-    // if (exercisesError) {
-    //   console.log('exercisesError.message: ', exercisesError.message);
-    //   return res.status(400).json({ error: exercisesError.message });
-    // }
-
     const { error, value } = workoutValidationSchema.validate({ title, imgUrl, exercises, Private });
-    // If there is an error in validation, return a 400 Bad Request response
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    // If validation passes, add the validated data to the request object
     req.validatedData = value;
 
-    // Continue to the next middleware or route handler
     next();
   } catch (err) {
-    // Handle other errors, if any
     console.log(err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }

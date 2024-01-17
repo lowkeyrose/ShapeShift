@@ -1,9 +1,16 @@
 .account-page {
+  background-image: url('../../assets/ll.png');
+  background-size: 90%;
+  padding: 40px 0;
+}
+
+
+.account-page-container {
   padding: 20px;
   background: linear-gradient(to right, #ee5a6f, #f29263);
   display: flex;
   justify-content: center;
-  margin: 50px auto;
+  margin: auto;
   border-radius: 10px;
   box-shadow: 3px 3px 12px;
   align-items: center;
@@ -12,14 +19,14 @@
   position: relative;
 }
 
-.account-page .top {
+.account-page-container .top {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.account-page button,
-.account-page .box {
+.account-page-container button,
+.account-page-container .box {
   margin: 15px 0;
   align-self: center;
   background-color: #fff;
@@ -52,28 +59,28 @@
   touch-action: manipulation;
 }
 
-.account-page button:hover {
+.account-page-container button:hover {
   box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
 
-.account-page button:focus {
+.account-page-container button:focus {
   box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 4px -6px;
 }
 
-.account-page .bottom {
+.account-page-container .bottom {
   display: flex;
   align-items: center;
   justify-content: center;
   display: block;
 }
 
-.account-page img {
+.account-page-container img {
   width: 30%;
   border-radius: 50%;
 }
 
-.account-page .box {
+.account-page-container .box {
   cursor: unset;
   position: unset;
   font-weight: 500;

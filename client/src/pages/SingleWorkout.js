@@ -90,6 +90,7 @@ export default function SingleWorkout() {
                 <div>Weight: {exercise.weight}</div>
                 <div>Reps: {exercise.reps}</div>
                 <div>Sets: {exercise.sets}</div>
+                {exercise.videoUrl && <a href={exercise.videoUrl} target='blank'>Video Url</a>}
               </div>
 
             </div>

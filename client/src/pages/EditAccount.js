@@ -13,6 +13,7 @@ import Container from '@mui/material/Container'
 import Joi from 'joi'
 import { FormControl, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { GlobalContext } from '../context/GlobalContext'
+import './style/Forms.css'
 
 export default function EditAccount() {
   // const { signup, error } = useSignup()
@@ -91,90 +92,86 @@ export default function EditAccount() {
     setFormData(obj);
     setErrors(err);
   };
-
-
+  
+  
   return (
-    <Container component="main" maxWidth="sm" className='form'>
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Edit Account Info
-        </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            {
-              structure.map(item =>
-                <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
-                  <TextField
-                    autoComplete={item.autoComplete}
-                    error={
-                      (error?.includes('email') && item.name === 'email') ||
-                        (error?.includes('username') && item.name === 'username')
-                        ? error
-                        : !!errors[item.name]
-                    }
-                    helperText={
-                      (error?.includes('email') && item.name === 'email') ||
-                        (error?.includes('username') && item.name === 'username')
-                        ? error
-                        : errors[item.name]
-                    }
+    <div className="form">
+      <Container component="main" maxWidth="sm" className='form-container'>
+      <button className='return-button' onClick={() => navigate('/account')}>X</button>
+        <CssBaseline />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography sx={{ mb: 2}} component="h1" variant="h5">
+            Edit Account Info
+          </Typography>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              {
+                structure.map(item =>
+                  <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
+                    <TextField
+                      autoComplete={item.autoComplete}
+                      error={
+                        (error?.includes('email') && item.name === 'email') ||
+                          (error?.includes('username') && item.name === 'username')
+                          ? error
+                          : !!errors[item.name]
+                      }
+                      helperText={
+                        (error?.includes('email') && item.name === 'email') ||
+                          (error?.includes('username') && item.name === 'username')
+                          ? error
+                          : errors[item.name]
+                      }
+                      onChange={handleInput}
+                      value={formData[item.name]}
+                      name={item.name}
+                      type={item.type}
+                      required={item.required}
+                      fullWidth
+                      id={item.name}
+                      label={item.label}
+                      autoFocus={item.name === "firstName" ? true : false}
+                    />
+                  </Grid>
+                )
+              }
+              <Grid item xs={12} sx={{ mt: -1 }}>
+                <FormControl>
+                  <FormLabel id="gender">Gender</FormLabel>
+                  <RadioGroup
+                    aria-labelledby="gender"
+                    name="controlled-radio-buttons-group"
+                    value={value}
                     onChange={handleInput}
-                    value={formData[item.name]}
-                    name={item.name}
-                    type={item.type}
-                    required={item.required}
-                    fullWidth
-                    id={item.name}
-                    label={item.label}
-                    autoFocus={item.name === "firstName" ? true : false}
-                  />
-                </Grid>
-              )
-            }
-            <Grid item xs={12} sx={{ mt: -1 }}>
-              <FormControl>
-                <FormLabel id="gender">Gender</FormLabel>
-                <RadioGroup
-                  aria-labelledby="gender"
-                  name="controlled-radio-buttons-group"
-                  value={value}
-                  onChange={handleInput}
-                >
-                  <FormControlLabel value="female" control={<Radio id='gender' />} label="Female" />
-                  <FormControlLabel value="male" control={<Radio id='gender' />} label="Male" />
-                </RadioGroup>
-              </FormControl>
+                  >
+                    <FormControlLabel value="female" control={<Radio id='gender' />} label="Female" />
+                    <FormControlLabel value="male" control={<Radio id='gender' />} label="Male" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
 
-          <Button
-            disabled={!isValid}
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Update Info
-          </Button>
+            <Button
+              disabled={!isValid}
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Update Info
+            </Button>
+          </Box>
         </Box>
-      </Box>
-      <button style={{
-                position: 'absolute',
-                top: '75px',
-                right: '10px',
-                padding: '5px 7px',
-            }} onClick={() => navigate('/account')}>X</button>
-    </Container>
+      </Container>
+    </div>
   );
 }
