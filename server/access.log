@@ -3136,3 +3136,14 @@ GET /api/workouts/myworkouts status 304, 10.999 ms Wed, 17 Jan 2024 20:10:06 GMT
 POST /api/user/authenticate status 200, 4.622 ms Wed, 17 Jan 2024 20:10:08 GMT
 GET /api/workouts status 304, 5.571 ms Wed, 17 Jan 2024 20:10:09 GMT
 GET /api/workouts status 304, 4.931 ms Wed, 17 Jan 2024 20:10:09 GMT
+POST /api/user/authenticate status 200, 42.830 ms Wed, 17 Jan 2024 20:12:03 GMT
+GET /api/workouts/myworkouts status 304, 47.044 ms Wed, 17 Jan 2024 20:12:03 GMT
+GET /api/workouts/myworkouts status 304, 18.132 ms Wed, 17 Jan 2024 20:12:03 GMT
+POST /api/user/authenticate status 200, 6.301 ms Wed, 17 Jan 2024 20:12:04 GMT
+GET /api/workouts/workout/65a54e07f9a8eebed5145d6e status 304, 17.288 ms Wed, 17 Jan 2024 20:12:04 GMT
+GET /api/workouts/workout/65a54e07f9a8eebed5145d6e status 304, 6.806 ms Wed, 17 Jan 2024 20:12:05 GMT
+POST /api/user/authenticate status 200, 9.428 ms Wed, 17 Jan 2024 20:12:09 GMT
+POST /api/user/authenticate status 200, 6.132 ms Wed, 17 Jan 2024 20:12:09 GMT
+GET /api/workouts/workout/65a8333be681fdad978a8974 status 304, 10.511 ms Wed, 17 Jan 2024 20:12:09 GMT
+GET /api/workouts/workout/65a8333be681fdad978a8974 status 304, 10.055 ms Wed, 17 Jan 2024 20:12:09 GMT
+PUT /api/workouts/myworkouts/edit/65a8333be681fdad978a8974 status 401, 34.823 ms Wed, 17 Jan 2024 20:12:12 GMT
