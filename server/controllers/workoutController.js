@@ -170,6 +170,11 @@ const updateWorkout = async (req, res) => {
       return res.status(404).json({ error: 'Workout not found' });
     }
 
+    if (!req.user._id.equals(workout.user_id) || !req.user.roleType === 'admin') {
+      return res.status(401).json({ error: 'Unauthorized user' });
+    }
+
+
     // Update or create exercises
     const updatedExercisesIds = await Promise.all(exercisesData.map(async (exercise) => {
       if (exercise._id) {
