@@ -17,7 +17,6 @@ import Joi from 'joi'
 import ExerciseForm from './ExerciseForm'
 import { useParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
-// import _isEqual from 'lodash/isEqual';
 import '../pages/style/Forms.css'
 
 export default function WorkoutForm() {
@@ -26,7 +25,7 @@ export default function WorkoutForm() {
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
-
+    const [exerciseFormModal, setExerciseFormModal] = useState(false);
     const [editExerciseModal, setEditExerciseModal] = useState(false);
     const [editingExercise, setEditingExercise] = useState(null);
     const [initialWorkoutData, setInitialWorkoutData] = useState({});
@@ -68,66 +67,18 @@ export default function WorkoutForm() {
     useEffect(() => {
         if (isValidObjectId(id)) {
             fetchWorkout()
-            // if the id is new for CreateWorkout, then it comes as undefined
+            // if the id is new for CreateWorkout, id === undefined
         } else if (id !== undefined) {
             navigate('/errorPage')
         }
-    // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [id, fetchWorkout, navigate])
-
-    // const handleInput = ev => {
-    //     let id, value;
-
-    //     if (ev.id === 'exercises') {
-    //         ({ id, value } = ev)
-    //     } else {
-    //         ({ id, value } = ev.target)
-    //     }
-    //     let obj = {
-    //         ...workoutFormData,
-    //         [id]: value,
-    //     }
-    //     if (id === "Private") {
-    //         const { checked } = ev.target
-    //         obj = { ...workoutFormData, [id]: checked }
-    //     }
-    //     const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true });
-    //     const err = { ...errors, [id]: undefined };
-    //     if (schema.error) {
-    //         const error = schema.error.details.find(e => e.context.key === id);
-    //         if (error) {
-    //             err[id] = error.message;
-    //         }
-    //         setIsValid(false);
-    //     } else {
-    //         setIsValid(true)
-    //     }
-    //     setErrors(err)
-    // }
 
     const handleInput = ev => {
         let obj = {}
 
         const validation = (id) => {
-
             const hasChanges = id === 'exercises' ? JSON.stringify(obj.exercises) !== JSON.stringify(initialWorkoutData.exercises) : obj[id] !== initialWorkoutData[id];
-
-            // const hasChanges = Object.keys(obj).some((key) => obj[key] !== initialWorkoutData[key]);
-
-            // const hasChanges = Object.keys(obj).some((key) => {
-            //     if (key === 'exercises') {
-            //         // Perform a deep comparison for the 'exercises' array
-            //         return obj[key].length !== initialWorkoutData[key].length ||
-            //             obj[key].some((exercise, index) =>
-            //                 Object.keys(exercise).some(prop =>
-            //                     exercise[prop] !== initialWorkoutData[key][index][prop]
-            //                 )
-            //             );
-            //     }
-            //     // Perform a shallow comparison for other properties
-            //     return obj[key] !== initialWorkoutData[key];
-            // });
-
             const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true });
             const err = { ...errors, [id]: undefined };
             if (schema.error) {
@@ -163,13 +114,11 @@ export default function WorkoutForm() {
             }
             validation(id)
         }
-
         setWorkoutFormData(obj)
     }
 
     const handleDeleteExercise = (ex, ev) => {
         ev.preventDefault()
-
         const exercisesNotDeleted = workoutFormData.exercises.filter((exercise) => {
             if (ex._id) {
                 return ex._id !== exercise._id;
@@ -188,22 +137,23 @@ export default function WorkoutForm() {
         handleInput({ id: "exercises", value: exercisesNotDeleted })
     }
 
+
+    const handleOpenExerciseModal = (ex, ev) => {
+        ev.preventDefault()
+        setEditingExercise(ex);
+        setEditExerciseModal(true);
+    };
+
     const handleAddExercise = (exercise) => {
+        console.log('editExerciseModal: ', editExerciseModal);
+        console.log('exerciseFormModal: ', exerciseFormModal);
         // Generate a unique temporary key for the exercise
         const exerciseWithKey = { ...exercise, key: uuidv4() }
         setWorkoutFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exerciseWithKey] }));
         handleInput({ id: "exercises", value: [...workoutFormData.exercises, exerciseWithKey] })
     }
 
-    const handleOpenExerciseModal = (ex, ev) => {
-        ev.preventDefault()
-        setEditingExercise(ex);
-        setEditExerciseModal(true);
-        console.log('handleOpenExerciseModal exercise: ', ex);
-    };
-
     const handleEditExercise = (updatedExercise) => {
-
         const updatedExercises = workoutFormData.exercises.map((exercise) =>
             (updatedExercise._id && updatedExercise._id === exercise._id) ||
                 (updatedExercise.key && updatedExercise.key === exercise.key)
@@ -216,10 +166,6 @@ export default function WorkoutForm() {
         })
 
         handleInput({ id: "exercises", value: [...updatedExercises] })
-        // since we can't submit an exercise if its not new or isn't different from its initial state inside ExerciseForm.js we don't need the extra check
-        // if (JSON.stringify(workoutFormData.exercises) !== JSON.stringify(updatedExercises)) {
-        //     handleInput({ id: "exercises", value: [...updatedExercises] })
-        // }
     }
 
 
@@ -245,12 +191,9 @@ export default function WorkoutForm() {
                 }
             })
             const workoutData = await workoutResponse.json()
-            // console.log('workoutFormData:', workoutFormData);
-            // console.log('workoutData:', workoutData);
 
             if (workoutResponse.ok) {
-                // We currently don't have an update action, nor do we need to since we are using dispatch SET_WORKOUT in MyWorkouts.js where we are navigated to anyways and updating the workouts state to the workouts from the db, 
-                // workoutDispatch({ type: id ? ACTIONS.UPDATE_WORKOUT : ACTIONS.CREATE_WORKOUT, payload: workoutData })
+                // No need to dispatch an update workout action becuase we get the updated workouts after navigation
                 !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 navigate('/workouts/myworkouts')
                 showToastSuccess(id ? 'Workout updated successfully' : 'New workout added successfully')
@@ -260,93 +203,107 @@ export default function WorkoutForm() {
                 showToastError(id ? 'Failed to update workout' : 'Failed to create workout');
             }
         } catch (error) {
-            console.error(id ? 'Error updating workout:' : 'Error creating workout:');
-            // console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
+            console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
         } finally {
             setLoading(false)
         }
     }
 
+    useEffect(() => {
+        // Default enter key press while in input deletes an exercise
+        const handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        }
+        document.addEventListener('keypress', handleKeyPress);
+
+        return () => {
+            document.removeEventListener('keypress', handleKeyPress);
+        }
+    }, [isValid]);
+
     return (
         <div className='form'>
-        <Container component="main" maxWidth="sm" className='form-container'>
-            <button className='return-button' onClick={() => navigate('workouts/myworkouts')}>X</button>
-            <CssBaseline />
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Avatar sx={{ m: '10px 0', bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
-                <Typography component="h1" variant="h5" > {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
-                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                    <Grid container spacing={2}>
-                        {
-                            structure.map(item =>
-                                <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
-                                    <TextField
-                                        autoComplete={item.autoComplete}
-                                        // error={errors ? errors : Boolean(errors[item.name]) }
-                                        // error={Boolean(errors[item.name])}
-                                        error={!!errors[item.name]}
-                                        helperText={errors[item.name]}
-                                        onChange={handleInput}
-                                        value={workoutFormData[item.name]}
-                                        name={item.name}
-                                        type={item.type}
-                                        required={item.required}
-                                        fullWidth
-                                        id={item.name}
-                                        label={item.label}
-                                        autoFocus={item.name === "title" ? true : false}
-                                    />
-                                </Grid>
-                            )
-                        }
+            <Container component="main" maxWidth="sm" className='form-container'>
+                <button className='return-button' onClick={() => navigate('workouts/myworkouts')}>X</button>
+                <CssBaseline />
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Avatar sx={{ m: '10px 0', bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
+                    <Typography component="h1" variant="h5" > {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
+                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                        <Grid container spacing={2}>
+                            {
+                                structure.map(item =>
+                                    <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
+                                        <TextField
+                                            autoComplete={item.autoComplete}
+                                            error={!!errors[item.name]}
+                                            helperText={errors[item.name]}
+                                            onChange={handleInput}
+                                            value={workoutFormData[item.name]}
+                                            name={item.name}
+                                            type={item.type}
+                                            required={item.required}
+                                            fullWidth
+                                            id={item.name}
+                                            label={item.label}
+                                            autoFocus={item.name === "title" ? true : false}
+                                        />
+                                    </Grid>
+                                )
+                            }
 
-                        <Grid item xs={12}>
-                            <Typography variant="h6">Number of Exercises: {workoutFormData?.exercises?.length}</Typography>
-                        </Grid>
+                            <Grid item xs={12}>
+                                <Typography variant="h6">Number of Exercises: {workoutFormData?.exercises?.length}</Typography>
+                            </Grid>
 
-                        <Grid item xs={12} >
-                            <Typography variant="subtitle1">Exercises Preview:
-                                <div className='exercise-preview'>{
-                                    workoutFormData?.exercises?.map((exercise, index) =>
-                                        <div className="exercise-card" key={index}>
-                                            <figure className="exercise-figure">
-                                                <h1>{exercise.title}</h1>
-                                                <img className='exercise-img' src={exercise.imgUrl} alt={exercise.imgUrl} />
-                                                <figcaption className='exercise-figcaption'>
-                                                    <h3>Edit/Remove</h3>
-                                                    <div className='exercise-buttons'>
-                                                        <button className='exercise-button' onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
-                                                        <button className='exercise-button' onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
-                                                    </div>
-                                                </figcaption>
-                                            </figure>
-                                        </div>
-                                    )
-                                }</div>
-                            </Typography>
-                        </Grid>
+                            <Grid item xs={12} >
+                                <Typography variant="subtitle1">Exercises Preview:
+                                    <div className='exercise-preview'>{
+                                        workoutFormData?.exercises?.map((exercise, index) =>
+                                            <div className="exercise-card" key={index}>
+                                                <figure className="exercise-figure">
+                                                    <h1>{exercise.title}</h1>
+                                                    <img className='exercise-img' src={exercise.imgUrl} alt={exercise.imgUrl} />
+                                                    <figcaption className='exercise-figcaption'>
+                                                        <h3>Edit/Remove</h3>
+                                                        <div className='exercise-buttons'>
+                                                            <button className='exercise-button' onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
+                                                            <button className='exercise-button' onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
+                                                        </div>
+                                                    </figcaption>
+                                                </figure>
+                                            </div>
+                                        )
+                                    }</div>
+                                </Typography>
+                            </Grid>
 
-                        <ExerciseForm Use role = "dialog" aria-modal="true"
-                            id="exercise-form"
-                            onAddExercise={handleAddExercise}
-                            onEditExercise={handleEditExercise}
-                            editingExercise={editingExercise}
-                            setEditingExercise={setEditingExercise}
-                            editExerciseModal={editExerciseModal}
-                            setEditExerciseModal={setEditExerciseModal}
-                        />
+                            <ExerciseForm Use role="dialog" aria-modal="true"
 
-                        <Grid item xs={12} sx={{ mt: -1 }}>
-                            <FormControlLabel
-                                label="Private"
-                                control={<Checkbox id="Private" color="primary" checked={workoutFormData.Private} onChange={handleInput} name="Private" />}
+                                id="exercise-form"
+                                exerciseFormModal={exerciseFormModal}
+                                setExerciseFormModal={setExerciseFormModal}
+                                onAddExercise={handleAddExercise}
+                                onEditExercise={handleEditExercise}
+                                editingExercise={editingExercise}
+                                setEditingExercise={setEditingExercise}
+                                editExerciseModal={editExerciseModal}
+                                setEditExerciseModal={setEditExerciseModal}
                             />
+
+                            <Grid item xs={12} sx={{ mt: -1 }}>
+                                <FormControlLabel
+                                    label="Private"
+                                    control={<Checkbox id="Private" color="primary" checked={workoutFormData.Private} onChange={handleInput} name="Private" />}
+                                />
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Button disabled={!isValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}> {id ? 'Update Workout' : 'Add Workout'} </Button>
+                        <Button disabled={!isValid} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}> {id ? 'Update Workout' : 'Add Workout'} </Button>
+                    </Box>
                 </Box>
-            </Box>
-        </Container>
+            </Container>
         </div>
     );
 }

@@ -66,11 +66,9 @@ export default function MyWorkouts() {
                     })}
             </div>
 
-            <Button sx={{ display:'flex', justifyContent:'center', alignItems:'center', position: 'fixed', right: 20, bottom: 20, borderRadius:'100%', padding:'10px 0px', border:'2px solid darkgreen', zIndex:999 }} variant="contained" color="success" onClick={() => navigate('/workouts/myworkouts/create/new')} >
-            <AddCircleIcon sx={{fontSize:'40px'}} />
+            <Button sx={{ display:'flex', justifyContent:'center', alignItems:'center', position: 'fixed', right: 20, bottom: 20, borderRadius:'100%', padding:0,  zIndex:999, minWidth: 'unset', backgroundColor: '#409c45', color:'#b2dbb6'}} variant="contained" color="success" onClick={() => navigate('/workouts/myworkouts/create/new')} >
+            <AddCircleIcon sx={{fontSize:'60px', m:0, p:0}} />
             </Button>
-            {/* <Button sx={{ p: 2, position: 'fixed', right: 20, bottom: 20 }} variant="contained" color="success" endIcon={<AddCircleIcon />} onClick={() => navigate('/workouts/myworkouts/create/new')} >Create A New Workout</Button> */}
-
             <img className='bottom-left-icon' src={logo} alt="logo" />
         </div>
     )

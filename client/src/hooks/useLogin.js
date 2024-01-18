@@ -23,7 +23,6 @@ export const useLogin = () => {
         console.log('json.error: ', json.error);
       }
       if (response.ok) {
-        // console.log('json', json);
         // save the user to local storage
         localStorage.setItem('token', JSON.stringify(json.token))
         // update the user context

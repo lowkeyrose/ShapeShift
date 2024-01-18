@@ -2,8 +2,11 @@
   background-image: url("../../assets/ll.png");
   background-color: #cfcfcf0e;
   background-position: top 33px right 0;
-  padding: 100px 40px;
+  padding: 160px 40px;
   min-height: 100vh;
+}
+.signup-form {
+  padding: 120px 40px;
 }
 .form-container {
   min-height: 55vh;

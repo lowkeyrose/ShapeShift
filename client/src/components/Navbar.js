@@ -26,10 +26,10 @@ const Navbar = () => {
     ev.preventDefault()
     logout()
   }
-  const path = useResolvedPath().pathname;
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
-
+  const path = useResolvedPath().pathname;
+  console.log('user: ', user);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
   };
@@ -45,8 +45,11 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
+  // Dynamically determine whether to show the "About" page in the navigation
+  const showAboutInPages = !user; // If there is no user connected
+
   return (
-    <AppBar position="absolute" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+    <AppBar position="absolute" sx={{ backgroundColor: 'transparent' }}>
       <Container maxWidth="100%" sx={{ backgroundColor: 'inherit' }}>
         <Toolbar disableGutters>
 
@@ -157,17 +160,18 @@ const Navbar = () => {
               left: '50%',
               transform: 'translateX(-50%)'
             }}>
-            {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
-              <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
-                <Button
-                  key={page.route}
-                  // onClick={handleCloseNavMenu}
-                  sx={{ mx: 2, color: 'black', display: 'inline-block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize' }}
-                >
-                  {page.title}
-                </Button>
-              </Link>
-            ))}
+            {(showAboutInPages ? pages.concat(settings) : pages) // Use a conditional to determine which array to display
+              .filter(p => !p.permissions || checkPermissions(p.permissions, roleType))
+              .map((page) => (
+                <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
+                  <Button
+                    key={page.route}
+                    sx={{ mx: 2, color: 'black', display: 'inline-block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize' }}
+                  >
+                    {page.title}
+                  </Button>
+                </Link>
+              ))}
           </Box>
 
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
@@ -176,13 +180,10 @@ const Navbar = () => {
 
             {/* User Section */}
             {user && (
-              <Box sx={{ flexGrow: 0, m:0 }}>
+              <Box sx={{ flexGrow: 0, m: 0 }}>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mt:1 }}>
-                    {/* <span>{roleType},</span>
-                  <span>{user.username}</span> */}
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mt: 1 }}>
                     <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '50px', height: '50px' }} />
-
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -201,6 +202,11 @@ const Navbar = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
+                  <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
+                    <MenuItem onClick={handleLogout}>
+                      <Typography textAlign="center" fontFamily='Kanit'>Logout</Typography>
+                    </MenuItem>
+                  </Link>
                   {settings.filter(s => !s.permissions || checkPermissions(s.permissions, roleType)).map((setting) => (
                     <Link to={setting.route} key={setting.route} style={{ textDecoration: 'none', color: 'black' }} >
                       <MenuItem onClick={handleCloseUserMenu}>
@@ -208,11 +214,6 @@ const Navbar = () => {
                       </MenuItem>
                     </Link>
                   ))}
-                  <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
-                    <MenuItem onClick={handleLogout}>
-                      <Typography textAlign="center" fontFamily='Kanit'>Logout</Typography>
-                    </MenuItem>
-                  </Link>
                 </Menu>
               </Box>
             )}

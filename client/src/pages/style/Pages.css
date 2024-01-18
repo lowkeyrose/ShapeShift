@@ -27,14 +27,14 @@
 }
 
 .about-page {
-  background-color: aqua;
   background-image: url("../../assets/ll.png"),
-    linear-gradient(to bottom right, aqua, rgba(0, 255, 255, 0.484));
+  linear-gradient(to bottom right, aqua, rgba(0, 255, 255, 0.484));
+  background-position: top 36px right 0;
   display: flex;
   background-position: center;
   justify-content: center;
   align-items: center;
-  padding: 120px;
+  padding: 100px;
 }
 .about-page img {
   width: 100%;
@@ -102,5 +102,5 @@
   background-image: url("../../assets/ll.png");
   background-color: #cfcfcf0e;
   background-position: top 33px right 0;
-  padding: 70px;
+  padding: 100px;
 }

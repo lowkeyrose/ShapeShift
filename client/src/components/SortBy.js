@@ -1,6 +1,5 @@
-// SortBy.js
 import React, { useState } from 'react';
-import { Button, Menu, MenuItem } from '@mui/material';
+import { Button, Popover, Typography, MenuItem } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 
 export default function SortBy({ onSortChange }) {
@@ -18,25 +17,36 @@ export default function SortBy({ onSortChange }) {
   return (
     <div>
       <Button
-        sx={{ position: 'absolute', top: 235, left: 20 }}
+        sx={{ position: 'fixed', top: 630, left: 20 }}
         onClick={handleSortByClick}
         endIcon={<SortIcon />}
       >
         Sort by
       </Button>
 
-      <Menu
-        anchorEl={anchorEl}
+      <Popover
         open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
       >
-        <MenuItem onClick={() => handleSortOptionSelect('likes-desc')}>Likes - Most Likes</MenuItem>
-        <MenuItem onClick={() => handleSortOptionSelect('likes-asc')}>Likes - Fewest Likes</MenuItem>
-        <MenuItem onClick={() => handleSortOptionSelect('exercises-desc')}>Exercises - Most Exercises</MenuItem>
-        <MenuItem onClick={() => handleSortOptionSelect('exercises-asc')}>Exercises - Fewest Exercises</MenuItem>
-        <MenuItem onClick={() => handleSortOptionSelect('oldest')}>Oldest - Oldest Workouts</MenuItem>
-        <MenuItem onClick={() => handleSortOptionSelect('newest')}>Newest - Newest Workouts</MenuItem>
-      </Menu>
+        <div style={{ padding: '16px' }}>
+          <Typography variant="h6">Sort by</Typography>
+          <MenuItem onClick={() => handleSortOptionSelect('likes-desc')}>Likes - Most Likes</MenuItem>
+          <MenuItem onClick={() => handleSortOptionSelect('likes-asc')}>Likes - Fewest Likes</MenuItem>
+          <MenuItem onClick={() => handleSortOptionSelect('exercises-desc')}>Exercises - Most Exercises</MenuItem>
+          <MenuItem onClick={() => handleSortOptionSelect('exercises-asc')}>Exercises - Fewest Exercises</MenuItem>
+          <MenuItem onClick={() => handleSortOptionSelect('oldest')}>Oldest - Oldest Workouts</MenuItem>
+          <MenuItem onClick={() => handleSortOptionSelect('newest')}>Newest - Newest Workouts</MenuItem>
+        </div>
+      </Popover>
     </div>
   );
 }

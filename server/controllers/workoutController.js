@@ -112,7 +112,7 @@ const deleteWorkout = async (req, res) => {
       return res.status(404).json({ error: 'Workout not found' })
     }
     // Check if the workout belongs to the requesting user
-    if (!req.user._id.equals(workout.user_id) || req.user.roleType == ! 'admin') {
+    if (!req.user._id.equals(workout.user_id) || !req.user.roleType === 'admin') {
       return res.status(401).json({ error: 'Unauthorized' })
     }
     const deletedWorkout = await Workout.findByIdAndDelete(id);
@@ -153,7 +153,7 @@ const updateWorkout = async (req, res) => {
       return res.status(404).json({ error: 'Workout not found' });
     }
     // Check if the workout belongs to the requesting user
-    if (!req.user._id.equals(workout.user_id) || req.user.roleType !== 'admin') {
+    if (!req.user._id.equals(workout.user_id) || !req.user.roleType === 'admin') {
       return res.status(401).json({ error: 'Unauthorized user' });
     }
 

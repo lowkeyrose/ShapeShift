@@ -100,8 +100,8 @@ export default function SignUp() {
 
 
   return (
-    <div className="form">
-    <Container className='form-container' component="main" maxWidth="sm" sx={{minHeight:'100vh'}}>
+    <div className="signup-form form">
+    <Container className='form-container' component="main" maxWidth="sm">
       <CssBaseline />
       <Box
         sx={{

@@ -50,7 +50,7 @@ export default function Filter({ onFilterChange }) {
   return (
     <>
       <Button
-        sx={{ position: 'absolute', top: 210, left: 20 }}
+        sx={{ position: 'fixed', top: 650, left: 20 }}
         onClick={handleFilterButtonClick}
         endIcon={<FilterListIcon />}
       >
@@ -61,12 +61,12 @@ export default function Filter({ onFilterChange }) {
         anchorEl={anchorEl}
         onClose={handleClosePopover}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: 'top',
+          horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
       >
         <div style={{ padding: '16px' }}>
