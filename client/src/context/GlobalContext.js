@@ -53,6 +53,12 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     user: null
   });
 
+  const isValidObjectId = (id) => {
+    const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+    return objectIdPattern.test(id);
+  };
+
+
   const memoizedDispatch = useCallback(dispatch, [dispatch]);
 
   const authenticate = useCallback(async () => {
@@ -88,7 +94,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     }
   }, [authenticate, location.pathname, token]);
 
-   console.log('GlobalContextProvider state: ', state);
+  console.log('GlobalContextProvider state: ', state);
 
   const memoizedValue = useMemo(() => ({
     ...state,
@@ -102,13 +108,14 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     showToastError,
     showToastSuccess,
     setLoading,
-    searchWord, 
-    setSearchWord
+    searchWord,
+    setSearchWord,
+    isValidObjectId
   }), [state, token, navigate, location, roleType, loading, searchWord]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>
-      <Toaster richColors/>
+      <Toaster richColors />
       {loading && <Loader />}
       {children}
     </GlobalContext.Provider>

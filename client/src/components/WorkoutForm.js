@@ -18,16 +18,11 @@ import ExerciseForm from './ExerciseForm'
 import { useParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 // import _isEqual from 'lodash/isEqual';
-import './style/WorkoutForm.css'
-
-const isValidObjectId = (id) => {
-    const objectIdPattern = /^[0-9a-fA-F]{24}$/;
-    return objectIdPattern.test(id);
-};
+import '../pages/style/Forms.css'
 
 export default function WorkoutForm() {
     const { id } = useParams()
-    const { token, setLoading, showToastSuccess, showToastError, navigate } = useGlobalContext()
+    const { token, setLoading, showToastSuccess, showToastError, navigate, isValidObjectId } = useGlobalContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
@@ -77,6 +72,7 @@ export default function WorkoutForm() {
         } else if (id !== undefined) {
             navigate('/errorPage')
         }
+    // eslint-disable-next-line
     }, [id, fetchWorkout, navigate])
 
     // const handleInput = ev => {
@@ -272,8 +268,8 @@ export default function WorkoutForm() {
     }
 
     return (
-        <div className='workout-form'>
-        <Container component="main" maxWidth="sm" className='workout-form-container'>
+        <div className='form'>
+        <Container component="main" maxWidth="sm" className='form-container'>
             <button className='return-button' onClick={() => navigate('workouts/myworkouts')}>X</button>
             <CssBaseline />
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

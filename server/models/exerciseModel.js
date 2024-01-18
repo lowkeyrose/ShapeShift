@@ -14,21 +14,18 @@ const exerciseSchema = new Schema({
   },
   sets: {
     type: Number,
-    required: true
   },
   weight: {
     // Type: 1 (all same weight), Type: 2 (set weight for each set)
     type: Number,
-    required: true
   },
   reps: {
     // Type: 1 (all same rep amount), Type: 2 (set rep amount for each set)
     type: Number,
-    required: true
   },
-  // duration: {
-  //   type: Number,
-  // },
+  duration: {
+    type: Number,
+  },
   workout_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true

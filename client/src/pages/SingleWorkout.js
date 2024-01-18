@@ -8,32 +8,28 @@ import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import './style/SingleWorkout.css'
 
-const isValidObjectId = (id) => {
-  const objectIdPattern = /^[0-9a-fA-F]{24}$/;
-  return objectIdPattern.test(id);
-};
-
 export default function SingleWorkout() {
   const { id } = useParams()
-  const { user, setLoading, showToastError, showToastSuccess, navigate, token } = useGlobalContext()
+  const { user, setLoading, showToastError, showToastSuccess, navigate, token, isValidObjectId } = useGlobalContext()
   const { workout, dispatch } = useWorkoutContext()
 
   const fetchWorkout = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/workouts/workout/${id}`);
+      // Validate the id belongs to a workout
       if (!response.ok) {
+        navigate('/errorPage')
         throw new Error(`Workout not found: ${response.statusText}`);
       }
       const data = await response.json();
-
       dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
     } catch (error) {
       console.error('Error fetching workout:', error);
     } finally {
       setLoading(false);
     }
-  }, [dispatch, id, setLoading]);
+  }, [dispatch, id, setLoading, navigate]);
 
   useEffect(() => {
     if (isValidObjectId(id)) {
@@ -42,7 +38,8 @@ export default function SingleWorkout() {
     } else {
       navigate('/errorPage')
     }
-  }, [id, fetchWorkout, navigate]);
+    // eslint-disable-next-line
+  }, [id, fetchWorkout, navigate, dispatch]);
 
   const editWorkout = () => {
     navigate(`/workouts/myworkouts/edit/${workout._id}`)

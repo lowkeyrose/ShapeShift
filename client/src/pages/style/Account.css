@@ -1,7 +1,8 @@
 .account-page {
-  background-image: url('../../assets/ll.png');
-  background-size: 90%;
-  padding: 40px 0;
+  background-image: url("../../assets/ll.png");
+  background-color: #cfcfcf0e;
+  background-position: top 33px right 0;
+  padding: 80px 0;
 }
 
 

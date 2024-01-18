@@ -45,22 +45,15 @@ const getFavoriteWorkouts = async (req, res) => {
 // Get a single workout
 const getWorkout = async (req, res) => {
   const { id } = req.params
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
   }
-
   const workout = await Workout.findById(id)
-
   if (!workout) {
     return res.status(404).json({ error: 'Workout not found' })
   }
-
   const exercises = await Exercise.find({ _id: { $in: workout.exercises } });
-
   workout.exercises = exercises
-
-
   res.status(200).json(workout)
 }
 
@@ -71,7 +64,6 @@ const createWorkout = async (req, res) => {
     // Extract workout and exercises data from the request body
     const workoutData = req.body
     let exercisesData = req.body.exercises
-    console.log('user details: ', req.user)
     workoutData.user_id = req.user._id
     workoutData.userProfilePic = req.user.profilePic
     workoutData.username = req.user.username
@@ -92,10 +84,11 @@ const createWorkout = async (req, res) => {
 
     // Update the workout document with the IDs of the created exercises
     newWorkout.exercises = createdExercises.map(exercise => exercise._id)
+
+    // Save the updated workout
     await newWorkout.save()
 
     res.status(201).json({ success: true, workout: newWorkout })
-
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -112,34 +105,32 @@ const deleteWorkout = async (req, res) => {
   }
 
   try {
-    // Find the workout and store its ID
+    // Find the workout
     const workout = await Workout.findOne({ _id: id })
 
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' })
     }
-
-    // find if the workout belongs to the user
-    if (req.user._id.equals(workout.user_id) || req.user.roleType === 'admin') {
-
-      const deletedWorkout = await Workout.findByIdAndDelete(id);
-
-      // Find users with the workout in favorites
-      const usersToUpdate = await User.find({ favorites: id });
-
-      // Remove workout ID from users' favorites
-      await Promise.all(usersToUpdate.map(async (user) => {
-        if (user && user.favorites) { // Check if user exists and has favorites
-          user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id);
-          await user.save();
-        }
-      }));
-
-      // Delete all exercises with the corresponding workout_id
-      await Exercise.deleteMany({ workout_id: deletedWorkout._id })
-      // console.log('workout supppper: ', workout);
-      res.status(200).json(deletedWorkout)
+    // Check if the workout belongs to the requesting user
+    if (!req.user._id.equals(workout.user_id) || req.user.roleType == ! 'admin') {
+      return res.status(401).json({ error: 'Unauthorized' })
     }
+    const deletedWorkout = await Workout.findByIdAndDelete(id);
+
+    // Find users with the workout in favorites
+    const usersToUpdate = await User.find({ favorites: id });
+
+    // Remove workout ID from users' favorites
+    await Promise.all(usersToUpdate.map(async (user) => {
+      if (user && user.favorites) { // Check if user exists and has favorites
+        user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id);
+        await user.save();
+      }
+    }));
+
+    // Delete all exercises with the corresponding workout_id
+    await Exercise.deleteMany({ workout_id: deletedWorkout._id })
+    res.status(200).json(deletedWorkout)
 
   } catch (error) {
     console.error(error);
@@ -151,14 +142,6 @@ const deleteWorkout = async (req, res) => {
 const updateWorkout = async (req, res) => {
   const { id } = req.params
   const workoutData = req.body
-  const exercisesData = req.body.exercises
-
-  console.log('req.user._id: ', req.user._id);
-  console.log('workoutData: ', workoutData);
-
-  // instead of declaring maybe just write workoutData.exercises? but we have multiple cases
-  // console.log('workoutData: ', workoutData);
-  // console.log('exercisesData: ', exercisesData);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
@@ -169,14 +152,13 @@ const updateWorkout = async (req, res) => {
     if (!workout) {
       return res.status(404).json({ error: 'Workout not found' });
     }
-
-    if (!req.user._id.equals(workout.user_id) || !req.user.roleType === 'admin') {
+    // Check if the workout belongs to the requesting user
+    if (!req.user._id.equals(workout.user_id) || req.user.roleType !== 'admin') {
       return res.status(401).json({ error: 'Unauthorized user' });
     }
 
-
     // Update or create exercises
-    const updatedExercisesIds = await Promise.all(exercisesData.map(async (exercise) => {
+    const updatedExercisesIds = await Promise.all(workoutData.exercises.map(async (exercise) => {
       if (exercise._id) {
         // Exercise already has an _id, update it
         const existingExercise = await Exercise.findOne({ _id: exercise._id })
@@ -198,12 +180,9 @@ const updateWorkout = async (req, res) => {
           user_id: workoutData.user_id,
           workout_id: workoutData._id,
         })
-        // console.log('newExercise._id: ', newExercise._id);
         return newExercise._id;
       }
     }))
-
-    // console.log('updatedExercisesIds: ', updatedExercisesIds);
 
     // Identify exercises to be deleted
     const exercisesToDelete = workout.exercises

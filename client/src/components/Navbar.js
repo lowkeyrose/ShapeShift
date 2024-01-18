@@ -46,8 +46,8 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="100%" sx={{ backgroundColor: '#fff1d0' }}>
+    <AppBar position="absolute" sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+      <Container maxWidth="100%" sx={{ backgroundColor: 'inherit' }}>
         <Toolbar disableGutters>
 
           {/* LOGO */}
@@ -112,36 +112,57 @@ const Navbar = () => {
           </Box>
 
 
-          {/* Middle Section when small screen */}
-          <FitnessCenterIcon sx={{ display: { xs: 'none', sm:'flex', md: 'flex', lg: 'none' }, mr: 1, color: 'black' }} />
-          <Typography
-            variant="h5"
-            noWrap
-            // onClick={() => navigate('/')}
-            component="a"
-            href="/"
+          {/* Logo, Displays from md */}
+          <Box
             sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'flex', lg: 'none' },
-              flexGrow: 1,
-              fontFamily: 'Kanit',
-              fontWeight: 500,
-              fontSize: '28px',
-              color: 'black',
-              textDecoration: 'none',
-            }}
-          >
-            ShapeShift
-          </Typography>
+              display: 'flex', position: 'absolute',
+              top: 13,
+              left: '50%',
+              transform: 'translateX(-50%)'
+            }}>
+            <FitnessCenterIcon
+              sx={{
+                display: { xs: 'none', sm: 'flex', md: 'flex', lg: 'none' },
+                mr: 1,
+                mt: 1,
+                color: 'black',
+              }} />
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'flex', lg: 'none' },
+                flexGrow: 1,
+                fontFamily: 'Kanit',
+                fontWeight: 500,
+                fontSize: '28px',
+                color: 'black',
+                textDecoration: 'none',
+              }}
+            >
+              ShapeShift
+            </Typography>
+          </Box>
 
           {/* Nav Links */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'none', lg: 'flex' } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: 'none', md: 'none', lg: 'block' },
+              position: 'absolute',
+              top: 13,
+              left: '50%',
+              transform: 'translateX(-50%)'
+            }}>
             {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
               <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
                 <Button
                   key={page.route}
-                  onClick={handleCloseNavMenu}
-                  sx={{ mx: 2, color: 'black', display: 'block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize', backgroundColor: page.route === path ? '#cebd9640' : '#fff1d0' }}
+                  // onClick={handleCloseNavMenu}
+                  sx={{ mx: 2, color: 'black', display: 'inline-block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize' }}
                 >
                   {page.title}
                 </Button>
@@ -149,50 +170,53 @@ const Navbar = () => {
             ))}
           </Box>
 
-          {['/workouts', '/workouts/favorites', '/workouts/myworkouts'].includes(path) && <Searchbar />}
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            {/* Searchbar */}
+            {['/workouts', '/workouts/favorites', '/workouts/myworkouts'].includes(path) && <Searchbar />}
 
-          {/* User Section */}
-          {user &&
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {/* <span>{roleType},</span>
+            {/* User Section */}
+            {user && (
+              <Box sx={{ flexGrow: 0, m:0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mt:1 }}>
+                    {/* <span>{roleType},</span>
                   <span>{user.username}</span> */}
-                  <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '50px', height: '50px' }} />
+                    <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '50px', height: '50px' }} />
 
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.filter(s => !s.permissions || checkPermissions(s.permissions, roleType)).map((setting) => (
-                  <Link to={setting.route} key={setting.route} style={{ textDecoration: 'none', color: 'black' }} >
-                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center" fontFamily='Kanit'>{setting.title}</Typography>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.filter(s => !s.permissions || checkPermissions(s.permissions, roleType)).map((setting) => (
+                    <Link to={setting.route} key={setting.route} style={{ textDecoration: 'none', color: 'black' }} >
+                      <MenuItem onClick={handleCloseUserMenu}>
+                        <Typography textAlign="center" fontFamily='Kanit'>{setting.title}</Typography>
+                      </MenuItem>
+                    </Link>
+                  ))}
+                  <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
+                    <MenuItem onClick={handleLogout}>
+                      <Typography textAlign="center" fontFamily='Kanit'>Logout</Typography>
                     </MenuItem>
                   </Link>
-                ))}
-                <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
-                  <MenuItem onClick={handleLogout}>
-                    <Typography textAlign="center" fontFamily='Kanit'>Logout</Typography>
-                  </MenuItem>
-                </Link>
-              </Menu>
-            </Box>
-          }
+                </Menu>
+              </Box>
+            )}
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>

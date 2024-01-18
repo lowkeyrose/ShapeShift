@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GlobalContext } from '../context/GlobalContext';
 
@@ -17,11 +17,10 @@ export const search = (searchWord, ...values) => {
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   color: 'black',
+  display: 'flex',
+  flexDirection: 'column',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.black, 0.10),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.black, 0.15),
-  },
+  backgroundColor: '#ffffff00',
   marginLeft: 0,
   width: '100%',
   [theme.breakpoints.up('sm')]: {
@@ -34,6 +33,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: '100%',
   position: 'absolute',
+  backgroundColor: '#ffffff00',
   pointerEvents: 'none',
   display: 'flex',
   alignItems: 'center',
@@ -46,20 +46,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('xs')]: {
-      width: '12ch',
+    width: '0ch',
+    cursor: 'pointer',
+    backgroundColor: '#ffffff00',
+    [theme.breakpoints.down('lg')]: {
+      width: '0ch', // Adjust this value as needed for small screens
       '&:focus': {
-        width: '20ch',
+        cursor: 'unset',
+        width: '10ch', // Adjust this value as needed for small screens
+      },
+    },
+    
+    [theme.breakpoints.up('lg')]: {
+      width: '0ch', // Adjust this value as needed for small screens
+      '&:focus': {
+        cursor: 'unset',
+        width: '10ch', // Adjust this value as needed for small screens
       },
     },
   },
 }));
 
 export default function Searchbar() {
-
   const { searchWord, setSearchWord } = useContext(GlobalContext);
-
   // Reset search on location change
   const location = useLocation();
   useEffect(() => {
@@ -67,20 +76,20 @@ export default function Searchbar() {
   }, [location, setSearchWord])
 
   return (
-    <Box sx={{ display: { xs: 'none', sm: 'flex'}}} >
-        <Toolbar>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              value={searchWord}
-              onChange={ev => setSearchWord(ev.target.value)}
-            />
-          </Search>
-        </Toolbar>
+    <Box sx={{ display: {xs:'none', sm: 'flex', md: 'flex' }}}>
+      <Toolbar sx={{ m: {xs:'0', sm:'0', md:'0',lg:'0'}, p:{xs:'0', sm:'0', md:'0',lg:'0'}}}>
+        <Search>
+          <SearchIconWrapper >
+            <SearchIcon/>
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search' }}
+            value={searchWord}
+            onChange={(ev) => setSearchWord(ev.target.value)}
+          />
+        </Search>
+      </Toolbar>
     </Box>
   );
 }

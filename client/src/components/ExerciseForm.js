@@ -21,9 +21,10 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     title: '',
     imgUrl: '',
     videoUrl: '',
-    sets: '',
+    sets: 0,
     weight: 0,
-    reps: ''
+    reps: 0,
+    duration: 0,
   })
 
   const structure = [
@@ -32,16 +33,18 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     { name: 'videoUrl', type: 'text', label: 'Video Url (Optional)', required: false, halfWidth: false },
     { name: 'sets', type: 'number', label: 'Sets', required: false, halfWidth: true },
     { name: 'weight', type: 'number', label: 'Weight (kg)', required: false, halfWidth: true },
-    { name: 'reps', type: 'number', label: 'Reps', required: false, halfWidth: true }
+    { name: 'reps', type: 'number', label: 'Reps', required: false, halfWidth: true },
+    { name: 'duration', type: 'number', label: 'Duration', required: false, halfWidth: true }
   ]
 
   const exerciseSchema = Joi.object({
     title: Joi.string().min(3).max(20).required(),
     imgUrl: Joi.string().min(0).max(2000).optional(),
     videoUrl: Joi.string().min(0).max(2000).optional(),
-    sets: Joi.number().min(1).max(200).required(),
-    weight: Joi.number().min(0).max(1000).required(),
-    reps: Joi.number().min(1).max(200).required()
+    sets: Joi.number().min(0).max(200).optional(),
+    weight: Joi.number().min(0).max(1000).optional(),
+    reps: Joi.number().min(0).max(200).optional(),
+    duration: Joi.number().min(0).max(1000).optional()
   });
 
   const resetFormData = () => {
@@ -49,9 +52,10 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       title: '',
       imgUrl: '',
       videoUrl: '',
-      sets: '',
+      sets: 0,
       weight: 0,
-      reps: ''
+      reps: 0,
+      duration: 0,
     });
   };
 
@@ -70,8 +74,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     const { id, value } = ev.target
     let obj = {
       ...exerciseFormData,
-      // [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) : value,
-         [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value,
+      [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value,
     }
     const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialExerciseData);
     const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true });
@@ -94,19 +97,30 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     setExerciseFormData(obj);
   };
 
-  const toggleModal = () => {
-    setModal(!modal)
+  const toggleModal = (ev) => {
+    ev.preventDefault();
     // If the user accidentally closes the modal mid filling out the form I can keep the data if I remove the lines below!
-    if (!modal) {
-      resetFormData();
-      setIsValid(false);
+    if (modal) {
+      const userConfirmed = window.confirm("Are you sure you want to close?");
+      if (!userConfirmed) {
+        return;
+      }
     }
-  }
-
-  const handleClose = () => {
-    setEditExerciseModal(false);
-    // Reset the form data when closing the modal
     resetFormData();
+    setIsValid(false);
+    setModal(!modal)
+  }
+  
+  const handleClose = (ev) => {
+    ev.preventDefault();
+    const userConfirmed = window.confirm("Are you sure you want to close?");
+    if (!userConfirmed) {
+      return;
+    }
+      setEditExerciseModal(false);
+      // Reset the form data when closing the modal
+      resetFormData();
+
   };
 
   const handleSubmit = async (ev) => {
@@ -114,7 +128,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
 
       if (exerciseFormData.imgUrl === '') {
         exerciseFormData.imgUrl = 'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg'
-    }
+      }
       ev.preventDefault();
       // console.log('event: ', ev);
       if ((editExerciseModal && editingExercise)) {
@@ -124,7 +138,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       } else {
         console.log('onAddExercise');
         onAddExercise(exerciseFormData);
-        toggleModal();
+        setModal(false);
       }
       setEditingExercise(null)
       resetFormData()
@@ -138,7 +152,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
   return (
     <div className='exercise-form'>
       <Grid item xs={12} >
-        <Button onClick={toggleModal} sx={{ p: 2, m: 2 }} variant="contained" color="success" endIcon={<AddCircleIcon />} >Add Exercise</Button>
+        <Button onClick={(ev) => toggleModal(ev)} sx={{ p: 2, m: 2 }} variant="contained" color="success" endIcon={<AddCircleIcon />} >Add Exercise</Button>
       </Grid>
       {(modal || editExerciseModal) && <div className="modal">
         <div className="overlay"></div>
@@ -196,7 +210,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
               </Box>
             </Box>
           </Container>
-          <button className="close-modal" onClick={() => editExerciseModal ? handleClose() : toggleModal()}>X</button>
+          <button className="close-modal" onClick={(ev) => editExerciseModal ? handleClose(ev) : toggleModal(ev)}>X</button>
         </div>
       </div>}
 

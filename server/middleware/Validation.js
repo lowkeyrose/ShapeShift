@@ -12,9 +12,10 @@ const exerciseValidationSchema = Joi.object({
   title: Joi.string().min(3).max(20).required(),
   imgUrl: Joi.string().min(0).max(2000).optional(),
   videoUrl: Joi.string().min(0).max(2000).optional(),
-  sets: Joi.number().min(1).max(200).required(),
-  weight: Joi.number().min(0).max(1000).required(),
-  reps: Joi.number().min(1).max(200).required()
+  sets: Joi.number().min(0).max(200).optional(),
+  weight: Joi.number().min(0).max(1000).optional(),
+  reps: Joi.number().min(0).max(200).optional(),
+  duration: Joi.number().min(0).max(1000).optional()
 });
 
 module.exports = async (req, res, next) => {
@@ -23,8 +24,8 @@ module.exports = async (req, res, next) => {
     const exerciseErrors = [];
 
     exercises.map((exercise) => {
-      const { title, imgUrl, videoUrl, sets, weight, reps } = exercise
-      const { error: exercisesError, value: exercisesValue } = exerciseValidationSchema.validate({title, imgUrl, videoUrl, sets, weight, reps });
+      const { title, imgUrl, videoUrl, sets, weight, reps, duration } = exercise
+      const { error: exercisesError, value: exercisesValue } = exerciseValidationSchema.validate({title, imgUrl, videoUrl, sets, weight, reps, duration });
       if (exercisesError) {
         exerciseErrors.push(exercisesError.message);
       }
