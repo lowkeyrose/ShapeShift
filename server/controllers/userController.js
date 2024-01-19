@@ -52,12 +52,12 @@ const updateUser = async (req, res) => {
   // console.log('userData: ', userData);
   const { id } = req.params
   // console.log('user._id: ', userData._id);
-  
+
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ error: 'User not found' })
     }
-    
+
     const user = await User.findOne({ _id: userData._id })
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -100,4 +100,67 @@ const updateUser = async (req, res) => {
 
 }
 
-module.exports = { loginUser, signupUser, authenticate, updateUser }
+
+// Admin get user
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    const user = await User.findById(id)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    res.status(200).json(user)
+  } catch (error) {
+    console.error('Error in getUser:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Admin Get all users
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).sort({ createdAt: -1 });
+
+    const filteredUsers = users.filter(user => user.roleType !== 'admin');
+
+    res.status(200).json(filteredUsers);
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+// Admin Delete user
+const deleteUser = async (req, res) => {
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'Workout not found' })
+  }
+
+  try {
+    const user = await User.findOneAndDelete({ _id: id })
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+    // Check if admin / either this or make middleware like requireAuth but for adminAuth
+    // if (!req.user.roleType === 'admin') {
+    //   return res.status(401).json({ error: 'Unauthorized' })
+    // }
+    res.status(200).json(user)
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+
+
+
+module.exports = { loginUser, signupUser, authenticate, updateUser, getUsers, deleteUser, getUser }

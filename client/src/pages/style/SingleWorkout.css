@@ -6,7 +6,9 @@
   text-align: center;
   background-color: #00000024;
   background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #ffffff24  ,#b5b5b510) ;
+  background-position: top 33px right 0;
 
+  padding-top: 100px;
 }
 
 .single-workout-page .single-workout-container {
@@ -16,8 +18,14 @@
   border-radius: 10px;
   margin: 25px;
   width: 50%;
+  padding: 20px;
   box-shadow: 1px 1px 20px grey;
-  background-color: #dfdfdf;
+  background-image: linear-gradient(rgb(242 134 133), rgb(255 187 186));
+}
+
+
+.single-workout-page .exercise-title{
+  font-size: 1em;
 }
 
 .single-workout-page .workout-title{
@@ -27,14 +35,21 @@
   width: 100%;
   height: 400px;
   margin: 15px auto;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
 }
 
-.single-workout-page .exercises-title{
-  font-size: 1.5em;
-}
 .single-workout-page .exercise-img{
   border-radius: 10px ;
-  height: 30vh;
+  height: 50%;
+  width: 100%;
+}
+
+.exercises-container{
+  font-size: 2em;
+border-radius: 10px;
+  box-shadow: 3px 3px 20px rgb(2, 1, 1);
+
 }
 
 
@@ -47,9 +62,14 @@
 }
 .single-workout-page .exercise-info{
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  column-gap: 55px;
+  column-gap: 35px;
+  font-size: 0.7em ;
+
 }
+
+
 .single-workout-page .workout-buttons{
   display: flex;
   justify-content: center;

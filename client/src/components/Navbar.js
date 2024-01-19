@@ -26,13 +26,10 @@ const Navbar = () => {
     ev.preventDefault()
     logout()
     setAnchorElUser(null);
-    // setIsOpen(false)
   }
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
-  // const [isOpen, setIsOpen] = React.useState(false)
   const path = useResolvedPath().pathname;
-  console.log('anchorElUser: ', anchorElUser);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -42,12 +39,10 @@ const Navbar = () => {
   };
 
   const handleOpenUserMenu = (event) => {
-    // setIsOpen(true)
     setAnchorElUser(event.currentTarget)
   };
 
   const handleCloseUserMenu = () => {
-    // setIsOpen(false)
     setAnchorElUser(null);
   };
 
@@ -180,7 +175,7 @@ const Navbar = () => {
               ))}
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', alignItems:'center' }}>
             {/* Searchbar */}
             {['/workouts', '/workouts/favorites', '/workouts/myworkouts'].includes(path) && <Searchbar />}
 
@@ -188,7 +183,7 @@ const Navbar = () => {
             {user && (
               <Box sx={{ flexGrow: 0, m: 0 }}>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mt: 1 }}>
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0}}>
                     <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '50px', height: '50px' }} />
                   </IconButton>
                 </Tooltip>
@@ -205,7 +200,6 @@ const Navbar = () => {
                     vertical: 'top',
                     horizontal: 'right',
                   }}
-                  // open={isOpen}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >

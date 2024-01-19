@@ -79,9 +79,9 @@ export default function SingleWorkout() {
            </div>
           <br />
           <br />
-          <div className='exercises-title'>Exercises: {workout.exercises && workout.exercises.map((exercise) =>
+          <div className='exercises-container'>Exercises: {workout.exercises && workout.exercises.map((exercise) =>
             <div className="exercise" key={exercise._id}>
-              <div>{exercise.title}</div>
+              <div className='exercise-title'>{exercise.title}</div>
               <img className='exercise-img' src={exercise.imgUrl} alt={exercise.title} />
               <div className='exercise-info'>
                 <div>Weight: {exercise.weight}</div>

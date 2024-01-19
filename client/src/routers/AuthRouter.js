@@ -10,6 +10,7 @@ import { useGlobalContext } from '../hooks/useGlobalContext';
 import Account from '../pages/Account';
 import EditAccount from '../pages/EditAccount';
 import About from '../pages/About';
+import AdminPanel from '../pages/AdminPanel';
 
 export default function AuthRouter() {
   const { user } = useGlobalContext()
@@ -32,18 +33,18 @@ export default function AuthRouter() {
           {/* <Route path="/profile" element={<Profile />} /> */}
         </>
       ) :
-      <Navigate to="/" />
+        <Navigate to="/" />
       }
 
       <Route path="/errorPage" element={<ErrorPage />} />
       <Route path="/about" element={<About />} />
 
-      {/* {user.roleType === 'admin' &&
+      {user.roleType === 'admin' &&
         <>
-        <Route path="/admin/users" element={<UsersManagement />} />
-          <Route path="/admin/users/:id" element={<EditUser />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/admin-panel/user/:id" element={<EditAccount />} />
         </>
-      } */}
+      }
 
     </Routes>
   )

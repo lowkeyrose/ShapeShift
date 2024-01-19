@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useUpdateUser } from '../hooks/useUpdateUser'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
@@ -14,11 +14,12 @@ import Joi from 'joi'
 import { FormControl, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { GlobalContext } from '../context/GlobalContext'
 import './style/Forms.css'
+import { useParams } from 'react-router-dom'
 
 export default function EditAccount() {
-  // const { signup, error } = useSignup()
+  const { id } = useParams()
   const { updateUser, error } = useUpdateUser()
-  const { user, navigate } = useContext(GlobalContext)
+  const { user, navigate, token, setLoading } = useContext(GlobalContext)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [value, setValue] = useState('');
@@ -53,15 +54,57 @@ export default function EditAccount() {
     profilePic: Joi.any()
   });
 
+  const fetchUser = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/user/${id}`, {
+        headers: {
+          'Authorization': token
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user: ${response.statusText}`)
+      }
+
+      const data = await response.json();
+      setFormData(data)
+      setInitialUserData(data)
+      setValue(data.gender)
+      console.log('DATA: ', data);
+    } catch (error) {
+      console.error('Error deleting user:', error)
+    } finally {
+      setLoading(false);
+    }
+  }, [id, setLoading, token])
+
   useEffect(() => {
-    setFormData(user)
-    setValue(user.gender)
-    setInitialUserData(user)
-  }, [user])
+    // Admins can't edit their own info, they can only edit other user's
+    if (user.roleType === 'admin') {
+      fetchUser()
+    } else {
+      setFormData(user)
+      setInitialUserData(user)
+      setValue(user.gender)
+    }
+    return () => {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        username: '',
+        phone: '',
+        gender: '',
+        profilePic: ''
+      })
+    }
+  }, [user, fetchUser])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     await updateUser(formData.firstName, formData.lastName, formData.email, formData.username, formData.phone, formData.gender, formData.profilePic)
+    setIsValid(false)
   }
 
   const handleInput = ev => {
@@ -92,12 +135,14 @@ export default function EditAccount() {
     setFormData(obj);
     setErrors(err);
   };
-  
-  
+
+
   return (
     <div className="form">
       <Container component="main" maxWidth="sm" className='form-container'>
-      <button className='return-button' onClick={() => navigate('/account')}>X</button>
+        <Box className='button-container'>
+          <button className='return-button' onClick={() => user.roleType === 'admin' ? navigate('/admin-panel') : navigate('/account')}>X</button>
+        </Box>
         <CssBaseline />
         <Box
           sx={{
@@ -109,7 +154,7 @@ export default function EditAccount() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography sx={{ mb: 2}} component="h1" variant="h5">
+          <Typography sx={{ mb: 2 }} component="h1" variant="h5">
             Edit Account Info
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -169,6 +214,11 @@ export default function EditAccount() {
             >
               Update Info
             </Button>
+            {/* {error && (
+            <Typography color="error" variant="body2" align="center" sx={{ mt: 2 }}>
+              {error}
+            </Typography>
+          )} */}
           </Box>
         </Box>
       </Container>

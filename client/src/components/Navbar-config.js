@@ -18,5 +18,6 @@ export const pages = [
 export const settings = [
   // { route: '/profile', title: 'Profile', permissions: [RoleTypes.user, RoleTypes.admin] },
   { route: '/account', title: 'Account', permissions: [RoleTypes.user, RoleTypes.admin] },
-  { route: '/about', title: 'About'}
+  { route: '/about', title: 'About'},
+  { route: '/admin-panel', title: 'Admin Panel', permissions: [RoleTypes.admin]}
 ];

@@ -12,10 +12,12 @@ import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
 import { search } from '../components/Searchbar';
+import { useLocation } from 'react-router-dom';
 
 export default function MyWorkouts() {
     const { navigate, setLoading, token, searchWord } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
+    const location = useLocation();
     // console.log("MyWorkouts component rendered"); // Add this line
 
     const fetchWorkouts = useCallback(async () => {
@@ -47,6 +49,11 @@ export default function MyWorkouts() {
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
         }
     }, [dispatch, token, fetchWorkouts])
+
+    useEffect(() => {
+        // Scroll to the top when the location changes
+        window.scrollTo(0, 0);
+      }, [location.pathname]);
 
     return (
         <div className='my-workouts-page'>

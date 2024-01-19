@@ -226,7 +226,10 @@ export default function WorkoutForm() {
     return (
         <div className='form'>
             <Container component="main" maxWidth="sm" className='form-container'>
-                <button className='return-button' onClick={() => navigate('workouts/myworkouts')}>X</button>
+                <Box className='button-container'>
+                    <button className='return-button' onClick={() => navigate('workouts/myworkouts')}>X</button>
+                </Box>
+
                 <CssBaseline />
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar sx={{ m: '10px 0', bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>

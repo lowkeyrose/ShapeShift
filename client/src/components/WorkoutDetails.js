@@ -38,11 +38,6 @@ const WorkoutDetails = ({ workout }) => {
 
   const favorite = async () => {
     try {
-      setIsFavorited(true)
-      // Update the state to reflect the added workout inside favorites array
-      dispatch({ type: ACTIONS.FAVORITE, payload: workout._id })
-      dispatch({ type: ACTIONS.INCREMENT_LIKES, payload: workout._id })
-      showToastSuccess("Workout added to favorites");
       const response = await fetch(`/api/workouts/favorite/${workout._id}`, {
         method: 'PUT',
         headers: {
@@ -52,6 +47,11 @@ const WorkoutDetails = ({ workout }) => {
       if (!response.ok) {
         throw new Error(`Failed to favorite workout: ${response.statusText}`);
       }
+      setIsFavorited(true)
+      // Update the state to reflect the added workout inside favorites array
+      dispatch({ type: ACTIONS.FAVORITE, payload: workout._id })
+      dispatch({ type: ACTIONS.INCREMENT_LIKES, payload: workout._id })
+      showToastSuccess("Workout added to favorites");
     } catch (err) {
       console.log(err);
     }
@@ -59,6 +59,16 @@ const WorkoutDetails = ({ workout }) => {
 
   const unfavorite = async () => {
     try {
+      const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': token,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to unfavorite workout: ${response.statusText}`);
+      }
       if (location.pathname === '/workouts/favorites') {
         dispatch({ type: ACTIONS.REMOVE_WORKOUT, payload: { workoutId: workout._id } })
       }
@@ -67,16 +77,6 @@ const WorkoutDetails = ({ workout }) => {
       dispatch({ type: ACTIONS.DECREMENT_LIKES, payload: workout._id });
       setIsFavorited(false);
       showToastSuccess('Workout removed from favorites');
-      const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': token,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to unfavorite workout: ${response.statusText}`);
-      }
     } catch (error) {
       console.error('Error unfavorite workout:', error);
     }

@@ -178,11 +178,10 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
         <div className='modal'>
           <div className='overlay'></div>
           <div className='modal-content'>
-            <Container component='main' maxWidth='sm'>
+            <Container component='main' maxWidth='sm' >
               <CssBaseline />
               <Box
                 sx={{
-                  marginTop: 8,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',

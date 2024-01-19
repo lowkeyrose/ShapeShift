@@ -29,12 +29,12 @@
 .about-page {
   background-image: url("../../assets/ll.png"),
   linear-gradient(to bottom right, aqua, rgba(0, 255, 255, 0.484));
-  background-position: top 36px right 0;
+  background-position: top 33px right 0;
   display: flex;
   background-position: center;
   justify-content: center;
   align-items: center;
-  padding: 100px;
+  padding: 120px;
 }
 .about-page img {
   width: 100%;
@@ -103,4 +103,18 @@
   background-color: #cfcfcf0e;
   background-position: top 33px right 0;
   padding: 100px;
+}
+.admin-panel {
+  min-height: 75vh;
+  display: flex;
+  justify-content: center;
+  background-image: url("../../assets/ll.png"),
+  linear-gradient(to bottom right, #cf998c, #e19c82);
+  background-position: top 33px right 0;
+  padding: 120px 0;
+}
+.admin-panel button {
+  margin: 0 10px;
+  border: none;
+  cursor: pointer;
 }
