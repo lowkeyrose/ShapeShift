@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useGlobalContext } from '../hooks/useGlobalContext';
 import './style/Pages.css'
+import logo from '../assets/robots/adminPanel.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -36,7 +37,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function AdminPanel() {
   const [users, setUsers] = useState([])
   const { token, navigate, showToastError, setLoading } = useGlobalContext();
-  
+
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     try {
@@ -124,6 +125,9 @@ export default function AdminPanel() {
           </Table>
         </TableContainer>
       }
+      <img className='bottom-left-icon' src={logo} alt="logo" />
+
     </div>
+
   );
 }

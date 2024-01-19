@@ -27,11 +27,10 @@
 }
 
 .about-page {
-  background-image: url("../../assets/ll.png"),
-  linear-gradient(to bottom right, aqua, rgba(0, 255, 255, 0.484));
+  background-color: #47ffff;
+  background-image: url("../../assets/ll.png");
   background-position: top 33px right 0;
   display: flex;
-  background-position: center;
   justify-content: center;
   align-items: center;
   padding: 120px;
@@ -108,9 +107,10 @@
   min-height: 75vh;
   display: flex;
   justify-content: center;
-  background-image: url("../../assets/ll.png"),
-  linear-gradient(to bottom right, #cf998c, #e19c82);
-  background-position: top 33px right 0;
+  background-color: #cf998c;
+  background-image: url("../../assets/ll.png");
+  background-position-x: right;
+  background-position-y: 33px;
   padding: 120px 0;
 }
 .admin-panel button {
