@@ -44,18 +44,28 @@ const getFavoriteWorkouts = async (req, res) => {
 
 // Get a single workout
 const getWorkout = async (req, res) => {
-  const { id } = req.params
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'Workout not found' })
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ error: 'Workout not found' });
+    }
+
+    const workout = await Workout.findById(id);
+
+    if (!workout) {
+      return res.status(404).json({ error: 'Workout not found' });
+    }
+
+    const exercises = await Exercise.find({ _id: { $in: workout.exercises } });
+    workout.exercises = exercises;
+
+    res.status(200).json(workout);
+  } catch (error) {
+    console.error('Error in getWorkout:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-  const workout = await Workout.findById(id)
-  if (!workout) {
-    return res.status(404).json({ error: 'Workout not found' })
-  }
-  const exercises = await Exercise.find({ _id: { $in: workout.exercises } });
-  workout.exercises = exercises
-  res.status(200).json(workout)
-}
+};
 
 // Create new workout
 const createWorkout = async (req, res) => {
@@ -133,7 +143,6 @@ const deleteWorkout = async (req, res) => {
     res.status(200).json(deletedWorkout)
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, error: error.message });
   }
 }
@@ -220,9 +229,7 @@ const updateWorkout = async (req, res) => {
 // Add workout to favorites
 const addFavorite = async (req, res) => {
   const user = req.user
-  console.log('user: ', user);
   const workout_id = req.params.id
-  console.log('workout_id: ', workout_id);
 
   try {
     if (!user) {
