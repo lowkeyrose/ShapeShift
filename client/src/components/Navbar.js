@@ -25,23 +25,29 @@ const Navbar = () => {
   const handleLogout = (ev) => {
     ev.preventDefault()
     logout()
+    setAnchorElUser(null);
+    // setIsOpen(false)
   }
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
+  // const [isOpen, setIsOpen] = React.useState(false)
   const path = useResolvedPath().pathname;
-  console.log('user: ', user);
+  console.log('anchorElUser: ', anchorElUser);
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget)
-  };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
+  const handleOpenUserMenu = (event) => {
+    // setIsOpen(true)
+    setAnchorElUser(event.currentTarget)
+  };
+
   const handleCloseUserMenu = () => {
+    // setIsOpen(false)
     setAnchorElUser(null);
   };
 
@@ -199,6 +205,7 @@ const Navbar = () => {
                     vertical: 'top',
                     horizontal: 'right',
                   }}
+                  // open={isOpen}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
