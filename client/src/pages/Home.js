@@ -14,10 +14,8 @@ import { useGlobalContext } from '../hooks/useGlobalContext'
 const Home = () => {
     const { workouts, dispatch } = useWorkoutContext()
     const { setLoading } = useGlobalContext()
-    // console.log("Home component rendered"); // Add this line
 
     const fetchWorkouts = useCallback(async () => {
-        // console.log("Fetching workouts...");
         setLoading(true)
         try {
             const response = await fetch('/api/workouts')
@@ -41,7 +39,6 @@ const Home = () => {
 
     return (
         <div className='home'>
-            {/* <Typography className='page-title'> */}
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
                 Your Personal Workout Buddy
             </Typography>

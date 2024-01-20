@@ -33,9 +33,15 @@ const getFavoriteWorkouts = async (req, res) => {
     const favoriteWorkoutIds = user.favorites || [];
 
     // Find the workouts with the IDs in the favorites array
-    const favoriteWorkouts = await Workout.find({ _id: { $in: favoriteWorkoutIds } });
+    const favoriteWorkouts = await Workout.find({ _id: { $in: favoriteWorkoutIds } })
+
+    // Display the last added to favorites
+    favoriteWorkouts.sort((b, a) => {
+      return favoriteWorkoutIds.indexOf(a._id.toString()) - favoriteWorkoutIds.indexOf(b._id.toString());
+    });
 
     res.status(200).json(favoriteWorkouts)
+    console.log('favoriteWorkouts', favoriteWorkouts);
   } catch (error) {
     console.error('Error fetching favorite workouts:', error);
     res.status(500).json({ message: 'Internal server error.' });
