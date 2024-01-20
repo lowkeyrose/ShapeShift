@@ -4,10 +4,9 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: #00000024;
-  background-image: url('../../assets/ll.png'), linear-gradient(to bottom right, #ffffff24  ,#b5b5b510) ;
+  background-image: url("../../assets/ll.png");
   background-position: top 33px right 0;
-
+  background-color: #2ac86c43;
   padding-top: 100px;
 }
 

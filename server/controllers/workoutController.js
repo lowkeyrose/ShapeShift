@@ -69,7 +69,6 @@ const getWorkout = async (req, res) => {
 
 // Create new workout
 const createWorkout = async (req, res) => {
-  console.log('');
   try {
     // Extract workout and exercises data from the request body
     const workoutData = req.body
@@ -122,7 +121,6 @@ const deleteWorkout = async (req, res) => {
       return res.status(404).json({ error: 'Workout not found' })
     }
     // Check if the workout belongs to the requesting user
-    console.log('req.user.roleType: ', req.user.roleType);
     if (!req.user._id.equals(workout.user_id) && req.user.roleType !== 'admin') {
       return res.status(401).json({ error: 'Unauthorized' })
     }
