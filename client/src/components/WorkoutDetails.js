@@ -87,11 +87,11 @@ const WorkoutDetails = ({ workout }) => {
   }
 
   return (
-    <div className="workout-card">
-      <figure className="workout-figure">
+    <div className="card">
+      <figure className="figure">
         <h1>{workout.title?.toUpperCase()}</h1>
-        <img className="workout-img" src={workout.imgUrl} alt={workout.imgUrl} />
-        <figcaption className="workout-figcaption">
+        <img className="img" src={workout.imgUrl} alt={workout.imgUrl} />
+        <figcaption className="figcaption">
           <h3>
             <strong>Exercises: </strong>{workout.exercises ? workout.exercises.length : 0}
           </h3>
@@ -101,7 +101,7 @@ const WorkoutDetails = ({ workout }) => {
           {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
 
 
-          <button className="workout-button" onClick={() => navigate(`/workouts/workout/${workout._id}`)}>
+          <button className="button" onClick={() => navigate(`/workouts/workout/${workout._id}`)}>
             View Workout
           </button>
         </figcaption>

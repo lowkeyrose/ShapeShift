@@ -68,7 +68,7 @@
   z-index: 0;
 }
 
-.workouts {
+.workouts, .users{
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -113,8 +113,43 @@
   background-position-y: 33px;
   padding: 120px 0;
 }
-.admin-panel button {
+.admin-panel .table-button {
   margin: 0 10px;
   border: none;
   cursor: pointer;
+}
+.admin-panel .format-button {
+  position: absolute;
+  top: 90px;
+  right: 0;
+  left: 0;
+  margin: auto;
+  width: 140px;
+  align-self: center;
+  background-color: #000000;
+  background-image: none;
+  background-repeat: repeat no-repeat;
+  background-size: 4px 3px;
+  border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+  border: 2px solid white;
+  box-shadow: rgba(255, 255, 255, 0.2) 15px 28px 25px -18px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: block;
+  font-family: Neucha, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 23px;
+  outline: none;
+  padding: 0.75rem;
+  text-decoration: none;
+  transition: all 235ms ease-in-out;
+  border-bottom-left-radius: 15px 255px;
+  border-bottom-right-radius: 225px 15px;
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }

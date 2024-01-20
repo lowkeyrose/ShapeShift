@@ -12,7 +12,8 @@ import './style/Pages.css'
 import logo from '../assets/robots/adminPanel.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
-
+import { formatDistanceToNow } from 'date-fns';
+import '../components/style/WorkoutDetails.css'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,7 +37,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([])
-  const { token, navigate, showToastError, setLoading } = useGlobalContext();
+  const [cardFormat, setCardFormat] = useState(false)
+  const { token, navigate, showToastError, showToastSuccess, setLoading } = useGlobalContext();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true)
@@ -82,6 +84,7 @@ export default function AdminPanel() {
       setUsers((prevUsers) => {
         return prevUsers.filter((user) => user._id !== id)
       })
+      showToastSuccess('Successfully deleted')
     } catch (error) {
       console.error('Error deleting user:', error)
       showToastError('Failed to delete user. Please try again.')
@@ -91,39 +94,65 @@ export default function AdminPanel() {
   return (
     <div className='admin-panel'>
       {
-        users &&
-        <TableContainer component={Paper} sx={{ boxShadow: '3px 3px 15px', borderRadius: '10px', width: '90%', height: '100%' }}>
-          <Table sx={{ minWidth: 700, m: 'auto' }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">Email</StyledTableCell>
-                <StyledTableCell align="center">Full Name</StyledTableCell>
-                <StyledTableCell align="center">Username</StyledTableCell>
-                <StyledTableCell align="center">RoleType</StyledTableCell>
-                <StyledTableCell align="center">Manage</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map((user) => (
-                <StyledTableRow key={user.username}>
-
-                  <StyledTableCell align="center" component="th">{user.email}</StyledTableCell>
-                  <StyledTableCell align="center">{`${user.firstName} ${user.lastName}`}</StyledTableCell>
-                  <StyledTableCell align="center">{user.username}</StyledTableCell>
-                  <StyledTableCell align="center">{user.roleType}</StyledTableCell>
-
-                  <StyledTableCell align="center">
-                    <div className="buttons">
-                      <button className='button' onClick={() => navigate(`/admin-panel/user/${user._id}`)}><FontAwesomeIcon icon={faPenToSquare} /></button>
-                      <button className='button' onClick={() => handleDelete(user._id)}><FontAwesomeIcon icon={faTrash} /></button>
+        users && cardFormat
+          ?
+          <>
+            <button className='format-button' onClick={() => setCardFormat(false)}>Table Format</button>
+            <div className="users">
+              {users &&
+                users.map((user) =>
+                  <div className="card">
+                    <figure className="figure">
+                      <h1 className='user-title' style={{ textAlign: 'center' }}>{user.username?.toUpperCase()}</h1>
+                      <img className="img" src={user.profilePic} alt={user.username} />
+                      {user.createdAt && <p>{formatDistanceToNow(new Date(user.createdAt), { addSuffix: true })}</p>}
+                    </figure>
+                    <div className="multi-button admin">
+                      {
+                        <>
+                          <button onClick={() => handleDelete(user._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                          <button onClick={() => navigate(`/admin-panel/user/${user._id}`)}><FontAwesomeIcon icon={faPenToSquare} /></button>
+                        </>
+                      }
                     </div>
-                  </StyledTableCell>
+                  </div>
+                )}
+            </div>
+          </>
+          :
+          <>
+            <TableContainer component={Paper} sx={{ marginTop: '40px', boxShadow: '3px 3px 15px', borderRadius: '10px', width: '90%', height: '100%' }}>
+              <Table sx={{ minWidth: 700, m: 'auto' }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell align="center">Email</StyledTableCell>
+                    <StyledTableCell align="center">Full Name</StyledTableCell>
+                    <StyledTableCell align="center">Username</StyledTableCell>
+                    <StyledTableCell align="center">RoleType</StyledTableCell>
+                    <StyledTableCell align="center">Manage</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {users.map((user) => (
+                    <StyledTableRow key={user.username}>
+                      <StyledTableCell align="center" component="th">{user.email}</StyledTableCell>
+                      <StyledTableCell align="center">{`${user.firstName} ${user.lastName}`}</StyledTableCell>
+                      <StyledTableCell align="center">{user.username}</StyledTableCell>
+                      <StyledTableCell align="center">{user.roleType}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        <div className="table-buttons">
+                          <button className='table-button' onClick={() => navigate(`/admin-panel/user/${user._id}`)}><FontAwesomeIcon icon={faPenToSquare} /></button>
+                          <button className='table-button' onClick={() => handleDelete(user._id)}><FontAwesomeIcon icon={faTrash} /></button>
+                        </div>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <button className='format-button' onClick={() => setCardFormat(true)}>Card Format</button>
+            </TableContainer>
 
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+          </>
       }
       <img className='bottom-left-icon' src={logo} alt="logo" />
 
