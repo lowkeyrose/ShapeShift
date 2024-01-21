@@ -22,7 +22,7 @@ export default function EditAccount() {
   const { user, navigate, token, setLoading } = useContext(GlobalContext)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
-  const [value, setValue] = useState('');
+  const [genderValue, setGenderValue] = useState('');
   const [initialUserData, setInitialUserData] = useState({});
 
   const [formData, setFormData] = useState({
@@ -70,7 +70,7 @@ export default function EditAccount() {
       const data = await response.json();
       setFormData(data)
       setInitialUserData(data)
-      setValue(data.gender)
+      setGenderValue(data.gender)
       console.log('DATA: ', data);
     } catch (error) {
       console.error('Error deleting user:', error)
@@ -86,7 +86,7 @@ export default function EditAccount() {
     } else {
       setFormData(user)
       setInitialUserData(user)
-      setValue(user.gender)
+      setGenderValue(user.gender)
     }
     return () => {
       setFormData({
@@ -103,7 +103,7 @@ export default function EditAccount() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await updateUser(formData.firstName, formData.lastName, formData.email, formData.username, formData.phone, formData.gender, formData.profilePic)
+    await updateUser(formData.firstName, formData.lastName, formData.email, formData.username, formData.phone, genderValue, formData.profilePic)
     setIsValid(false)
   }
 
@@ -113,9 +113,10 @@ export default function EditAccount() {
       ...formData,
       [id]: value,
     }
+    // console.log('id', id);
 
-    if (id === "gender") {
-      setValue(value)
+    if (id.includes('gender')) {
+      setGenderValue(value)
     }
     const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialUserData);
     const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
@@ -195,11 +196,11 @@ export default function EditAccount() {
                   <RadioGroup
                     aria-labelledby="gender"
                     name="controlled-radio-buttons-group"
-                    value={value}
+                    value={genderValue}
                     onChange={handleInput}
                   >
-                    <FormControlLabel value="female" control={<Radio id='gender' />} label="Female" />
-                    <FormControlLabel value="male" control={<Radio id='gender' />} label="Male" />
+                    <FormControlLabel value="female" control={<Radio id='gender-female' />} label="Female" />
+                    <FormControlLabel value="male" control={<Radio id='gender-male' />} label="Male" />
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -214,11 +215,6 @@ export default function EditAccount() {
             >
               Update Info
             </Button>
-            {/* {error && (
-            <Typography color="error" variant="body2" align="center" sx={{ mt: 2 }}>
-              {error}
-            </Typography>
-          )} */}
           </Box>
         </Box>
       </Container>

@@ -50,7 +50,6 @@ export default function Filter({ onFilterChange }) {
   return (
     <>
       <Button
-        sx={{ position: 'fixed', top: 650, left: 20 }}
         onClick={handleFilterButtonClick}
         endIcon={<FilterListIcon />}
       >

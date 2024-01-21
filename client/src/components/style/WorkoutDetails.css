@@ -1,4 +1,4 @@
-.card, .card {
+.card {
   position: relative;
   z-index: 1;
   padding: 0;
@@ -210,7 +210,8 @@
   bottom: 10px;
   left: 10px;
   position: absolute;
-  width: 35px;
+  width: 35px ;
+  height: 35px ;
   border-radius: 50%;
 }
 

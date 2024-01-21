@@ -2,11 +2,11 @@
   background-image: url("../../assets/ll.png");
   background-color: #cfcfcf0e;
   background-position: top 33px right 0;
-  padding: 160px 40px;
+  padding: 160px 20px;
   min-height: 100vh;
 }
 .signup-form {
-  padding: 120px 40px;
+  padding: 120px 20px;
 }
 .form-container {
   min-height: 55vh;
@@ -39,24 +39,29 @@
 
 .form .exercise-preview {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   z-index: 1;
   text-align: center;
 }
 
 .form .exercise-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
   box-shadow: 0 0 2rem -1rem rgba(0, 0, 0, 0.05);
-  margin: 0 30px; /* Adjust the margin as needed */
-  max-width: calc(33.33% - 20px);
+  margin: 10px 50px;
+  width: 27%;
 }
 .form .exercise-figure {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 200px;
-  height: 250px;
+  height: 200px;
+  min-width: 180px;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -97,7 +102,7 @@
 }
 .form .exercise-figcaption {
   position: absolute;
-  bottom: -24%;
+  bottom: -30%;
   left: 0;
   width: 100%;
   margin: 0;

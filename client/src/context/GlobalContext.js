@@ -41,6 +41,12 @@ export const GlobalContextProvider = React.memo(({ children }) => {
   const [searchWord, setSearchWord] = useState('');
   const [roleType, setRoleType] = useState(RoleTypes.none);
   const [loading, setLoading] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+  const [activeFilters, setActiveFilters] = useState({
+      filterByLikes: null,
+      filterByExercises: null,
+  });
+  const [sortOption, setSortOption] = useState(null);
 
   const showToastError = text => {
     toast.error(text);
@@ -57,6 +63,43 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     const objectIdPattern = /^[0-9a-fA-F]{24}$/;
     return objectIdPattern.test(id);
   };
+
+  const handleFilterChange = ({ filterByLikes, filterByExercises }) => {
+    setActiveFilters({
+      filterByLikes,
+      filterByExercises,
+    });
+  };
+
+  const applyFilters = useCallback((workouts) => {
+    return workouts.filter((workout) =>
+      (activeFilters.filterByLikes === null ||
+        workout.likes >= activeFilters.filterByLikes) &&
+      (activeFilters.filterByExercises === null ||
+        workout.exercises.length >= activeFilters.filterByExercises)
+    );
+  }, [activeFilters])
+
+  const handleSortChange = (option) => {
+    setSortOption(option);
+  };
+
+  const sortWorkouts = useCallback((data) => {
+    if (sortOption === 'exercises-asc') {
+      return data.slice().sort((a, b) => a.exercises.length - b.exercises.length);
+    } else if (sortOption === 'exercises-desc') {
+      return data.slice().sort((a, b) => b.exercises.length - a.exercises.length);
+    } else if (sortOption === 'likes-asc') {
+      return data.slice().sort((a, b) => a.likes - b.likes);
+    } else if (sortOption === 'likes-desc') {
+      return data.slice().sort((a, b) => b.likes - a.likes);
+    } else if (sortOption === 'oldest') {
+      return data.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else if (sortOption === 'newest') {
+      return data.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+    return data;
+  }, [sortOption]);
 
 
   const memoizedDispatch = useCallback(dispatch, [dispatch]);
@@ -110,8 +153,14 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     setLoading,
     searchWord,
     setSearchWord,
-    isValidObjectId
-  }), [state, token, navigate, location, roleType, loading, searchWord]);
+    isValidObjectId,  
+    handleFilterChange,
+    applyFilters,
+    handleSortChange,
+    sortWorkouts,
+    filteredData,
+     setFilteredData
+  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>

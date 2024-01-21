@@ -4,7 +4,14 @@ import { ACTIONS } from '../context/Actions'
 import { memo } from 'react'
 import logo from '../assets/robots/home.png'
 import '../components/style/WorkoutDetails.css'
-import './style/Pages.css'
+import './style/Home.css'
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'
@@ -46,17 +53,53 @@ const Home = () => {
                 <br />
                 {workouts && workouts.length > 0 ? "Here you can find all the workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
-            <div className="workouts">
-                {workouts &&
-                    workouts.map((workout) => {
-                        if (!workout.Private) {
-                            return <WorkoutDetails key={workout._id} workout={workout} />
-                        } else {
-                            return null
+
+            {(workouts && workouts.length > 0) &&
+                <div className="container">
+                    <Swiper
+                        effect={'coverflow'}
+                        grabCursor={true}
+                        centeredSlides={true}
+                        initialSlide={1}
+                        loop={true}
+                        autoplay={true}
+                        loopPreventsSliding={true}
+                        slidesPerView={'auto'}
+                        slidesPerGroupSkip={0}
+                        coverflowEffect={{
+                            rotate: 0,
+                            stretch: 0,
+                            depth: 100,
+                            modifier: 2.5,
+                        }}
+                        pagination={{ el: '.swiper-pagination', clickable: true,  dynamicBullets: true }}
+                        navigation={{
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                            clickable: true,
+                        }}
+                        modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+                        className='swiper_container swiper-init'
+                    >
+                        {
+                            workouts.map((workout) =>
+                                <SwiperSlide key={workout._id}>
+                                    <WorkoutDetails workout={workout} />
+                                </SwiperSlide>
+                            )
                         }
-                    }
-                    )}
-            </div>
+                        <div className="slider-controler">
+                            <div className="swiper-button-prev slider-arrow">
+                                <ion-icon name="arrow-back-outline"></ion-icon>
+                            </div>
+                            <div className="swiper-button-next slider-arrow">
+                                <ion-icon name="arrow-forward-outline"></ion-icon>
+                            </div>
+                            <div className="swiper-pagination"></div>
+                        </div>
+                    </Swiper>
+                </div>
+            }
             <img className='home-icon' src={logo} alt="logo" />
         </div>
     )

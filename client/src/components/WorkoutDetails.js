@@ -12,6 +12,7 @@ const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutContext()
   const { user, token, navigate, location, showToastSuccess, showToastError } = useGlobalContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
+  
 
   const handleDelete = async () => {
     try {
@@ -117,14 +118,16 @@ const WorkoutDetails = ({ workout }) => {
       </figure>
       <div className="multi-button">
         {
-          ((user?.roleType === 'admin') || (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id)) &&
+          ( (user?.roleType === 'admin' && location.pathname !== '/')  || (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id)) &&
           <>
             <button onClick={handleDelete}><FontAwesomeIcon icon={faTrash} /></button>
             <button onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></button>
           </>
 
         }
+        {location.pathname !== '/' && 
         <button style={{ color: (location.pathname === '/workouts/favorites' && 'red') || (!user ? "grey" : (isFavorited ? "red" : "grey")) }} onClick={() => user ? (isFavorited ? unfavorite() : favorite()) : showToastError("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
+        }
       </div>
     </div>
   )

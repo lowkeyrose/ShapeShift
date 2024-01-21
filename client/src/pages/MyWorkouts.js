@@ -13,9 +13,11 @@ import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
 import { search } from '../components/Searchbar';
 import { useLocation } from 'react-router-dom';
+import SortBy from '../components/SortBy';
+import Filter from '../components/Filter';
 
 export default function MyWorkouts() {
-    const { navigate, setLoading, token, searchWord } = useGlobalContext()
+    const { navigate, setLoading, token, searchWord, handleFilterChange, applyFilters, handleSortChange, sortWorkouts, filteredData, setFilteredData } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
     const location = useLocation();
     // console.log("MyWorkouts component rendered"); // Add this line
@@ -53,7 +55,15 @@ export default function MyWorkouts() {
     useEffect(() => {
         // Scroll to the top when the location changes
         window.scrollTo(0, 0);
-      }, [location.pathname]);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (workouts) {
+            const filteredWorkouts = applyFilters(workouts);
+            const sortedWorkouts = sortWorkouts(filteredWorkouts);
+            setFilteredData(sortedWorkouts);
+        }
+    }, [applyFilters, sortWorkouts, workouts, setFilteredData]);
 
     return (
         <div className='my-workouts-page'>
@@ -64,17 +74,19 @@ export default function MyWorkouts() {
                 <br />
                 {workouts && workouts.length > 0 ? "Here are the awesome workouts you've created!" : "You current have no available workouts, Add your first one today!"}
             </Typography>
-
+            <div className="sort-filter">
+                <SortBy onSortChange={handleSortChange} />
+                <Filter onFilterChange={handleFilterChange} />
+            </div>
             <div className="workouts">
                 {workouts &&
-                    workouts.filter(workout => search(searchWord, workout.title)).map((workout) => {
-                        // use String(workout._id) because i kept getting a Each child in a list should have a unique "key" prop. warning
-                        return <WorkoutDetails key={String(workout._id)} workout={workout} />;
+                    filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
+                        return <WorkoutDetails key={workout._id} workout={workout} />;
                     })}
             </div>
 
-            <Button sx={{ display:'flex', justifyContent:'center', alignItems:'center', position: 'fixed', right: 20, bottom: 20, borderRadius:'100%', padding:0,  zIndex:999, minWidth: 'unset', backgroundColor: '#409c45', color:'#b2dbb6'}} variant="contained" color="success" onClick={() => navigate('/workouts/myworkouts/create/new')} >
-            <AddCircleIcon sx={{fontSize:'60px', m:0, p:0}} />
+            <Button sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', right: 20, bottom: 20, borderRadius: '100%', padding: 0, zIndex: 999, minWidth: 'unset', backgroundColor: '#409c45', color: '#b2dbb6' }} variant="contained" color="success" onClick={() => navigate('/workouts/myworkouts/create/new')} >
+                <AddCircleIcon sx={{ fontSize: '60px', m: 0, p: 0 }} />
             </Button>
             <img className='bottom-left-icon' src={logo} alt="logo" />
         </div>

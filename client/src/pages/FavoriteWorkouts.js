@@ -10,9 +10,21 @@ import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
 import { search } from '../components/Searchbar'
+import SortBy from '../components/SortBy'
+import Filter from '../components/Filter'
 
 export default function FavoirteWorkouts() {
-  const { token, setLoading, searchWord } = useGlobalContext()
+  const {
+    token,
+    setLoading,
+    searchWord,
+    handleFilterChange,
+    applyFilters,
+    handleSortChange,
+    sortWorkouts,
+    filteredData,
+    setFilteredData
+  } = useGlobalContext()
   const { workouts, dispatch } = useWorkoutContext()
 
   const favoriteWorkouts = useCallback(async () => {
@@ -44,6 +56,14 @@ export default function FavoirteWorkouts() {
     }
   }, [favoriteWorkouts, dispatch, token]);
 
+  useEffect(() => {
+    if (workouts) {
+      const filteredWorkouts = applyFilters(workouts);
+      const sortedWorkouts = sortWorkouts(filteredWorkouts);
+      setFilteredData(sortedWorkouts);
+    }
+  }, [applyFilters, sortWorkouts, workouts, setFilteredData]);
+
   return (
     <div className='favorites-page'>
       <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
@@ -53,13 +73,15 @@ export default function FavoirteWorkouts() {
         <br />
         {workouts && workouts.length > 0 ? "We've kept all you're favorite workouts ready for you!" : "You current have no available workouts, Add your first one today!"}
       </Typography>
-
+      <div className="sort-filter">
+        <SortBy onSortChange={handleSortChange} />
+        <Filter onFilterChange={handleFilterChange} />
+      </div>
       <div className="workouts">
         {workouts &&
-          workouts.filter(workout => search(searchWord, workout.title)).map((workout) => (
-            // <WorkoutDetails key={workout._id} workout={workout} favoriteWorkouts={favoriteWorkouts} />
-            <WorkoutDetails key={workout._id} workout={workout} />
-          ))}
+          filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => (
+              <WorkoutDetails key={workout._id} workout={workout} />
+            ))}
       </div>
 
       <img className='bottom-left-icon' src={logo} alt="logo" />

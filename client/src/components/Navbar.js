@@ -97,9 +97,8 @@ const Navbar = () => {
               transition
               disablePortal
             >
-              {({ TransitionProps, placement }) => (
                 <ClickAwayListener onClickAway={handleCloseNavMenu}>
-                  <Paper {...TransitionProps} style={{ transformOrigin: placement === 'bottom-start' ? 'left top' : 'center bottom' }}>
+                  <Paper in={Boolean(anchorElNav).toString()} style={{ transformOrigin: 'left top'}}>
                     <MenuList autoFocusItem={Boolean(anchorElNav)} id="menu-list-grow">
                       {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
                         <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: "black" }}>
@@ -111,7 +110,6 @@ const Navbar = () => {
                     </MenuList>
                   </Paper>
                 </ClickAwayListener>
-              )}
             </Popper>
           </Box>
 
@@ -198,9 +196,8 @@ const Navbar = () => {
                   transition
                   disablePortal
                 >
-                  {({ TransitionProps, placement }) => (
                     <ClickAwayListener onClickAway={handleCloseUserMenu}>
-                      <Paper {...TransitionProps} style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'center bottom' }}>
+                      <Paper in={Boolean(anchorElUser).toString()} style={{ transformOrigin: 'right top'}}>
                         <MenuList autoFocusItem={Boolean(anchorElUser)} id="menu-list-grow" >
                           <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
                             <MenuItem onClick={handleLogout}>
@@ -217,7 +214,6 @@ const Navbar = () => {
                         </MenuList>
                       </Paper>
                     </ClickAwayListener>
-                  )}
                 </Popper>
               </Box>
             )}

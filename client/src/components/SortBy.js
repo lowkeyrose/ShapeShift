@@ -17,7 +17,6 @@ export default function SortBy({ onSortChange }) {
   return (
     <div>
       <Button
-        sx={{ position: 'fixed', top: 630, left: 20 }}
         onClick={handleSortByClick}
         endIcon={<SortIcon />}
       >
