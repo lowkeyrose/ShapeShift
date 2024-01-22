@@ -62,10 +62,10 @@ const Home = () => {
                         centeredSlides={true}
                         initialSlide={1}
                         loop={true}
-                        autoplay={true}
+                        autoplay={{ delay: 3000, pauseOnMouseEnter: true }}
                         loopPreventsSliding={true}
                         slidesPerView={'auto'}
-                        slidesPerGroupSkip={0}
+                        slidesPerGroupSkip={false}
                         coverflowEffect={{
                             rotate: 0,
                             stretch: 0,

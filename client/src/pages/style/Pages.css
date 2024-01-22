@@ -169,8 +169,8 @@
 .sort-filter-button {
   z-index: 999;
   display: none;
-  position: sticky;
-  top: 20px;
+  position: fixed;
+  top: 80px;
   margin-left: 24px;
 }
 @media screen and (max-width: 1350px) {

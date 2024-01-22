@@ -65,15 +65,6 @@ export default function Workouts() {
 
     return (
         <div className='workouts-page'>
-            {(workouts && workouts.length > 0) &&
-                <div className="sort-filter-button">
-                    <button className='setting-btn' onClick={openMenu}>
-                        <span class="bar bar1"></span>
-                        <span class="bar bar2"></span>
-                        <span class="bar bar1"></span>
-                    </button>
-                </div>
-            }
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 Workouts Page
             </Typography>
@@ -81,7 +72,6 @@ export default function Workouts() {
                 <br />
                 {workouts && workouts.length > 0 ? "Here you can find all the public workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
-
             {(workouts && workouts.length > 0) &&
                 <>
                     <div className="workouts">
@@ -93,7 +83,13 @@ export default function Workouts() {
                             }
                         })}
                     </div>
-
+                    <div className="sort-filter-button">
+                        <button className='setting-btn' onClick={openMenu}>
+                            <span className="bar bar1"></span>
+                            <span className="bar bar2"></span>
+                            <span className="bar bar1"></span>
+                        </button>
+                    </div>
                     <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
                         <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
                         <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />

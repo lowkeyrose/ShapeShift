@@ -18,32 +18,32 @@ export default function SortBy({ onSortChange, onSortyByToggle }) {
 
   return (
     <div>
-      <div style={{ padding: '6px' }}>
-        <Typography variant="h6">
-          <SortIcon fontSize='16px' /> Sort by
+      <div  style={{ paddingRight: '12px' }}>
+        <Typography variant="h6" sx={{ fontSize: '16px', fontWeight:'bold', m: '2px 12px' }}>
+          <SortIcon fontSize='14px' /> Sort by
         </Typography>
-        <MenuItem sx={{p:0}} onClick={() => handleSortOptionSelect('likes-desc')}>
-          <Checkbox checked={selectedOption === 'likes-desc'} />
+        <MenuItem sx={{ p: 0, m: 0, fontSize: '16px' }} onClick={() => handleSortOptionSelect('likes-desc')}>
+          <Checkbox sx={{ p: 0, m: '4px 10px' }} checked={selectedOption === 'likes-desc'} />
           Most Likes
         </MenuItem>
-        <MenuItem sx={{p:0}}onClick={() => handleSortOptionSelect('likes-asc')}>
-          <Checkbox checked={selectedOption === 'likes-asc'} />
+        <MenuItem sx={{ p: 0, m: 0, fontSize: '16x' }} onClick={() => handleSortOptionSelect('likes-asc')}>
+          <Checkbox sx={{ p: 0, m: '4px 10px' }} checked={selectedOption === 'likes-asc'} />
           Fewest Likes
         </MenuItem>
-        <MenuItem sx={{p:0}}onClick={() => handleSortOptionSelect('exercises-desc')}>
-          <Checkbox checked={selectedOption === 'exercises-desc'} />
+        <MenuItem sx={{ p: 0, m: 0, fontSize: '16px' }} onClick={() => handleSortOptionSelect('exercises-desc')}>
+          <Checkbox sx={{ p: 0, m: '4px 10px' }} checked={selectedOption === 'exercises-desc'} />
           Most Exercises
         </MenuItem>
-        <MenuItem sx={{p:0}}onClick={() => handleSortOptionSelect('exercises-asc')}>
-          <Checkbox checked={selectedOption === 'exercises-asc'} />
+        <MenuItem sx={{ p: 0, m: 0, fontSize: '16px' }} onClick={() => handleSortOptionSelect('exercises-asc')}>
+          <Checkbox sx={{ p: 0, m: '4px 10px' }} checked={selectedOption === 'exercises-asc'} />
           Fewest Exercises
         </MenuItem>
-        <MenuItem sx={{p:0}}onClick={() => handleSortOptionSelect('oldest')}>
-          <Checkbox checked={selectedOption === 'oldest'} />
+        <MenuItem sx={{ p: 0, m: 0, fontSize: '16px' }} onClick={() => handleSortOptionSelect('oldest')}>
+          <Checkbox sx={{ p: 0, m: '4px 10px' }} checked={selectedOption === 'oldest'} />
           Oldest Workouts
         </MenuItem>
-        <MenuItem sx={{p:0}}onClick={() => handleSortOptionSelect('newest')}>
-          <Checkbox checked={selectedOption === 'newest'} />
+        <MenuItem sx={{ p: 0, m: 0, fontSize: '16px' }} onClick={() => handleSortOptionSelect('newest')}>
+          <Checkbox sx={{ p: 0, m: '4px 10px' }} checked={selectedOption === 'newest'} />
           Newest Workouts
         </MenuItem>
       </div>

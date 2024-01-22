@@ -283,8 +283,7 @@ export default function WorkoutForm() {
                                 </Typography>
                             </Grid>
 
-                            <ExerciseForm Use role="dialog" aria-modal="true"
-
+                            <ExerciseForm Use role="dialog" aria-modal="true" 
                                 id="exercise-form"
                                 exerciseFormModal={exerciseFormModal}
                                 setExerciseFormModal={setExerciseFormModal}

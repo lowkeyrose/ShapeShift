@@ -15,7 +15,7 @@ const exerciseValidationSchema = Joi.object({
   sets: Joi.number().min(0).max(200).optional(),
   weight: Joi.number().min(0).max(1000).optional(),
   reps: Joi.number().min(0).max(200).optional(),
-  duration: Joi.number().min(0).max(1000).optional()
+  duration: Joi.string().min(0).max(1000).optional().regex(/^[0-5]?\d:[0-5]\d$/),
 });
 
 module.exports = async (req, res, next) => {

@@ -24,7 +24,7 @@ const exerciseSchema = new Schema({
     type: Number,
   },
   duration: {
-    type: Number,
+    type: String,
   },
   workout_id: {
     type: mongoose.Schema.Types.ObjectId,

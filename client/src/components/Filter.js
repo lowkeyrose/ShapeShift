@@ -41,12 +41,13 @@ export default function Filter({ onFilterChange, onFilterToggle }) {
 
   return (
     <>
-      <div style={{ padding: '0 16px' }}>
-        <Typography sx={{fontWeight:'bold'}}><FilterListIcon fontSize='16px' />Filter by Likes</Typography>
+      <div style={{ padding: '0 12px' }}>
+        <Typography sx={{ fontWeight: 'bold', fontSize: '16px' }}><FilterListIcon fontSize='16px' />Filter by Likes</Typography>
         <div>
           <FormControlLabel
             control={
               <Checkbox
+                sx={{ p: 0, m: '4px 10px' }}
                 checked={filterByLikes === 10}
                 onChange={() => handleLikesChange(10)}
               />
@@ -58,6 +59,7 @@ export default function Filter({ onFilterChange, onFilterToggle }) {
           <FormControlLabel
             control={
               <Checkbox
+                sx={{ p: 0, m: '4px 10px' }}
                 checked={filterByLikes === 50}
                 onChange={() => handleLikesChange(50)}
               />
@@ -69,6 +71,7 @@ export default function Filter({ onFilterChange, onFilterToggle }) {
           <FormControlLabel
             control={
               <Checkbox
+                sx={{ p: 0, m: '4px 10px' }}
                 checked={filterByLikes === 100}
                 onChange={() => handleLikesChange(100)}
               />
@@ -76,11 +79,12 @@ export default function Filter({ onFilterChange, onFilterToggle }) {
             label="100+ Likes"
           />
         </div>
-        <Typography sx={{fontWeight:'bold'}}>Filter by Exercises</Typography>
+        <Typography sx={{ fontWeight: 'bold' }}>Filter by Exercises</Typography>
         <div>
           <FormControlLabel
             control={
               <Checkbox
+                sx={{ p: 0, m: '4px 10px' }}
                 checked={filterByExercises === 5}
                 onChange={() => handleExercisesChange(5)}
               />
@@ -92,6 +96,7 @@ export default function Filter({ onFilterChange, onFilterToggle }) {
           <FormControlLabel
             control={
               <Checkbox
+                sx={{ p: 0, m: '4px 10px' }}
                 checked={filterByExercises === 10}
                 onChange={() => handleExercisesChange(10)}
               />
@@ -103,6 +108,7 @@ export default function Filter({ onFilterChange, onFilterToggle }) {
           <FormControlLabel
             control={
               <Checkbox
+                sx={{ p: 0, m: '4px 10px' }}
                 checked={filterByExercises === 20}
                 onChange={() => handleExercisesChange(20)}
               />
