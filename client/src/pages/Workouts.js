@@ -15,7 +15,21 @@ import SortBy from '../components/SortBy'
 
 export default function Workouts() {
     const { workouts, dispatch } = useWorkoutContext()
-    const { setLoading, searchWord, handleFilterChange, applyFilters, handleSortChange, sortWorkouts, filteredData, setFilteredData } = useGlobalContext()
+    const {
+        setLoading,
+        searchWord,
+        handleFilterChange,
+        applyFilters,
+        handleSortChange,
+        sortWorkouts,
+        filteredData,
+        setFilteredData,
+        isActive,
+        openMenu,
+        handleFilterToggle,
+        handleSortByToggle
+    } = useGlobalContext()
+
 
     const fetchWorkouts = useCallback(async () => {
         setLoading(true)
@@ -51,6 +65,13 @@ export default function Workouts() {
 
     return (
         <div className='workouts-page'>
+            <div className="sort-filter-button">
+                <button className='setting-btn' onClick={openMenu}>
+                    <span class="bar bar1"></span>
+                    <span class="bar bar2"></span>
+                    <span class="bar bar1"></span>
+                </button>
+            </div>
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 Workouts Page
             </Typography>
@@ -58,10 +79,6 @@ export default function Workouts() {
                 <br />
                 {workouts && workouts.length > 0 ? "Here you can find all the public workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
-            <div className="sort-filter">
-                <SortBy onSortChange={handleSortChange} />
-                <Filter onFilterChange={handleFilterChange} />
-            </div>
             <div className="workouts">
                 {workouts &&
                     filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
@@ -72,6 +89,10 @@ export default function Workouts() {
                         }
                     })
                 }
+            </div>
+            <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
+                <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
+                <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
             </div>
             <img className='bottom-left-icon' src={logo} alt="logo" />
         </div>

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { GlobalContext } from '../context/GlobalContext'
 import './style/Account.css'
+import './style/Buttons.css'
 
 export default function Account() {
   const { user, navigate } = useContext(GlobalContext)
@@ -24,7 +25,7 @@ export default function Account() {
         <div className='box'>Phone: {user.phone}</div>
         <div className='box'>Gender: {user.gender}</div>
       </div>
-      {user.roleType !== 'admin' && <button onClick={() => navigate(`/account/edit/${user._id}`)}>Edit Account Info</button>}
+      {user.roleType !== 'admin' && <button className='styled-button' onClick={() => navigate(`/account/edit/${user._id}`)}>Edit Account Info</button>}
     </div>
     </div>
   )

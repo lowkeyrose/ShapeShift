@@ -11,6 +11,7 @@ import Account from '../pages/Account';
 import EditAccount from '../pages/EditAccount';
 import About from '../pages/About';
 import AdminPanel from '../pages/AdminPanel';
+import InDevelopment from '../pages/InDevelopment';
 
 export default function AuthRouter() {
   const { user } = useGlobalContext()
@@ -18,6 +19,7 @@ export default function AuthRouter() {
   return (
     <Routes>
       <Route path="*" element={<ErrorPage />} />
+      <Route path="/in-development" element={<InDevelopment />} />
       <Route path="/" element={<Home />} />
       <Route path='/workouts' element={<Workouts />} />
       <Route path="/workouts/workout/:id" element={<SingleWorkout />} />

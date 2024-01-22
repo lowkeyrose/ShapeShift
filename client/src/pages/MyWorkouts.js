@@ -17,7 +17,21 @@ import SortBy from '../components/SortBy';
 import Filter from '../components/Filter';
 
 export default function MyWorkouts() {
-    const { navigate, setLoading, token, searchWord, handleFilterChange, applyFilters, handleSortChange, sortWorkouts, filteredData, setFilteredData } = useGlobalContext()
+    const { navigate,
+        setLoading,
+        token,
+        searchWord,
+        handleFilterChange,
+        applyFilters,
+        handleSortChange,
+        sortWorkouts,
+        filteredData,
+        setFilteredData,
+        openMenu,
+        isActive,
+        handleSortByToggle,
+        handleFilterToggle
+    } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
     const location = useLocation();
     // console.log("MyWorkouts component rendered"); // Add this line
@@ -67,6 +81,13 @@ export default function MyWorkouts() {
 
     return (
         <div className='my-workouts-page'>
+            <div className={isActive ? 'sort-filter-button-off' : 'sort-filter-button'}>
+                <button className='setting-btn' onClick={openMenu}>
+                    <span class="bar bar1"></span>
+                    <span class="bar bar2"></span>
+                    <span class="bar bar1"></span>
+                </button>
+            </div>
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 My Workouts
             </Typography>
@@ -74,9 +95,9 @@ export default function MyWorkouts() {
                 <br />
                 {workouts && workouts.length > 0 ? "Here are the awesome workouts you've created!" : "You current have no available workouts, Add your first one today!"}
             </Typography>
-            <div className="sort-filter">
-                <SortBy onSortChange={handleSortChange} />
-                <Filter onFilterChange={handleFilterChange} />
+            <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
+                <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
+                <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
             </div>
             <div className="workouts">
                 {workouts &&

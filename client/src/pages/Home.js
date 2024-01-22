@@ -4,7 +4,8 @@ import { ACTIONS } from '../context/Actions'
 import { memo } from 'react'
 import logo from '../assets/robots/home.png'
 import '../components/style/WorkoutDetails.css'
-import './style/Home.css'
+import './style/Swiper.css'
+import './style/Pages.css'
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
@@ -20,7 +21,7 @@ import { useGlobalContext } from '../hooks/useGlobalContext'
 
 const Home = () => {
     const { workouts, dispatch } = useWorkoutContext()
-    const { setLoading } = useGlobalContext()
+    const { setLoading, navigate, user } = useGlobalContext()
 
     const fetchWorkouts = useCallback(async () => {
         setLoading(true)
@@ -51,14 +52,13 @@ const Home = () => {
             </Typography>
             <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
-                {workouts && workouts.length > 0 ? "Here you can find all the workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
+                {workouts && workouts.length > 0 ? "View the latest workouts created!" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
 
             {(workouts && workouts.length > 0) &&
                 <div className="container">
                     <Swiper
                         effect={'coverflow'}
-                        grabCursor={true}
                         centeredSlides={true}
                         initialSlide={1}
                         loop={true}
@@ -72,7 +72,7 @@ const Home = () => {
                             depth: 100,
                             modifier: 2.5,
                         }}
-                        pagination={{ el: '.swiper-pagination', clickable: true,  dynamicBullets: true }}
+                        pagination={{ el: '.swiper-pagination', clickable: true, dynamicBullets: true }}
                         navigation={{
                             nextEl: '.swiper-button-next',
                             prevEl: '.swiper-button-prev',
@@ -100,6 +100,26 @@ const Home = () => {
                     </Swiper>
                 </div>
             }
+            <button className="styled-button" onClick={() => navigate('/workouts')}>View All Workouts</button>
+
+
+            {!user && <div className="user-section">
+                <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
+                    JOIN THE WORLD OF FITNESS TODAY
+                </Typography>
+                <div className="button-section">
+                    <div className="login-button">
+                        <Typography component='h6'>Already have an account?</Typography>
+                        <button className='styled-button user-button' onClick={() => navigate('/login')}>LOGIN</button>
+                    </div>
+                    <div className="signup-button">
+                        <Typography component='h6'>Create an account!</Typography>
+                        <button className='styled-button user-button' onClick={() => navigate('/signup')}>SIGNUP</button>
+                    </div>
+                </div>
+            </div>}
+
+
             <img className='home-icon' src={logo} alt="logo" />
         </div>
     )

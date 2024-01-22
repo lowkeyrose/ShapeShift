@@ -10,12 +10,13 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutContext()
-  const { user, token, navigate, location, showToastSuccess, showToastError } = useGlobalContext()
+  const { user, token, navigate, location, showToastSuccess, showToastError, setLoading } = useGlobalContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
-  
+
 
   const handleDelete = async () => {
     try {
+      setLoading(true)
       const response = await fetch(`/api/workouts/myworkouts/${workout._id}`, {
         method: 'DELETE',
         headers: {
@@ -34,11 +35,14 @@ const WorkoutDetails = ({ workout }) => {
     } catch (error) {
       console.error('Error deleting workout:', error)
       showToastError('Failed to delete workout. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
   const favorite = async () => {
     try {
+      setLoading(true)
       const response = await fetch(`/api/workouts/favorite/${workout._id}`, {
         method: 'PUT',
         headers: {
@@ -55,18 +59,21 @@ const WorkoutDetails = ({ workout }) => {
       showToastSuccess("Workout added to favorites");
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false)
     }
   }
 
   const unfavorite = async () => {
     try {
+      setLoading(true)
       const response = await fetch(`/api/workouts/unfavorite/${workout._id}`, {
         method: 'PUT',
         headers: {
           'Authorization': token,
         },
       });
-      
+
       if (!response.ok) {
         throw new Error(`Failed to unfavorite workout: ${response.statusText}`);
       }
@@ -80,6 +87,8 @@ const WorkoutDetails = ({ workout }) => {
       showToastSuccess('Workout removed from favorites');
     } catch (error) {
       console.error('Error unfavorite workout:', error);
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -107,8 +116,8 @@ const WorkoutDetails = ({ workout }) => {
           </button>
         </figcaption>
 
-        {(location.pathname === '/workouts/myworkouts' && workout.Private) && 
-        <div className='private'><FontAwesomeIcon style={{ fontSize: '20px' }} icon={faLock} /></div>
+        {(location.pathname === '/workouts/myworkouts' && workout.Private) &&
+          <div className='private'><FontAwesomeIcon style={{ fontSize: '20px' }} icon={faLock} /></div>
         }
 
         {workout.likes > 0 && <p className='likes'> <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faThumbsUp} /> {workout.likes}</p>}
@@ -118,15 +127,15 @@ const WorkoutDetails = ({ workout }) => {
       </figure>
       <div className="multi-button">
         {
-          ( (user?.roleType === 'admin' && location.pathname !== '/')  || (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id)) &&
+          ((user?.roleType === 'admin' && location.pathname !== '/') || (location.pathname === '/workouts/myworkouts' && user?._id === workout?.user_id)) &&
           <>
             <button onClick={handleDelete}><FontAwesomeIcon icon={faTrash} /></button>
             <button onClick={handleEdit}><FontAwesomeIcon icon={faPenToSquare} /></button>
           </>
 
         }
-        {location.pathname !== '/' && 
-        <button style={{ color: (location.pathname === '/workouts/favorites' && 'red') || (!user ? "grey" : (isFavorited ? "red" : "grey")) }} onClick={() => user ? (isFavorited ? unfavorite() : favorite()) : showToastError("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
+        {location.pathname !== '/' &&
+          <button style={{ color: (location.pathname === '/workouts/favorites' && 'red') || (!user ? "grey" : (isFavorited ? "red" : "grey")) }} onClick={() => user ? (isFavorited ? unfavorite() : favorite()) : showToastError("This feature is only available for users")} ><FontAwesomeIcon icon={faHeart} /></button>
         }
       </div>
     </div>

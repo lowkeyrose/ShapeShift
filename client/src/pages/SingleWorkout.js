@@ -7,6 +7,7 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import './style/SingleWorkout.css'
+import './style/Buttons.css'
 
 export default function SingleWorkout() {
   const { id } = useParams()
@@ -62,7 +63,7 @@ export default function SingleWorkout() {
       navigate('/workouts/myworkouts')
     } catch (error) {
       console.error('Error deleting workout:', error)
-      showToastError( showToastSuccess,'Failed to delete workout. Please try again.')
+      showToastError(showToastSuccess, 'Failed to delete workout. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -73,26 +74,31 @@ export default function SingleWorkout() {
       {workout &&
         <div className='single-workout-container'>
           <div className='workout-title'>{[workout.title]}</div>
-          <div className='workout-img-container'
-           style={{ backgroundImage: `url(${workout.imgUrl})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}
-           alt={workout.title}>
-           </div>
-          <br />
-          <br />
-          <div className='exercises-container'>Exercises: {workout.exercises && workout.exercises.map((exercise) =>
-            <div className="exercise" key={exercise._id}>
-              <div className='exercise-title'>{exercise.title}</div>
-              <img className='exercise-img' src={exercise.imgUrl} alt={exercise.title} />
-              <div className='exercise-info'>
-                <div>Weight: {exercise.weight}</div>
-                <div>Reps: {exercise.reps}</div>
-                <div>Sets: {exercise.sets}</div>
-                <div>Duration: {exercise.duration}</div>
-                {exercise.videoUrl && <a href={exercise.videoUrl} target='blank'>Video Url</a>}
-              </div>
 
-            </div>
-          )}</div>
+
+          <div className="img-container">
+            <img className='workout-img' src={workout.imgUrl} alt={workout.title}>
+            </img>
+          </div>
+
+          <br />
+          <br />
+          <div className='exercises-container'>
+            <h1 className='Exercises-title'>Exercises:</h1>
+            {workout.exercises && workout.exercises.map((exercise) =>
+              <div className="exercise" key={exercise._id}>
+                <div className='exercise-title'>{exercise.title}</div>
+                <img className='exercise-img' src={exercise.imgUrl} alt={exercise.title} />
+                <div className='exercise-info'>
+                  <div>Weight: {exercise.weight}</div>
+                  <div>Reps: {exercise.reps}</div>
+                  <div>Sets: {exercise.sets}</div>
+                  <div>Duration: {exercise.duration}</div>
+                  {exercise.videoUrl && <a href={exercise.videoUrl} target='blank'>Video</a>}
+                </div>
+
+              </div>
+            )}</div>
 
           <div>Creator: {workout.username}</div>
           {workout.createdAt && <p>Created: {formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
@@ -100,8 +106,8 @@ export default function SingleWorkout() {
           {
             ((user?.roleType === 'admin') || (user?._id === workout?.user_id)) &&
             <div className='workout-buttons'>
-              <button className='workout-button' onClick={editWorkout}>Edit Workout</button>
-              <button className='workout-button' onClick={deleteWorkout}>Delete Workout</button>
+              <button className='styled-button' onClick={editWorkout}>Edit Workout</button>
+              <button className='styled-button' onClick={deleteWorkout}>Delete Workout</button>
             </div>
           }
         </div>

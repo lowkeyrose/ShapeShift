@@ -6,12 +6,14 @@ import ErrorPage from '../pages/ErrorPage';
 import Workouts from '../pages/Workouts';
 import SingleWorkout from '../pages/SingleWorkout';
 import About from '../pages/About';
+import InDevelopment from '../pages/InDevelopment';
 
 export default function Router() {
 
   return (
     <Routes>
       <Route path='/' element={<Home />} />
+      <Route path="/in-development" element={<InDevelopment />} />
       <Route path='/workouts' element={<Workouts />} />
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<SignUp />} />

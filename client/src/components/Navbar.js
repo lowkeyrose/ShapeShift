@@ -77,6 +77,7 @@ const Navbar = () => {
 
           {/* Hamburger Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex', lg: 'none' } }}>
+
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -88,7 +89,7 @@ const Navbar = () => {
               <MenuIcon />
             </IconButton>
             <Popper
-              sx={{ mt: '55px', right: 'auto', left: 0 }}  // Adjust the styling as needed
+              sx={{ mt: '55px', right: 'auto', left: 0,top: '10px !important', position: 'absolute !important', }}
               id="menu-appbar"
               anchorEl={anchorElNav}
               open={Boolean(anchorElNav)}

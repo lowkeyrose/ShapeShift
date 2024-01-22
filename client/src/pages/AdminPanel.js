@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { formatDistanceToNow } from 'date-fns';
 import '../components/style/WorkoutDetails.css'
+import './style/Buttons.css'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -97,11 +98,11 @@ export default function AdminPanel() {
         users && cardFormat
           ?
           <>
-            <button className='format-button' onClick={() => setCardFormat(false)}>Table Format</button>
+            <button className='styled-button' onClick={() => setCardFormat(false)}>Table Format</button>
             <div className="users">
               {users &&
                 users.map((user) =>
-                  <div className="card">
+                  <div className="card" key={user._id}>
                     <figure className="figure">
                       <h1 className='user-title' style={{ textAlign: 'center' }}>{user.username?.toUpperCase()}</h1>
                       <img className="img" src={user.profilePic} alt={user.username} />
@@ -121,6 +122,7 @@ export default function AdminPanel() {
           </>
           :
           <>
+          <button className='styled-button' onClick={() => setCardFormat(true)}>Card Format</button>
             <TableContainer component={Paper} sx={{ marginTop: '40px', boxShadow: '3px 3px 15px', borderRadius: '10px', width: '90%', height: '100%' }}>
               <Table sx={{ minWidth: 700, m: 'auto' }} aria-label="customized table">
                 <TableHead>
@@ -149,7 +151,6 @@ export default function AdminPanel() {
                   ))}
                 </TableBody>
               </Table>
-              <button className='format-button' onClick={() => setCardFormat(true)}>Card Format</button>
             </TableContainer>
 
           </>

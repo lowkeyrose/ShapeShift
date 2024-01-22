@@ -43,10 +43,22 @@ export const GlobalContextProvider = React.memo(({ children }) => {
   const [loading, setLoading] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const [activeFilters, setActiveFilters] = useState({
-      filterByLikes: null,
-      filterByExercises: null,
+    filterByLikes: null,
+    filterByExercises: null,
   });
   const [sortOption, setSortOption] = useState(null);
+  const [isActive, setIsActive] = useState(false);
+
+  const openMenu = useCallback( () => {
+    setIsActive(!isActive);
+  }, [isActive])
+
+  const handleFilterToggle = useCallback(() => {
+    setIsActive(!isActive);
+  }, [isActive])
+  const handleSortByToggle = useCallback(() => {
+    setIsActive(!isActive);
+  }, [isActive])
 
   const showToastError = text => {
     toast.error(text);
@@ -153,14 +165,18 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     setLoading,
     searchWord,
     setSearchWord,
-    isValidObjectId,  
+    isValidObjectId,
     handleFilterChange,
     applyFilters,
     handleSortChange,
     sortWorkouts,
     filteredData,
-     setFilteredData
-  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts]);
+    setFilteredData,
+    isActive,
+    openMenu,
+    handleFilterToggle,
+    handleSortByToggle
+  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts, isActive, handleSortByToggle, handleFilterToggle, openMenu]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>
