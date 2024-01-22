@@ -23,7 +23,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     sets: 0,
     weight: 0,
     reps: 0,
-    duration: 0,
+    duration: '',
   });
 
 
@@ -34,7 +34,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     { name: 'sets', type: 'number', label: 'Sets', required: false, halfWidth: true },
     { name: 'weight', type: 'number', label: 'Weight (kg)', required: false, halfWidth: true },
     { name: 'reps', type: 'number', label: 'Reps', required: false, halfWidth: true },
-    { name: 'duration', type: 'number', label: 'Duration', required: false, halfWidth: true },
+    { name: 'duration', type: 'text', label: 'Duration', required: false, halfWidth: true, placeholder: 'mm:ss' },
   ];
 
   const exerciseSchema = Joi.object({
@@ -44,7 +44,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     sets: Joi.number().min(0).max(200).optional(),
     weight: Joi.number().min(0).max(1000).optional(),
     reps: Joi.number().min(0).max(200).optional(),
-    duration: Joi.number().min(0).max(1000).optional(),
+    duration: Joi.string().min(0).max(1000).optional().regex(/^[0-5]?\d:[0-5]\d$/).message('Duration must be in format mm:ss'),
   });
 
   const resetFormData = () => {
@@ -55,7 +55,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       sets: 0,
       weight: 0,
       reps: 0,
-      duration: 0,
+      duration: '',
     });
   };
 
@@ -208,6 +208,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
                           required={item.required}
                           fullWidth
                           id={item.name}
+                          placeholder={item.placeholder}
                           label={item.label}
                           autoFocus={item.name === 'title' ? true : false}
                         />
