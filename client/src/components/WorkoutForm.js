@@ -233,7 +233,7 @@ export default function WorkoutForm() {
                 <CssBaseline />
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar sx={{ m: '10px 0', bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
-                    <Typography component="h1" variant="h5" > {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
+                    <Typography component="h1" variant="h5" sx={{textAlign:'center'}}> {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, maxWidth:'90%' }}>
                         <Grid container spacing={2}>
                             {

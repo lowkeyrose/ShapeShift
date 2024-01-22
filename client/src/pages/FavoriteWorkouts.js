@@ -70,13 +70,15 @@ export default function FavoirteWorkouts() {
 
   return (
     <div className='favorites-page'>
-      <div className="sort-filter-button">
-        <button className='setting-btn' onClick={openMenu}>
-          <span class="bar bar1"></span>
-          <span class="bar bar2"></span>
-          <span class="bar bar1"></span>
-        </button>
-      </div>
+      {(workouts && workouts.length > 0) &&
+        <div className="sort-filter-button">
+          <button className='setting-btn' onClick={openMenu}>
+            <span class="bar bar1"></span>
+            <span class="bar bar2"></span>
+            <span class="bar bar1"></span>
+          </button>
+        </div>
+      }
       <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
         Favorite Workouts
       </Typography>
@@ -84,16 +86,20 @@ export default function FavoirteWorkouts() {
         <br />
         {workouts && workouts.length > 0 ? "We've kept all you're favorite workouts ready for you!" : "You current have no available workouts, Add your first one today!"}
       </Typography>
-      <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
-        <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
-        <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
-      </div>
-      <div className="workouts">
-        {workouts &&
-          filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => (
-            <WorkoutDetails key={workout._id} workout={workout} />
-          ))}
-      </div>
+      {(workouts && workouts.length > 0) &&
+            <>
+                <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
+                    <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
+                    <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
+                </div>
+
+                <div className="workouts">
+                    {filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
+                        return <WorkoutDetails key={workout._id} workout={workout} />;
+                    })}
+                </div>
+                    </>
+            }
 
       <img className='bottom-left-icon' src={logo} alt="logo" />
     </div>

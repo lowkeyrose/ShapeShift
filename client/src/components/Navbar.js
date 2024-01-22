@@ -47,15 +47,15 @@ const Navbar = () => {
   };
 
   // Dynamically determine whether to show the "About" page in the navigation
-  const showAboutInPages = !user; // If there is no user connected
+  const showAboutInPages = !user;
 
   return (
-    <AppBar position="absolute" sx={{ backgroundColor: 'transparent' }}>
+    <AppBar position="absolute" sx={{ backgroundColor: 'transparent', boxShadow: path === '/' ? '1px 1px 5px #ffffff33' : '1px 1px 5px grey' }}>
       <Container maxWidth="100%" sx={{ backgroundColor: 'inherit' }}>
         <Toolbar disableGutters>
 
           {/* LOGO */}
-          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'none', lg: 'flex' }, mr: 1, color: 'black', fontSize: '30px' }} />
+          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'none', lg: 'flex' }, mr: 1, color: path === '/' ? 'white' : 'black', fontSize: '30px' }} />
           <Typography
             variant="h6"
             noWrap
@@ -67,7 +67,7 @@ const Navbar = () => {
               fontFamily: 'Kanit',
               fontWeight: 600,
               fontSize: '34px',
-              color: 'black',
+              color: path === '/' ? 'white' : 'black',
               textDecoration: 'none',
               cursor: 'pointer'
             }}
@@ -84,17 +84,17 @@ const Navbar = () => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="black"
+              color="white"
             >
-              <MenuIcon />
+              <MenuIcon sx={{color: path === '/' ? 'white' : 'black'}} />
             </IconButton>
             <Popper
-              sx={{ mt: '55px', right: 'auto', left: 0,top: '10px !important', position: 'absolute !important', }}
+              sx={{ mt: '55px', right: 'auto', left: 0,top: '10px !important', position: 'absolute !important' }}
               id="menu-appbar"
               anchorEl={anchorElNav}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              placement="bottom-start"  // Adjust the placement as needed
+              placement="bottom-start"
               transition
               disablePortal
             >
@@ -128,7 +128,7 @@ const Navbar = () => {
                 display: { xs: 'none', sm: 'flex', md: 'flex', lg: 'none' },
                 mr: 1,
                 mt: 1,
-                color: 'black',
+                color: path === '/' ? 'white' : 'black',
               }} />
             <Typography
               variant="h5"
@@ -142,7 +142,7 @@ const Navbar = () => {
                 fontFamily: 'Kanit',
                 fontWeight: 500,
                 fontSize: '28px',
-                color: 'black',
+                color: path === '/' ? 'white' : 'black',
                 textDecoration: 'none',
               }}
             >
@@ -166,7 +166,7 @@ const Navbar = () => {
                 <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
                   <Button
                     key={page.route}
-                    sx={{ mx: 2, color: 'black', display: 'inline-block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize' }}
+                    sx={{ mx: 2, color: path === '/' ? 'white' : 'black', display: 'inline-block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize' }}
                   >
                     {page.title}
                   </Button>

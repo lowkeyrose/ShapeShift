@@ -54,11 +54,11 @@ export const GlobalContextProvider = React.memo(({ children }) => {
   }, [isActive])
 
   const handleFilterToggle = useCallback(() => {
-    setIsActive(!isActive);
-  }, [isActive])
+    setIsActive(false);
+  }, [])
   const handleSortByToggle = useCallback(() => {
-    setIsActive(!isActive);
-  }, [isActive])
+    setIsActive(false);
+  }, [])
 
   const showToastError = text => {
     toast.error(text);

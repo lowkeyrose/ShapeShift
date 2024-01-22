@@ -81,13 +81,16 @@ export default function MyWorkouts() {
 
     return (
         <div className='my-workouts-page'>
-            <div className={isActive ? 'sort-filter-button-off' : 'sort-filter-button'}>
-                <button className='setting-btn' onClick={openMenu}>
-                    <span class="bar bar1"></span>
-                    <span class="bar bar2"></span>
-                    <span class="bar bar1"></span>
-                </button>
-            </div>
+
+            {(workouts && workouts.length > 0) &&
+                <div className='sort-filter-button'>
+                    <button className='setting-btn' onClick={openMenu}>
+                        <span class="bar bar1"></span>
+                        <span class="bar bar2"></span>
+                        <span class="bar bar1"></span>
+                    </button>
+                </div>
+            }
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 My Workouts
             </Typography>
@@ -95,16 +98,21 @@ export default function MyWorkouts() {
                 <br />
                 {workouts && workouts.length > 0 ? "Here are the awesome workouts you've created!" : "You current have no available workouts, Add your first one today!"}
             </Typography>
-            <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
-                <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
-                <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
-            </div>
-            <div className="workouts">
-                {workouts &&
-                    filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
+
+            {(workouts && workouts.length > 0) &&
+            <>
+                <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
+                    <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
+                    <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
+                </div>
+
+                <div className="workouts">
+                    {filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
                         return <WorkoutDetails key={workout._id} workout={workout} />;
                     })}
-            </div>
+                </div>
+                    </>
+            }
 
             <Button sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', right: 20, bottom: 20, borderRadius: '100%', padding: 0, zIndex: 999, minWidth: 'unset', backgroundColor: '#409c45', color: '#b2dbb6' }} variant="contained" color="success" onClick={() => navigate('/workouts/myworkouts/create/new')} >
                 <AddCircleIcon sx={{ fontSize: '60px', m: 0, p: 0 }} />

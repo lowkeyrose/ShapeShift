@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <div className="footer-clean">
       <footer>
-        <div className="container">
+        <div className="footer-container">
           <div className="row">
             <div className="item">
               <h3>Services</h3>
@@ -43,6 +43,7 @@ const Footer = () => {
           </div>
         </div>
       </footer>
+
     </div>
   );
 };

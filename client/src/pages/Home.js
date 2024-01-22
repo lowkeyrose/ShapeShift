@@ -47,10 +47,10 @@ const Home = () => {
 
     return (
         <div className='home'>
-            <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
+            <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", color: 'white', fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
                 Your Personal Workout Buddy
             </Typography>
-            <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
+            <Typography component="p" sx={{ fontFamily: "Kanit", color: 'white', fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
                 {workouts && workouts.length > 0 ? "View the latest workouts created!" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
@@ -104,22 +104,20 @@ const Home = () => {
 
 
             {!user && <div className="user-section">
-                <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
+                <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", color: 'white', margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
                     JOIN THE WORLD OF FITNESS TODAY
                 </Typography>
                 <div className="button-section">
                     <div className="login-button">
-                        <Typography component='h6'>Already have an account?</Typography>
+                        <Typography component='h6' sx={{ color: 'white' }}>Already have an account?</Typography>
                         <button className='styled-button user-button' onClick={() => navigate('/login')}>LOGIN</button>
                     </div>
                     <div className="signup-button">
-                        <Typography component='h6'>Create an account!</Typography>
+                        <Typography component='h6' sx={{ color: 'white' }}>Create an account!</Typography>
                         <button className='styled-button user-button' onClick={() => navigate('/signup')}>SIGNUP</button>
                     </div>
                 </div>
             </div>}
-
-
             <img className='home-icon' src={logo} alt="logo" />
         </div>
     )

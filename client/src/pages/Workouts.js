@@ -65,13 +65,15 @@ export default function Workouts() {
 
     return (
         <div className='workouts-page'>
-            <div className="sort-filter-button">
-                <button className='setting-btn' onClick={openMenu}>
-                    <span class="bar bar1"></span>
-                    <span class="bar bar2"></span>
-                    <span class="bar bar1"></span>
-                </button>
-            </div>
+            {(workouts && workouts.length > 0) &&
+                <div className="sort-filter-button">
+                    <button className='setting-btn' onClick={openMenu}>
+                        <span class="bar bar1"></span>
+                        <span class="bar bar2"></span>
+                        <span class="bar bar1"></span>
+                    </button>
+                </div>
+            }
             <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 Workouts Page
             </Typography>
@@ -79,21 +81,25 @@ export default function Workouts() {
                 <br />
                 {workouts && workouts.length > 0 ? "Here you can find all the public workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
-            <div className="workouts">
-                {workouts &&
-                    filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
-                        if (!workout.Private) {
-                            return <WorkoutDetails key={workout._id} workout={workout} />;
-                        } else {
-                            return null;
-                        }
-                    })
-                }
-            </div>
-            <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
-                <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
-                <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
-            </div>
+
+            {(workouts && workouts.length > 0) &&
+                <>
+                    <div className="workouts">
+                        {filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
+                            if (!workout.Private) {
+                                return <WorkoutDetails key={workout._id} workout={workout} />;
+                            } else {
+                                return null;
+                            }
+                        })}
+                    </div>
+
+                    <div className={isActive ? 'sort-filter-active' : 'sort-filter'}>
+                        <SortBy onSortChange={handleSortChange} onSortyByToggle={handleSortByToggle} />
+                        <Filter onFilterChange={handleFilterChange} onFilterToggle={handleFilterToggle} />
+                    </div>
+                </>
+            }
             <img className='bottom-left-icon' src={logo} alt="logo" />
         </div>
     )
