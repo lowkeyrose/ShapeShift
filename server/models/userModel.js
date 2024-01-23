@@ -1,21 +1,27 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const Schema = mongoose.Schema
-const Joi = require('joi');
+const Joi = require('joi')
 
 const userValidationSchema = Joi.object({
-  firstName: Joi.string().min(3).max(20).required().pattern(/^[a-zA-Z]+$/).messages({ 'string.pattern.base': '"first name" must contain only alphanumeric characters' }),
-  lastName: Joi.string().min(3).max(20).required().pattern(/^[a-zA-Z]+$/).messages({ 'string.pattern.base': '"last name" must contain only alphanumeric characters' }),
+  firstName: Joi.string().min(3).max(20).required()
+  .pattern(/^[a-zA-Z]+$/)
+  .messages({ 'string.pattern.base': '"first name" must contain only alphanumeric characters' }),
+  lastName: Joi.string().min(3).max(20).required()
+  .pattern(/^[a-zA-Z]+$/)
+  .messages({ 'string.pattern.base': '"last name" must contain only alphanumeric characters' }),
   username: Joi.string().min(3).max(20).required(),
   email: Joi.string().max(62).required().email({ tlds: false }),
   password: Joi.string().required()
     .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[!@%$#^&*-_*])[A-Za-z\d!@%$#^&*-_*]{8,30}$/)
     .message('user "password" must be at least 8 characters long and contain an uppercase letter, a lowercase letter, 4 numbers, and one of the following characters !@#$%^&*_-'),
-  phone: Joi.string().pattern(/^[0-9]{10,15}$/).messages({ 'string.pattern.base': 'Phone number must have between 10-15 digits.' }).required(),
+  phone: Joi.string().required()
+  .pattern(/^[0-9]{10,15}$/)
+  .messages({ 'string.pattern.base': 'Phone number must have between 10-15 digits.' }),
   gender: Joi.string().required(),
   roleType: Joi.any(),
   profilePic: Joi.any()
-});
+})
 
 const userSchema = new Schema({
   firstName: {
@@ -64,31 +70,25 @@ const userSchema = new Schema({
 // static signup method
 userSchema.statics.signup = async function (firstName, lastName, email, password, username, phone, profilePic, gender, roleType) {
   try {
-    await userValidationSchema.validateAsync({ firstName, lastName, email, password, username, phone, profilePic, gender, roleType });
+    await userValidationSchema.validateAsync({ firstName, lastName, email, password, username, phone, profilePic, gender, roleType })
 
-    const emailTaken = await this.findOne({ email });
-
+    const emailTaken = await this.findOne({ email })
     if (emailTaken) {
-      throw new Error('email already in use');
+      throw new Error('email already in use')
     }
 
-    const usernameTaken = await this.findOne({ username });
-
+    const usernameTaken = await this.findOne({ username })
     if (usernameTaken) {
-      throw new Error('username already in use');
+      throw new Error('username already in use')
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+    const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType })
 
-    const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType });
-
-    
-    console.log('user: ', user);
-
-    return user;
+    return user
   } catch (error) {
-    throw error;
+    throw error
   }
 }
 
@@ -98,22 +98,21 @@ userSchema.statics.login = async function (email, password) {
     await Joi.object({
       email: Joi.string().max(62).required().email({ tlds: false }),
       password: Joi.string().required(),
-    }).validateAsync({ email, password });
+    }).validateAsync({ email, password })
     
-    const user = await this.findOne({ email });
+    const user = await this.findOne({ email })
     if (!user) {
-      throw new Error('Invalid login credentials');
+      throw new Error('Invalid login credentials')
     }
     
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password)
     if (!match) {
-      throw new Error('Invalid login credentials');
+      throw new Error('Invalid login credentials')
     }
-    console.log('user: ', user);
-    return user;
+    return user
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 module.exports = mongoose.model('User', userSchema)

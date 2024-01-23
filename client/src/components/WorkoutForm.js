@@ -74,7 +74,7 @@ export default function WorkoutForm() {
         // eslint-disable-next-line
     }, [id, fetchWorkout, navigate])
 
-    const handleInput = ev => {
+    const handleInput = event => {
         let obj = {}
 
         const validation = (id) => {
@@ -100,16 +100,16 @@ export default function WorkoutForm() {
             setErrors(err)
         }
 
-        if (ev.id === "exercises") {
-            const { id, value } = ev
+        if (event.id === "exercises") {
+            const { id, value } = event
             obj = { ...workoutFormData, [id]: value }
             validation(id)
         } else {
-            const { id, value } = ev.target
+            const { id, value } = event.target
             obj = { ...workoutFormData, [id]: value }
 
             if (id === "Private") {
-                const { id, checked } = ev.target
+                const { id, checked } = event.target
                 obj = { ...workoutFormData, [id]: checked }
             }
             validation(id)
@@ -117,8 +117,8 @@ export default function WorkoutForm() {
         setWorkoutFormData(obj)
     }
 
-    const handleDeleteExercise = (ex, ev) => {
-        ev.preventDefault()
+    const handleDeleteExercise = (ex, event) => {
+        event.preventDefault()
         const exercisesNotDeleted = workoutFormData.exercises.filter((exercise) => {
             if (ex._id) {
                 return ex._id !== exercise._id;
@@ -138,8 +138,8 @@ export default function WorkoutForm() {
     }
 
 
-    const handleOpenExerciseModal = (ex, ev) => {
-        ev.preventDefault()
+    const handleOpenExerciseModal = (ex, event) => {
+        event.preventDefault()
         setEditingExercise(ex);
         setEditExerciseModal(true);
     };
@@ -169,8 +169,8 @@ export default function WorkoutForm() {
     }
 
 
-    const handleSubmit = async (ev) => {
-        ev.preventDefault()
+    const handleSubmit = async (event) => {
+        event.preventDefault()
         if (!token) {
             showToastError('You must be logged in')
             return
@@ -272,8 +272,8 @@ export default function WorkoutForm() {
                                                     <figcaption className='exercise-figcaption'>
                                                         <h3>Edit/Remove</h3>
                                                         <div className='exercise-buttons'>
-                                                            <button className='exercise-button' onClick={(ev) => handleDeleteExercise(exercise, ev)}>Delete</button>
-                                                            <button className='exercise-button' onClick={(ev) => handleOpenExerciseModal(exercise, ev)}>Edit</button>
+                                                            <button className='exercise-button' onClick={(event) => handleDeleteExercise(exercise, event)}>Delete</button>
+                                                            <button className='exercise-button' onClick={(event) => handleOpenExerciseModal(exercise, event)}>Edit</button>
                                                         </div>
                                                     </figcaption>
                                                 </figure>

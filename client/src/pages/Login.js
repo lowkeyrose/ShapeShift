@@ -47,8 +47,8 @@ export default function Login() {
 
   })
 
-  const handleInput = ev => {
-    const { id, value } = ev.target;
+  const handleInput = event => {
+    const { id, value } = event.target;
     let obj = {
       ...formData,
       [id]: value,

@@ -58,8 +58,8 @@ const Navbar = () => {
 
   const { user, roleType, navigate } = useGlobalContext()
   const { logout } = useLogout()
-  const handleLogout = (ev) => {
-    ev.preventDefault()
+  const handleLogout = (event) => {
+    event.preventDefault()
     logout()
     setAnchorElUser(null);
   }

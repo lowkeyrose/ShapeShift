@@ -86,7 +86,7 @@ export default function Searchbar() {
             placeholder="Search…"
             inputProps={{ 'aria-label': 'search' }}
             value={searchWord}
-            onChange={(ev) => setSearchWord(ev.target.value)}
+            onChange={(event) => setSearchWord(event.target.value)}
           />
         </Search>
       </Toolbar>

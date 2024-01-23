@@ -5,9 +5,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Joi from 'joi';
 import './style/ExerciseModal.css';
 
@@ -31,10 +31,18 @@ export default function ExerciseForm({
     sets: 0,
     weight: 0,
     reps: 0,
-    duration: '',
+    duration: '00:00',
   });
 
-
+  // const structure = [
+  //   { name: 'title',    type: 'text',   label: 'Title',                required: true,  halfWidth: false },
+  //   { name: 'imgUrl',   type: 'text',   label: 'Image Url (Optional)', required: false, halfWidth: false },
+  //   { name: 'videoUrl', type: 'text',   label: 'Video Url (Optional)', required: false, halfWidth: false },
+  //   { name: 'sets',     type: 'number', label: 'Sets',                 required: false, halfWidth: true },
+  //   { name: 'weight',   type: 'number', label: 'Weight (kg)',          required: false, halfWidth: true },
+  //   { name: 'reps',     type: 'number', label: 'Reps',                 required: false, halfWidth: true },
+  //   { name: 'duration', type: 'text',   label: 'Duration',             required: false, halfWidth: true, placeholder: 'mm:ss' },
+  // ];
   const structure = [
     { name: 'title', type: 'text', label: 'Title', required: true, halfWidth: false },
     { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false },
@@ -63,7 +71,7 @@ export default function ExerciseForm({
       sets: 0,
       weight: 0,
       reps: 0,
-      duration: '',
+      duration: '00:00',
     });
   };
 
@@ -78,8 +86,8 @@ export default function ExerciseForm({
     }
   }, [editingExercise, editExerciseModal, setEditingExercise]);
 
-  const handleInput = (ev) => {
-    const { id, value } = ev.target;
+  const handleInput = (event) => {
+    const { id, value } = event.target;
     let obj = {
       ...exerciseFormData,
       [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value,
@@ -105,9 +113,8 @@ export default function ExerciseForm({
     setExerciseFormData(obj);
   };
 
-  const toggleModal = (ev) => {
-    console.log('exerciseFormModal before: ', exerciseFormModal);
-    ev.preventDefault();
+  const toggleModal = (event) => {
+    event.preventDefault();
     if (exerciseFormModal) {
       const userConfirmed = window.confirm('Are you sure you want to close?');
       if (!userConfirmed) {
@@ -117,17 +124,16 @@ export default function ExerciseForm({
     resetFormData();
     setIsValid(false);
     setExerciseFormModal(!exerciseFormModal);
-    console.log('exerciseFormModal after: ', exerciseFormModal);
   };
 
-  const handleSubmit = async (ev) => {
+  const handleSubmit = async (event) => {
     try {
       if (exerciseFormData.imgUrl === '') {
         exerciseFormData.imgUrl =
-        'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg';
+          'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg';
       }
-      ev.preventDefault();
-      
+      event.preventDefault();
+
       if (editExerciseModal) {
         await onEditExercise(exerciseFormData);
         setEditExerciseModal(false);
@@ -142,9 +148,9 @@ export default function ExerciseForm({
       console.error('Error in handleSubmit:', error);
     }
   }
-  
-  const handleClose = (ev) => {
-    ev.preventDefault();
+
+  const handleClose = (event) => {
+    event.preventDefault();
     const userConfirmed = window.confirm('Are you sure you want to close?');
     if (!userConfirmed) {
       return;
@@ -153,7 +159,7 @@ export default function ExerciseForm({
     setExerciseFormModal(false);
     resetFormData();
   };
-  
+
   useEffect(() => {
     // Default enter key press while in input deletes an exercise
     const handleKeyPress = (event) => {
@@ -173,7 +179,7 @@ export default function ExerciseForm({
 
       <Grid item xs={12}>
         <Button
-          onClick={(ev) => toggleModal(ev)}
+          onClick={(event) => toggleModal(event)}
           sx={{ p: 2, m: 2 }}
           variant='contained'
           color='success'
@@ -203,7 +209,26 @@ export default function ExerciseForm({
                 </Typography>
                 <Box component='div' noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                   <Grid container spacing={2}>
-                    {structure.map((item) => (
+                    {structure.map(({ name, type, halfWidth, placeholder, autoComplete, required, label }) => (
+                      <Grid item xs={12} sm={halfWidth ? 6 : 12} key={name}>
+                        <TextField
+                          autoComplete={autoComplete}
+                          error={!!errors[name]}
+                          helperText={errors[name]}
+                          onChange={handleInput}
+                          value={exerciseFormData[name]}
+                          name={name}
+                          type={type}
+                          required={required}
+                          fullWidth
+                          id={name}
+                          placeholder={placeholder}
+                          label={label}
+                          autoFocus={name === 'title'}
+                        />
+                      </Grid>
+                    ))}
+                     {/* {structure.map((item) => (
                       <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
                         <TextField
                           autoComplete={item.autoComplete}
@@ -221,7 +246,7 @@ export default function ExerciseForm({
                           autoFocus={item.name === 'title' ? true : false}
                         />
                       </Grid>
-                    ))}
+                    ))} */}
                   </Grid>
                   <Button
                     disabled={!isValid}
@@ -236,7 +261,7 @@ export default function ExerciseForm({
                 </Box>
               </Box>
             </Container>
-            <button className='close-modal' onClick={(ev) => (editExerciseModal ? handleClose(ev) : toggleModal(ev))}>
+            <button className='close-modal' onClick={(event) => (editExerciseModal ? handleClose(event) : toggleModal(event))}>
               X
             </button>
           </div>

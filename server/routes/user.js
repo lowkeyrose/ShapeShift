@@ -18,6 +18,7 @@ router.post('/signup', signupUser)
 // update user
 router.put('/update/:id', requireAuth, updateUser)
 
+
 // Admin routes 
 
 // get all users
@@ -28,6 +29,5 @@ router.get('/:id', requireAuth, getUser)
 
 // delete user
 router.delete('/:id', requireAuth, deleteUser)
-
 
 module.exports = router

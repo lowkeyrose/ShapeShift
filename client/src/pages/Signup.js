@@ -70,8 +70,8 @@ export default function SignUp() {
 
   }
 
-  const handleInput = ev => {
-    const { id, value } = ev.target
+  const handleInput = event => {
+    const { id, value } = event.target
     let obj = {
       ...formData,
       [id]: value,

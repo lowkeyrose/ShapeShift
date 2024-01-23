@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
-const Exercise = require('./exerciseModel')
 const Schema = mongoose.Schema
-const Joi = require('joi');
+const Exercise = require('./exerciseModel')
+const Joi = require('joi')
 
 const workoutSchema = new Schema({
   title: {
