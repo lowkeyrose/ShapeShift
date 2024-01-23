@@ -20,6 +20,42 @@ import Searchbar from './Searchbar'
 import { ClickAwayListener, MenuList, Paper, Popper } from '@mui/material'
 
 const Navbar = () => {
+  const path = useResolvedPath().pathname;
+  const [navBackground, setNavBackground] = React.useState('transparent')
+  React.useEffect(() => {
+    if (path.includes('/create/new') || path.includes('/edit/')) {
+      setNavBackground('white');
+    } else {
+      setNavBackground('transparent');
+    }
+    const handleScroll = () => {
+      const show = window.scrollY > 10
+      const backgroundColor =
+          path === '/'
+        ? '#1c0d24'
+        : path === '/workouts'
+        ? '#bad8e7'
+        : path === '/workouts/favorites'
+        ? '#e5c5d2'
+        : path === '/workouts/myworkouts'
+        ? '#b9e1ba'
+        : path === '/about'
+        ? '#47ffff'
+        : path === '/admin-panel'
+        ? '#cf998c'
+        : 'white'
+      if (show) {
+        setNavBackground(backgroundColor);
+      } else if (!path.includes('/create/new') && !path.includes('/edit/')) {
+        setNavBackground('transparent');
+      }
+    };
+    document.addEventListener('scroll', handleScroll)
+    return () => {
+      document.removeEventListener('scroll', handleScroll)
+    }
+  }, [path])
+
   const { user, roleType, navigate } = useGlobalContext()
   const { logout } = useLogout()
   const handleLogout = (ev) => {
@@ -29,7 +65,6 @@ const Navbar = () => {
   }
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
-  const path = useResolvedPath().pathname;
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -50,7 +85,7 @@ const Navbar = () => {
   const showAboutInPages = !user;
 
   return (
-    <AppBar position="absolute" sx={{ backgroundColor: 'transparent', boxShadow: path === '/' ? '1px 1px 5px #ffffff33' : '1px 1px 5px grey' }}>
+    <AppBar position="fixed" sx={{ backgroundColor: navBackground }}>
       <Container maxWidth="100%" sx={{ backgroundColor: 'inherit' }}>
         <Toolbar disableGutters>
 
@@ -86,10 +121,10 @@ const Navbar = () => {
               onClick={handleOpenNavMenu}
               color="white"
             >
-              <MenuIcon sx={{color: path === '/' ? 'white' : 'black'}} />
+              <MenuIcon sx={{ color: path === '/' ? 'white' : 'black' }} />
             </IconButton>
             <Popper
-              sx={{ mt: '55px', right: 'auto', left: 0,top: '10px !important', position: 'absolute !important' }}
+              sx={{ mt: '55px', right: 'auto', left: 0, top: '10px !important', position: 'absolute !important' }}
               id="menu-appbar"
               anchorEl={anchorElNav}
               open={Boolean(anchorElNav)}
@@ -98,19 +133,19 @@ const Navbar = () => {
               transition
               disablePortal
             >
-                <ClickAwayListener onClickAway={handleCloseNavMenu}>
-                  <Paper in={Boolean(anchorElNav).toString()} style={{ transformOrigin: 'left top'}}>
-                    <MenuList autoFocusItem={Boolean(anchorElNav)} id="menu-list-grow">
-                      {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
-                        <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: "black" }}>
-                          <MenuItem onClick={handleCloseNavMenu}>
-                            <Typography textAlign="center" fontFamily='Kanit'>{page.title}</Typography>
-                          </MenuItem>
-                        </Link>
-                      ))}
-                    </MenuList>
-                  </Paper>
-                </ClickAwayListener>
+              <ClickAwayListener onClickAway={handleCloseNavMenu}>
+                <Paper in={Boolean(anchorElNav).toString()} style={{ transformOrigin: 'left top' }}>
+                  <MenuList autoFocusItem={Boolean(anchorElNav)} id="menu-list-grow">
+                    {pages.filter(p => !p.permissions || checkPermissions(p.permissions, roleType)).map((page) => (
+                      <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: "black" }}>
+                        <MenuItem onClick={handleCloseNavMenu}>
+                          <Typography textAlign="center" fontFamily='Kanit'>{page.title}</Typography>
+                        </MenuItem>
+                      </Link>
+                    ))}
+                  </MenuList>
+                </Paper>
+              </ClickAwayListener>
             </Popper>
           </Box>
 
@@ -197,24 +232,24 @@ const Navbar = () => {
                   transition
                   disablePortal
                 >
-                    <ClickAwayListener onClickAway={handleCloseUserMenu}>
-                      <Paper in={Boolean(anchorElUser).toString()} style={{ transformOrigin: 'right top'}}>
-                        <MenuList autoFocusItem={Boolean(anchorElUser)} id="menu-list-grow" >
-                          <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
-                            <MenuItem onClick={handleLogout}>
-                              <Typography textAlign="center" fontFamily='Kanit'>Logout</Typography>
+                  <ClickAwayListener onClickAway={handleCloseUserMenu}>
+                    <Paper in={Boolean(anchorElUser).toString()} style={{ transformOrigin: 'right top' }}>
+                      <MenuList autoFocusItem={Boolean(anchorElUser)} id="menu-list-grow" >
+                        <Link to='/' style={{ textDecoration: 'none', color: 'black' }} >
+                          <MenuItem onClick={handleLogout}>
+                            <Typography textAlign="center" fontFamily='Kanit'>Logout</Typography>
+                          </MenuItem>
+                        </Link>
+                        {settings.filter(s => !s.permissions || checkPermissions(s.permissions, roleType)).map((setting) => (
+                          <Link to={setting.route} key={setting.route} style={{ textDecoration: 'none', color: 'black' }} >
+                            <MenuItem onClick={handleCloseUserMenu}>
+                              <Typography textAlign="center" fontFamily='Kanit'>{setting.title}</Typography>
                             </MenuItem>
                           </Link>
-                          {settings.filter(s => !s.permissions || checkPermissions(s.permissions, roleType)).map((setting) => (
-                            <Link to={setting.route} key={setting.route} style={{ textDecoration: 'none', color: 'black' }} >
-                              <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center" fontFamily='Kanit'>{setting.title}</Typography>
-                              </MenuItem>
-                            </Link>
-                          ))}
-                        </MenuList>
-                      </Paper>
-                    </ClickAwayListener>
+                        ))}
+                      </MenuList>
+                    </Paper>
+                  </ClickAwayListener>
                 </Popper>
               </Box>
             )}

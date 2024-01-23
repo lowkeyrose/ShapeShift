@@ -11,8 +11,16 @@ import Container from '@mui/material/Container';
 import Joi from 'joi';
 import './style/ExerciseModal.css';
 
-export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, setEditingExercise, editExerciseModal, setEditExerciseModal, exerciseFormModal,
-  setExerciseFormModal }) {
+export default function ExerciseForm({
+  onAddExercise,
+  onEditExercise,
+  editingExercise,
+  setEditingExercise,
+  editExerciseModal,
+  setEditExerciseModal,
+  exerciseFormModal,
+  setExerciseFormModal
+}) {
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [initialExerciseData, setInitialExerciseData] = useState({});
@@ -112,25 +120,14 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     console.log('exerciseFormModal after: ', exerciseFormModal);
   };
 
-  const handleClose = (ev) => {
-    ev.preventDefault();
-    const userConfirmed = window.confirm('Are you sure you want to close?');
-    if (!userConfirmed) {
-      return;
-    }
-    setEditExerciseModal(false);
-    setExerciseFormModal(false);
-    resetFormData();
-  };
-
   const handleSubmit = async (ev) => {
     try {
       if (exerciseFormData.imgUrl === '') {
         exerciseFormData.imgUrl =
-          'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg';
+        'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg';
       }
       ev.preventDefault();
-
+      
       if (editExerciseModal) {
         await onEditExercise(exerciseFormData);
         setEditExerciseModal(false);
@@ -145,7 +142,18 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       console.error('Error in handleSubmit:', error);
     }
   }
-
+  
+  const handleClose = (ev) => {
+    ev.preventDefault();
+    const userConfirmed = window.confirm('Are you sure you want to close?');
+    if (!userConfirmed) {
+      return;
+    }
+    setEditExerciseModal(false);
+    setExerciseFormModal(false);
+    resetFormData();
+  };
+  
   useEffect(() => {
     // Default enter key press while in input deletes an exercise
     const handleKeyPress = (event) => {
@@ -154,7 +162,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       }
     }
     document.addEventListener('keypress', handleKeyPress);
-    
+
     return () => {
       document.removeEventListener('keypress', handleKeyPress);
     };

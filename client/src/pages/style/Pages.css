@@ -32,7 +32,7 @@
   margin: 0 auto 10px;
 }
 .home .user-section {
-  box-shadow: 3px 3px 15px grey;
+  box-shadow: 3px 3px 15px rgb(0, 0, 0);
   padding: 40px 0;
   margin-top: 150px;
   display: flex;

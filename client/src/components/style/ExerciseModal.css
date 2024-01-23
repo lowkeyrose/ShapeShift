@@ -33,6 +33,7 @@
   border-radius: 3px;
   max-width: 620px;
   width: 90%;
+  min-height: 645px;
 }
 
 @media screen and (max-width: 600px) {

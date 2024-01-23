@@ -110,11 +110,11 @@ const Home = () => {
                 <div className="button-section">
                     <div className="login-button">
                         <Typography component='h6' sx={{ color: 'white' }}>Already have an account?</Typography>
-                        <button className='styled-button user-button' onClick={() => navigate('/login')}>LOGIN</button>
+                        <button className='styled-button user-button' onClick={() => navigate('/login')}>Login</button>
                     </div>
                     <div className="signup-button">
                         <Typography component='h6' sx={{ color: 'white' }}>Create an account!</Typography>
-                        <button className='styled-button user-button' onClick={() => navigate('/signup')}>SIGNUP</button>
+                        <button className='styled-button user-button' onClick={() => navigate('/signup')}>Signup</button>
                     </div>
                 </div>
             </div>}
