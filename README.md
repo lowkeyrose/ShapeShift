@@ -1,7 +1,5 @@
 ![chrome_anzfWNxJpH](https://github.com/lowkeyrose/ShapeShift/assets/134366345/d6495b99-a6ab-46f3-8b0a-b41f4536ba26)
 
- Fast, unopinionated, minimalist web framework for [Node.js](http://nodejs.org).
-
   [![NPM Version][npm-version-image]][npm-url]
   [![NPM Install Size][npm-install-size-image]][npm-install-size-url]
   [![NPM Downloads][npm-downloads-image]][npm-downloads-url]
