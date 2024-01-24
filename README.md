@@ -1,5 +1,3 @@
-# ShapeShift
-
 ![chrome_anzfWNxJpH](https://github.com/lowkeyrose/ShapeShift/assets/134366345/d6495b99-a6ab-46f3-8b0a-b41f4536ba26)
 
  Fast, unopinionated, minimalist web framework for [Node.js](http://nodejs.org).
@@ -23,16 +21,25 @@ $ npm install
 ```
 
 ## Usage
+1. 
 
 
 ## Features
-  * 
-  * 
-  * 
-  * 
-  * 
-  * 
-  * 
+  * **Browse Workouts:**
+    View all public workouts from all users.
+
+  * **Create Workouts:**
+    Users can create their own custom workouts.
+
+  * **Favorite Workouts:**
+    Users can favorite/unfavorite workouts.
+    View a collection of favorite workouts in the "Favorite Workouts" page.
+
+  * **Edit Workouts:**
+    Users can edit the details of their created workouts.
+
+  * **Likes Counter:**
+    Each workout displays a likes counter, showing the number of users who have favorited the workout.
 
 ## Contributing
 
