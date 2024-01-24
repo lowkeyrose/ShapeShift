@@ -22,9 +22,7 @@ For Backend - npm i
 
 For Frontend - cd server  npm i
 
-## Usage
-1. 
-
+To start - npm start
 
 ## Features
   * **Browse Workouts:**
@@ -42,6 +40,12 @@ For Frontend - cd server  npm i
 
   * **Likes Counter:**
     Each workout displays a likes counter, showing the number of users who have favorited the workout.
+
+    
+## API Documentation
+
+https://documenter.getpostman.com/view/28289787/2s9YymFPZn
+
 
 ## Contributing
 
