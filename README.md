@@ -18,6 +18,10 @@ Node.js 0.10 or higher is required.
 $ npm install
 ```
 
+For Backend - npm i
+
+For Frontend - cd server  npm i
+
 ## Usage
 1. 
 
