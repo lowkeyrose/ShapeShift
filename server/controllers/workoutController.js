@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Workout = require('../models/workoutModel')
 const Exercise = require('../models/exerciseModel')
-const User = require('../models/userModel')
+const { User } = require('../models/userModel')
 
 // Get all workouts
 const getAllWorkouts = async (req, res) => {
@@ -142,8 +142,6 @@ const deleteWorkout = async (req, res) => {
     if (!req.user._id.equals(workout.user_id) && req.user.roleType !== 'admin') {
       return res.status(401).json({ error: 'Unauthorized' })
     }
-    const deletedWorkout = await Workout.findByIdAndDelete(id)
-
     // Find users who favorited this workout
     const usersToUpdate = await User.find({ favorites: id })
 
@@ -160,11 +158,13 @@ const deleteWorkout = async (req, res) => {
     //     await user.save();
     // }));
 
+    const deletedWorkout = await Workout.findByIdAndDelete(id)
     // Delete all exercises with the corresponding workout_id
     await Exercise.deleteMany({ workout_id: deletedWorkout._id })
 
     res.status(200).json(deletedWorkout)
   } catch (error) {
+    console.log(error)
     res.status(500).json({ success: false, error: error.message })
   }
 }
@@ -176,7 +176,7 @@ const updateWorkout = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
   }
-                         
+
   try {
     const workout = await Workout.findOne({ _id: id })
     if (!workout) {
@@ -270,7 +270,7 @@ const favorite = async (req, res) => {
 
     await Promise.all([user.save(), workout.save()])
 
-    res.status(200).json({ message: 'Workout added to favorites successfully.' })
+    res.status(200).json({ workout, message: 'Workout added to favorites successfully.' })
   } catch (error) {
     console.error('Error adding workout to favorites:', error)
     res.status(500).json({ message: 'Internal server error.' })
@@ -299,7 +299,7 @@ const unFavorite = async (req, res) => {
 
     await Promise.all([user.save(), workout.save()])
 
-    res.status(200).json({ message: 'Workout removed from favorites successfully.' })
+    res.status(200).json({ workout, message: 'Workout removed from favorites successfully.' })
   } catch (error) {
     console.error('Error removing workout from favorites:', error)
     res.status(500).json({ message: 'Internal server error.' })

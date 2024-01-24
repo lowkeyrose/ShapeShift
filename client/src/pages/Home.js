@@ -56,51 +56,53 @@ const Home = () => {
             </Typography>
 
             {(workouts && workouts.length > 0) &&
-                <div className="container">
-                    <Swiper
-                        effect={'coverflow'}
-                        centeredSlides={true}
-                        initialSlide={1}
-                        loop={true}
-                        autoplay={{ delay: 3000, pauseOnMouseEnter: true }}
-                        loopPreventsSliding={true}
-                        slidesPerView={'auto'}
-                        slidesPerGroupSkip={false}
-                        coverflowEffect={{
-                            rotate: 0,
-                            stretch: 0,
-                            depth: 100,
-                            modifier: 2.5,
-                        }}
-                        pagination={{ el: '.swiper-pagination', clickable: true, dynamicBullets: true }}
-                        navigation={{
-                            nextEl: '.swiper-button-next',
-                            prevEl: '.swiper-button-prev',
-                            clickable: true,
-                        }}
-                        modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
-                        className='swiper_container swiper-init'
-                    >
-                        {
-                            workouts.map((workout) =>
-                                <SwiperSlide key={workout._id}>
-                                    <WorkoutDetails workout={workout} />
-                                </SwiperSlide>
-                            )
-                        }
-                        <div className="slider-controler">
-                            <div className="swiper-button-prev slider-arrow">
-                                <ion-icon name="arrow-back-outline"></ion-icon>
+                <>
+                    <div className="container">
+                        <Swiper
+                            effect={'coverflow'}
+                            centeredSlides={true}
+                            initialSlide={1}
+                            loop={true}
+                            autoplay={{ delay: 3000, pauseOnMouseEnter: true }}
+                            loopPreventsSliding={true}
+                            slidesPerView={'auto'}
+                            slidesPerGroupSkip={false}
+                            coverflowEffect={{
+                                rotate: 0,
+                                stretch: 0,
+                                depth: 100,
+                                modifier: 2.5,
+                            }}
+                            pagination={{ el: '.swiper-pagination', clickable: true, dynamicBullets: true }}
+                            navigation={{
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                                clickable: true,
+                            }}
+                            modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+                            className='swiper_container swiper-init'
+                        >
+                            {
+                                workouts.map((workout) =>
+                                    <SwiperSlide key={workout._id}>
+                                        <WorkoutDetails workout={workout} />
+                                    </SwiperSlide>
+                                )
+                            }
+                            <div className="slider-controler">
+                                <div className="swiper-button-prev slider-arrow">
+                                    <ion-icon name="arrow-back-outline"></ion-icon>
+                                </div>
+                                <div className="swiper-button-next slider-arrow">
+                                    <ion-icon name="arrow-forward-outline"></ion-icon>
+                                </div>
+                                <div className="swiper-pagination"></div>
                             </div>
-                            <div className="swiper-button-next slider-arrow">
-                                <ion-icon name="arrow-forward-outline"></ion-icon>
-                            </div>
-                            <div className="swiper-pagination"></div>
-                        </div>
-                    </Swiper>
-                </div>
+                        </Swiper>
+                    </div>
+                    <button className="styled-button" onClick={() => navigate('/workouts')}>View All Workouts</button>
+                </>
             }
-            <button className="styled-button" onClick={() => navigate('/workouts')}>View All Workouts</button>
 
 
             {!user && <div className="user-section">

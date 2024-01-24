@@ -3,21 +3,35 @@ const bcrypt = require('bcrypt')
 const Schema = mongoose.Schema
 const Joi = require('joi')
 
+// Function to save the user without the password property before returning it
+const createUserWithoutPassword = (user) => ({
+  _id: user._id,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  email: user.email,
+  username: user.username,
+  phone: user.phone,
+  profilePic: user.profilePic,
+  gender: user.gender,
+  roleType: user.roleType,
+  favorites: user.favorites
+})
+
 const userValidationSchema = Joi.object({
   firstName: Joi.string().min(3).max(20).required()
-  .pattern(/^[a-zA-Z]+$/)
-  .messages({ 'string.pattern.base': '"first name" must contain only alphanumeric characters' }),
+    .pattern(/^[a-zA-Z]+$/)
+    .messages({ 'string.pattern.base': '"first name" must contain only alphanumeric characters' }),
   lastName: Joi.string().min(3).max(20).required()
-  .pattern(/^[a-zA-Z]+$/)
-  .messages({ 'string.pattern.base': '"last name" must contain only alphanumeric characters' }),
+    .pattern(/^[a-zA-Z]+$/)
+    .messages({ 'string.pattern.base': '"last name" must contain only alphanumeric characters' }),
   username: Joi.string().min(3).max(20).required(),
-  email: Joi.string().max(62).required().email({ tlds: false }),
+  email: Joi.string().min(7).max(62).required().email({ tlds: false }),
   password: Joi.string().required()
     .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[!@%$#^&*-_*])[A-Za-z\d!@%$#^&*-_*]{8,30}$/)
     .message('user "password" must be at least 8 characters long and contain an uppercase letter, a lowercase letter, 4 numbers, and one of the following characters !@#$%^&*_-'),
   phone: Joi.string().required()
-  .pattern(/^[0-9]{10,15}$/)
-  .messages({ 'string.pattern.base': 'Phone number must have between 10-15 digits.' }),
+    .pattern(/^[0-9]{10,15}$/)
+    .messages({ 'string.pattern.base': 'Phone number must have between 10-15 digits.' }),
   gender: Joi.string().required(),
   roleType: Joi.any(),
   profilePic: Joi.any()
@@ -86,7 +100,9 @@ userSchema.statics.signup = async function (firstName, lastName, email, password
     const hash = await bcrypt.hash(password, salt)
     const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType })
 
-    return user
+    const userWithoutPassword = createUserWithoutPassword(user)
+
+    return userWithoutPassword
   } catch (error) {
     throw error
   }
@@ -99,20 +115,25 @@ userSchema.statics.login = async function (email, password) {
       email: Joi.string().max(62).required().email({ tlds: false }),
       password: Joi.string().required(),
     }).validateAsync({ email, password })
-    
+
     const user = await this.findOne({ email })
     if (!user) {
       throw new Error('Invalid login credentials')
     }
-    
+
     const match = await bcrypt.compare(password, user.password)
     if (!match) {
       throw new Error('Invalid login credentials')
     }
-    return user
+
+    const userWithoutPassword = createUserWithoutPassword(user)
+
+    return userWithoutPassword
   } catch (error) {
     throw error
   }
 }
 
-module.exports = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
+
+module.exports = { User, createUserWithoutPassword }

@@ -1,28 +1,26 @@
-const User = require('../models/userModel')
+const { User, createUserWithoutPassword } = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 
+
 // Create token
 const createToken = (_id) => {
-  // return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
-  return jwt.sign({ _id }, process.env.SECRET)
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
 }
 
 // Authenticate
 const authenticate = async (req, res) => {
   const user = req.user
-  res.status(200).json(user)
+  const userWithoutPassword = createUserWithoutPassword(user)
+  res.status(200).json(userWithoutPassword)
 }
 
 // Login user
 const loginUser = async (req, res) => {
   const { email, password } = req.body
-
   try {
     const user = await User.login(email, password)
-
     const token = createToken(user._id)
-
     res.status(200).json({ user, token })
   } catch (error) {
     res.status(400).json({ error: error.message })
@@ -36,9 +34,7 @@ const signupUser = async (req, res) => {
 
   try {
     const user = await User.signup(firstName, lastName, email, password, username, phone, profilePic, gender, roleType)
-
     const token = createToken(user._id)
-
     res.status(200).json({ user, token })
   } catch (error) {
     res.status(400).json({ error: error.message })
@@ -48,6 +44,7 @@ const signupUser = async (req, res) => {
 // update user
 const updateUser = async (req, res) => {
   const userData = req.body
+
   const { id } = req.params
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'User not found' })
@@ -83,13 +80,19 @@ const updateUser = async (req, res) => {
       user.gender = userData.gender;
     }
 
+    if ((user.roleType !== userData.roleType) && (userData.roleType !== '')) {
+      user.roleType = userData.roleType;
+    }
+
     if (user.profilePic !== userData.profilePic) {
       user.profilePic = userData.profilePic;
     }
 
     await user.save();
 
-    res.status(200).json({ user })
+    const userWithoutPassword = createUserWithoutPassword(user)
+
+    res.status(200).json({ user: userWithoutPassword })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -98,8 +101,7 @@ const updateUser = async (req, res) => {
 
 // Admin get user
 const getUser = async (req, res) => {
-
-  if (!req.user.roleType === 'admin') {
+  if (req.user.roleType !== 'admin') {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
@@ -114,7 +116,8 @@ const getUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' })
     }
 
-    res.status(200).json(user)
+    const userWithoutPassword = createUserWithoutPassword(user)
+    res.status(200).json({ user: userWithoutPassword })
   } catch (error) {
     console.error('Error in getUser:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -129,20 +132,20 @@ const getUsers = async (req, res) => {
   }
 
   try {
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const users = await User.find({}).sort({ createdAt: -1 })
 
-    const filteredUsers = users.filter(user => user.roleType !== 'admin');
+    const usersWithoutPassword = users.map((user) => createUserWithoutPassword(user))
 
-    res.status(200).json(filteredUsers);
+    res.status(200).json({ user: usersWithoutPassword })
   } catch (error) {
-    console.error('Error fetching all users:', error);
-    res.status(500).json({ success: false, error: error.message });
+    console.error('Error fetching all users:', error)
+    res.status(500).json({ success: false, error: error.message })
   }
 }
 
 // Admin Delete user
 const deleteUser = async (req, res) => {
-  
+
   if (!req.user.roleType === 'admin') {
     return res.status(401).json({ error: 'Unauthorized' })
   }
@@ -158,7 +161,9 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' })
     }
 
-    res.status(200).json(user)
+    const userWithoutPassword = createUserWithoutPassword(user)
+
+    res.status(200).json({ user: userWithoutPassword })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

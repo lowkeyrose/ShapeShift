@@ -8,7 +8,7 @@ export const useUpdateUser = () => {
   const { id } = useParams();
   const { dispatch, setLoading, showToastSuccess, navigate, user, token } = useGlobalContext();
 
-  const updateUser = async (firstName, lastName, email, username, phone, gender, profilePic) => {
+  const updateUser = async (firstName, lastName, email, username, phone, profilePic, gender, roleType) => {
     setError(null)
     setLoading(true)
     try {
@@ -19,25 +19,21 @@ export const useUpdateUser = () => {
           'Authorization': token
         },
         // Send the _id aswell for backend checks
-        body: JSON.stringify({ firstName, lastName, email, username, phone, gender, profilePic, _id: id ? id : user._id })
+        body: JSON.stringify({ firstName, lastName, email, username, phone, profilePic, gender, roleType, _id: id ? id : user._id })
       })
       const json = await response.json()
-      console.log('response:', response);
 
       if (!response.ok) {
         throw new Error(json.error);
       }
-      if (response.ok) {
-        console.log('json: ', json);
 
-        if (user.roleType === 'admin') {
-          navigate('/admin-panel')
-        } else {
-          dispatch({ type: ACTIONS.SET_USER, payload: json })
-          navigate('/account')
-        }
-        showToastSuccess("Updated user info successfully!")
+      if (user._id === id) {
+        dispatch({ type: ACTIONS.SET_USER, payload: json })
       }
+      navigate(-1)
+
+      showToastSuccess("Updated user info successfully!")
+
     } catch (error) {
       // Handle specific error cases
       if (error.message.includes('duplicate key error') && error.message.includes('email')) {

@@ -31,7 +31,7 @@ export default function AuthRouter() {
           <Route path='/workouts/myworkouts/create/new' element={<WorkoutForm />} />
           <Route path='/workouts/myworkouts/edit/:id' element={<WorkoutForm />} />
           <Route path="/account" element={<Account />} />
-          {user.roleType !== 'admin' && <Route path="/account/edit/:id" element={<EditAccount />} />}
+          <Route path="/account/edit/:id" element={<EditAccount />} />
           {/* <Route path="/profile" element={<Profile />} /> */}
         </>
       ) :

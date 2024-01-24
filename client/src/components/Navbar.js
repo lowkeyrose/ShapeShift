@@ -29,7 +29,7 @@ const Navbar = () => {
       setNavBackground('transparent');
     }
     const handleScroll = () => {
-      const show = window.scrollY > 10
+      const show = window.scrollY > 1
       const backgroundColor =
           path === '/'
         ? '#1c0d24'
@@ -43,6 +43,8 @@ const Navbar = () => {
         ? '#47ffff'
         : path === '/admin-panel'
         ? '#cf998c'
+        : path.includes('/workouts/workout')
+        ? '#c7f1d8'
         : 'white'
       if (show) {
         setNavBackground(backgroundColor);

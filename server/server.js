@@ -28,9 +28,9 @@ app.use(cors({
   allowedHeaders: 'Content-Type, Accept, Authorization',
 }));
 
-// log CAN BE REMOVED BEFORE SUBMIT
+// log requests in terminal REMOVE BEFORE SUBMITTING
 app.use((req, _, next) => {
-  console.log(`Route: ${req.path}, Method: ${req.method}`)
+  console.log(`Route: ${req.path}, Method: ${req.method},`)
   next()
 })
 

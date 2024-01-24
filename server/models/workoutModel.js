@@ -20,7 +20,7 @@ const workoutSchema = new Schema({
     default: false
   },
   user_id: {
-    type: Object,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   username: {

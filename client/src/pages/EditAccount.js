@@ -23,6 +23,7 @@ export default function EditAccount() {
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [genderValue, setGenderValue] = useState('');
+  const [roleValue, setRoleValue] = useState('');
   const [initialUserData, setInitialUserData] = useState({});
 
   const [formData, setFormData] = useState({
@@ -31,8 +32,9 @@ export default function EditAccount() {
     email: '',
     username: '',
     phone: '',
+    profilePic: '',
     gender: '',
-    profilePic: ''
+    roleType: ''
   })
 
   const structure = [
@@ -41,7 +43,7 @@ export default function EditAccount() {
     { name: 'email', type: 'email', label: 'Email', required: true, halfWidth: false, autoComplete: "email" },
     { name: 'username', type: 'text', label: 'Username', required: true, halfWidth: true, autoComplete: "username" },
     { name: 'phone', type: 'tel', label: 'Phone', required: true, halfWidth: true, autoComplete: "tel" },
-    { name: 'profilePic', type: 'text', label: 'Profile Pic', required: false, halfWidth: false, autoComplete: "" },
+    { name: 'profilePic', type: 'text', label: 'Profile Pic', required: false, halfWidth: false, autoComplete: "" }
   ]
 
   const userSchema = Joi.object({
@@ -50,8 +52,9 @@ export default function EditAccount() {
     username: Joi.string().min(3).max(20).required(),
     email: Joi.string().max(62).required().email({ tlds: false }),
     phone: Joi.string().regex(/^[0-9]{10,15}$/).messages({ 'string.pattern.base': `Phone number must have between 10-15 digits.` }).required(),
+    profilePic: Joi.any(),
     gender: Joi.string().required(),
-    profilePic: Joi.any()
+    roleType: Joi.string().required()
   });
 
   const fetchUser = useCallback(async () => {
@@ -71,17 +74,18 @@ export default function EditAccount() {
       setFormData(data)
       setInitialUserData(data)
       setGenderValue(data.gender)
-      console.log('DATA: ', data);
+      setRoleValue(data.roleType)
     } catch (error) {
-      console.error('Error deleting user:', error)
+      console.error('Error fetching user:', error)
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000)
     }
   }, [id, setLoading, token])
 
   useEffect(() => {
-    // Admins can't edit their own info, they can only edit other user's
-    if (user.roleType === 'admin') {
+    if ((user.roleType === 'admin') && (user._id !== id)) {
       fetchUser()
     } else {
       setFormData(user)
@@ -95,15 +99,16 @@ export default function EditAccount() {
         email: '',
         username: '',
         phone: '',
+        profilePic: '',
         gender: '',
-        profilePic: ''
+        roleType: ''
       })
     }
-  }, [user, fetchUser])
+  }, [user, fetchUser, id])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await updateUser(formData.firstName, formData.lastName, formData.email, formData.username, formData.phone, genderValue, formData.profilePic)
+    await updateUser(formData.firstName, formData.lastName, formData.email, formData.username, formData.phone, formData.profilePic, genderValue, roleValue)
     setIsValid(false)
   }
 
@@ -117,6 +122,9 @@ export default function EditAccount() {
 
     if (id.includes('gender')) {
       setGenderValue(value)
+    }
+    if (id.includes('role')) {
+      setRoleValue(value)
     }
     const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialUserData);
     const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
@@ -142,7 +150,7 @@ export default function EditAccount() {
     <div className="form">
       <Container component="main" maxWidth="sm" className='form-container'>
         <Box className='button-container'>
-          <button className='return-button' onClick={() => user.roleType === 'admin' ? navigate('/admin-panel') : navigate('/account')}>X</button>
+          <button className='return-button' onClick={() => navigate(-1)}>X</button>
         </Box>
         <CssBaseline />
         <Box
@@ -190,10 +198,11 @@ export default function EditAccount() {
                   </Grid>
                 )
               }
-              <Grid item xs={12} sx={{ mt: -1 }}>
+              <Grid item xs={12}>
                 <FormControl>
                   <FormLabel id="gender">Gender</FormLabel>
                   <RadioGroup
+                    sx={{ display: 'flex', flexDirection: 'row' }}
                     aria-labelledby="gender"
                     name="controlled-radio-buttons-group"
                     value={genderValue}
@@ -202,6 +211,21 @@ export default function EditAccount() {
                     <FormControlLabel value="female" control={<Radio id='gender-female' />} label="Female" />
                     <FormControlLabel value="male" control={<Radio id='gender-male' />} label="Male" />
                   </RadioGroup>
+                  {((user.roleType === 'admin') && (id !== user._id)) &&
+                    <>
+                      <FormLabel id="roleType">Role Type</FormLabel>
+                      <RadioGroup
+                        sx={{ display: 'flex', flexDirection: 'row' }}
+                        aria-labelledby="gender"
+                        name="controlled-radio-buttons-group"
+                        value={roleValue}
+                        onChange={handleInput}
+                      >
+                        <FormControlLabel value="user" control={<Radio id='role-user' />} label="User" />
+                        <FormControlLabel value="admin" control={<Radio id='role-admin' />} label="Admin" />
+                      </RadioGroup>
+                    </>
+                  }
                 </FormControl>
               </Grid>
             </Grid>
