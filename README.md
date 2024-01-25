@@ -22,7 +22,7 @@ For Backend - npm i
 
 For Frontend - cd server  npm i
 
-To start - npm start
+To start on both - npm start
 
 ## Features
   * **Browse Workouts:**
@@ -40,6 +40,10 @@ To start - npm start
 
   * **Likes Counter:**
     Each workout displays a likes counter, showing the number of users who have favorited the workout.
+    
+  * **Account Management:**
+    Users can edit and update their user information.
+    Admins can edit user's information and their roleType.
 
     
 ## API Documentation
