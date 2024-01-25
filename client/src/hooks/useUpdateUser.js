@@ -19,20 +19,32 @@ export const useUpdateUser = () => {
           'Authorization': token
         },
         // Send the _id aswell for backend checks
-        body: JSON.stringify({ firstName, lastName, email, username, phone, profilePic, gender, roleType, _id: id ? id : user._id })
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          username,
+          phone,
+          profilePic,
+          gender,
+          roleType,
+          _id: id ? id : user._id
+        })
       })
       const json = await response.json()
-
+      console.log('json', json);
+      console.log('response', response);
       if (!response.ok) {
         throw new Error(json.error);
-      }
-
-      if (user._id === id) {
+      } else if (user._id === id) {
         dispatch({ type: ACTIONS.SET_USER, payload: json })
       }
+      // if (user._id === id) {
+      //   dispatch({ type: ACTIONS.SET_USER, payload: json })
+      // }
       navigate(-1)
-
       showToastSuccess("Updated user info successfully!")
+
 
     } catch (error) {
       // Handle specific error cases

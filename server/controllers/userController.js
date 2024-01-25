@@ -1,7 +1,8 @@
-const { User, createUserWithoutPassword } = require('../models/userModel')
+const { User, userWithoutPassword } = require('../models/userModel')
+const Workout = require('../models/workoutModel')
+const Exercise = require('../models/exerciseModel')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
-
 
 // Create token
 const createToken = (_id) => {
@@ -11,8 +12,8 @@ const createToken = (_id) => {
 // Authenticate
 const authenticate = async (req, res) => {
   const user = req.user
-  const userWithoutPassword = createUserWithoutPassword(user)
-  res.status(200).json(userWithoutPassword)
+  const filteredUser = userWithoutPassword(user)
+  res.status(200).json(filteredUser)
 }
 
 // Login user
@@ -90,9 +91,9 @@ const updateUser = async (req, res) => {
 
     await user.save();
 
-    const userWithoutPassword = createUserWithoutPassword(user)
+    const filteredUser = userWithoutPassword(user)
 
-    res.status(200).json({ user: userWithoutPassword })
+    res.status(200).json(filteredUser)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -116,8 +117,8 @@ const getUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' })
     }
 
-    const userWithoutPassword = createUserWithoutPassword(user)
-    res.status(200).json({ user: userWithoutPassword })
+    const filteredUser = userWithoutPassword(user)
+    res.status(200).json(filteredUser)
   } catch (error) {
     console.error('Error in getUser:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -134,9 +135,9 @@ const getUsers = async (req, res) => {
   try {
     const users = await User.find({}).sort({ createdAt: -1 })
 
-    const usersWithoutPassword = users.map((user) => createUserWithoutPassword(user))
+    const filteredUsers = users.map((user) => userWithoutPassword(user))
 
-    res.status(200).json({ user: usersWithoutPassword })
+    res.status(200).json(filteredUsers)
   } catch (error) {
     console.error('Error fetching all users:', error)
     res.status(500).json({ success: false, error: error.message })
@@ -145,28 +146,56 @@ const getUsers = async (req, res) => {
 
 // Admin Delete user
 const deleteUser = async (req, res) => {
-
-  if (!req.user.roleType === 'admin') {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
-
   const { id } = req.params
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
   }
 
+  if (req.user._id.toString() !== id  && req.user.roleType !== 'admin') {
+    return res.status(401).json({ error: 'Unauthorized user' })
+  }
+
   try {
-    const user = await User.findOneAndDelete({ _id: id })
+    const user = await User.findOne({ _id: id })
     if (!user) {
       return res.status(404).json({ error: 'User not found' })
     }
 
-    const userWithoutPassword = createUserWithoutPassword(user)
+    // Save all the user's workouts
+    const userWorkouts = await Workout.find({ user_id: id });
+    // Convert to string for comparison
+    const workoutIds = userWorkouts.map((workout) => String(workout._id))
 
-    res.status(200).json({ user: userWithoutPassword })
+    // Remove user's workouts from other users' favorites
+    await User.updateMany(
+      { favorites: { $in: workoutIds } },
+      { $pull: { favorites: { $in: workoutIds } } }
+    );
+
+    // Delete all user's workouts
+    await Workout.deleteMany({ user_id: id });
+
+    // Delete all user's exercises
+    await Exercise.deleteMany({ user_id: id });
+
+    // Delete the user
+    await User.deleteOne({ _id: id });
+
+    const filteredUser = userWithoutPassword(user)
+
+    res.status(200).json(filteredUser)
   } catch (error) {
+    console.log('error', error);
     res.status(500).json({ success: false, error: error.message });
   }
 }
 
-module.exports = { loginUser, signupUser, authenticate, updateUser, getUsers, deleteUser, getUser }
+module.exports = {
+  loginUser,
+  signupUser,
+  authenticate,
+  updateUser,
+  getUsers,
+  deleteUser,
+  getUser
+}
