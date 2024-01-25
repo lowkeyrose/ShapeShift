@@ -138,15 +138,13 @@ export default function WorkoutForm() {
     }
 
 
-    const handleOpenExerciseModal = (ex, event) => {
+    const openEditExerciseModal = (ex, event) => {
         event.preventDefault()
         setEditingExercise(ex);
-        setEditExerciseModal(true);
+        setEditExerciseModal(prevState => !prevState);
     };
 
     const handleAddExercise = (exercise) => {
-        console.log('editExerciseModal: ', editExerciseModal);
-        console.log('exerciseFormModal: ', exerciseFormModal);
         // Generate a unique temporary key for the exercise
         const exerciseWithKey = { ...exercise, key: uuidv4() }
         setWorkoutFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exerciseWithKey] }));
@@ -169,7 +167,7 @@ export default function WorkoutForm() {
     }
 
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = useCallback(async (event) => {
         event.preventDefault()
         if (!token) {
             showToastError('You must be logged in')
@@ -207,21 +205,26 @@ export default function WorkoutForm() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [id, navigate, setLoading, showToastError, showToastSuccess, token, workoutDispatch, workoutFormData])
 
     useEffect(() => {
-        // Default enter key press while in input deletes an exercise
+        // Enter key to submit
         const handleKeyPress = (event) => {
             if (event.key === 'Enter') {
-                event.preventDefault();
+                event.preventDefault()
+                console.log('exerciseFormModal: ', exerciseFormModal);
+                console.log('editExerciseModal: ', editExerciseModal);
+                if (isValid && !exerciseFormModal && !editExerciseModal) {
+                    handleSubmit(event)
+                }
             }
         }
-        document.addEventListener('keypress', handleKeyPress);
+        document.addEventListener('keypress', handleKeyPress)
 
         return () => {
-            document.removeEventListener('keypress', handleKeyPress);
+            document.removeEventListener('keypress', handleKeyPress)
         }
-    }, [isValid]);
+    }, [isValid, handleSubmit, editExerciseModal, exerciseFormModal]);
 
     return (
         <div className='form'>
@@ -273,7 +276,7 @@ export default function WorkoutForm() {
                                                         <h3>Edit/Remove</h3>
                                                         <div className='exercise-buttons'>
                                                             <button className='exercise-button' onClick={(event) => handleDeleteExercise(exercise, event)}>Delete</button>
-                                                            <button className='exercise-button' onClick={(event) => handleOpenExerciseModal(exercise, event)}>Edit</button>
+                                                            <button className='exercise-button' onClick={(event) => openEditExerciseModal(exercise, event)}>Edit</button>
                                                         </div>
                                                     </figcaption>
                                                 </figure>

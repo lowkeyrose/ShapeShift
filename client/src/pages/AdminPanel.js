@@ -50,11 +50,9 @@ export default function AdminPanel() {
           'Authorization': token
         }
       });
-      console.log('response: ', response);
       const data = await response.json();
       if (response.ok) {
         setUsers(data)
-        console.log('data: ', data);
       } else {
         console.error('Server returned an error:', response.status, data);
       }
@@ -72,6 +70,7 @@ export default function AdminPanel() {
   }, [fetchUsers])
 
   const handleDelete = async (id) => {
+    setLoading(true)
     try {
       const response = await fetch(`/api/user/${id}`, {
         method: 'DELETE',
@@ -89,6 +88,8 @@ export default function AdminPanel() {
     } catch (error) {
       console.error('Error deleting user:', error)
       showToastError('Failed to delete user. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 

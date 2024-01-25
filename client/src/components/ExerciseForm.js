@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -34,15 +34,6 @@ export default function ExerciseForm({
     duration: '00:00',
   });
 
-  // const structure = [
-  //   { name: 'title',    type: 'text',   label: 'Title',                required: true,  halfWidth: false },
-  //   { name: 'imgUrl',   type: 'text',   label: 'Image Url (Optional)', required: false, halfWidth: false },
-  //   { name: 'videoUrl', type: 'text',   label: 'Video Url (Optional)', required: false, halfWidth: false },
-  //   { name: 'sets',     type: 'number', label: 'Sets',                 required: false, halfWidth: true },
-  //   { name: 'weight',   type: 'number', label: 'Weight (kg)',          required: false, halfWidth: true },
-  //   { name: 'reps',     type: 'number', label: 'Reps',                 required: false, halfWidth: true },
-  //   { name: 'duration', type: 'text',   label: 'Duration',             required: false, halfWidth: true, placeholder: 'mm:ss' },
-  // ];
   const structure = [
     { name: 'title', type: 'text', label: 'Title', required: true, halfWidth: false },
     { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false },
@@ -77,31 +68,32 @@ export default function ExerciseForm({
 
   useEffect(() => {
     if (editExerciseModal && editingExercise) {
-      setExerciseFormData(editingExercise);
-      setInitialExerciseData(editingExercise);
+      setExerciseFormData(editingExercise)
+      setInitialExerciseData(editingExercise)
     } else {
-      resetFormData();
-      setInitialExerciseData({});
-      setEditingExercise(null);
+      resetFormData()
+      setInitialExerciseData({})
+      setEditingExercise(null)
+      setIsValid(false)
     }
-  }, [editingExercise, editExerciseModal, setEditingExercise]);
+  }, [editingExercise, editExerciseModal, setEditingExercise])
 
   const handleInput = (event) => {
-    const { id, value } = event.target;
+    const { id, value } = event.target
     let obj = {
       ...exerciseFormData,
       [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value,
-    };
-    const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialExerciseData);
-    const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true });
-    const err = { ...errors, [id]: undefined };
+    }
+    const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialExerciseData)
+    const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true })
+    const err = { ...errors, [id]: undefined }
 
     if (schema.error) {
-      const error = schema.error?.details.find((e) => e.context.key === id);
+      const error = schema.error?.details.find((e) => e.context.key === id)
       if (error) {
-        err[id] = error.message;
+        err[id] = error.message
       }
-      setIsValid(false);
+      setIsValid(false)
     } else {
       setIsValid(true);
     }
@@ -113,20 +105,8 @@ export default function ExerciseForm({
     setExerciseFormData(obj);
   };
 
-  const toggleModal = (event) => {
-    event.preventDefault();
-    if (exerciseFormModal) {
-      const userConfirmed = window.confirm('Are you sure you want to close?');
-      if (!userConfirmed) {
-        return;
-      }
-    }
-    resetFormData();
-    setIsValid(false);
-    setExerciseFormModal(!exerciseFormModal);
-  };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = useCallback(async (event) => {
     try {
       if (exerciseFormData.imgUrl === '') {
         exerciseFormData.imgUrl =
@@ -135,51 +115,107 @@ export default function ExerciseForm({
       event.preventDefault();
 
       if (editExerciseModal) {
-        await onEditExercise(exerciseFormData);
-        setEditExerciseModal(false);
+        await onEditExercise(exerciseFormData)
+        setEditExerciseModal(false)
       } else if (exerciseFormModal) {
-        onAddExercise(exerciseFormData);
-        setExerciseFormModal(false);
+        await onAddExercise(exerciseFormData)
+        setExerciseFormModal(false)
       }
-      setEditingExercise(null);
-      resetFormData();
-      setIsValid(false);
+      setEditingExercise(null)
+      resetFormData()
+      setIsValid(false)
     } catch (error) {
-      console.error('Error in handleSubmit:', error);
+      console.error('Error in handleSubmit:', error)
+    }
+
+  }, [editExerciseModal, exerciseFormData, exerciseFormModal, onAddExercise, onEditExercise, setEditExerciseModal, setEditingExercise, setExerciseFormModal])
+
+  // const handleModal = (event) => {
+  //   event.preventDefault();
+  //   if (exerciseFormModal) {
+  //     const userConfirmed = window.confirm('Are you sure you want to close?');
+  //     if (!userConfirmed) {
+  //       return;
+  //     }
+  //   }
+  //   resetFormData();
+  //   setIsValid(false);
+  //   setExerciseFormModal(!exerciseFormModal);
+  // };
+
+  const handleModal = async (event) => {
+    event.preventDefault()
+    console.log('exerciseFormModal 222: ' + exerciseFormModal);
+    console.log('editExerciseModal 222: ' + editExerciseModal);
+    if (exerciseFormModal || editExerciseModal) {
+      const userConfirmed = window.confirm('Are you sure you want to close?')
+      if (!userConfirmed) {
+        return
+      }
+      setExerciseFormModal(false)
+      setEditExerciseModal(false)
+      resetFormData()
+      setIsValid(false)
+    } 
+    
+    if (!exerciseFormModal && !editExerciseModal) {
+    console.log('setting to true');
+      
+      setExerciseFormModal(!exerciseFormModal)
     }
   }
+  // const handleModal = (event) => {
+  //   event.preventDefault()
+  //   if (exerciseFormModal || editExerciseModal) {
+  //     const userConfirmed = window.confirm('Are you sure you want to close?')
+  //     if (!userConfirmed) {
+  //       return
+  //     }
+  //     setExerciseFormModal(false)
+  //     setEditExerciseModal(false)
+  //     resetFormData()
+  //     setIsValid(false)
+  //   } else if (!exerciseFormModal) {
+  //     setExerciseFormModal(true)
+  //   }
+  // }
 
-  const handleClose = (event) => {
-    event.preventDefault();
-    const userConfirmed = window.confirm('Are you sure you want to close?');
-    if (!userConfirmed) {
-      return;
-    }
-    setEditExerciseModal(false);
-    setExerciseFormModal(false);
-    resetFormData();
-  };
+  // const handleClose = (event) => {
+  //   event.preventDefault();
+  //   const userConfirmed = window.confirm('Are you sure you want to close?');
+  //   if (!userConfirmed) {
+  //     return;
+  //   }
+  //   setEditExerciseModal(false);
+  //   setExerciseFormModal(false);
+  //   resetFormData();
+  //   setIsValid(false)
+  // };
 
   useEffect(() => {
-    // Default enter key press while in input deletes an exercise
+    // Enter key to submit
     const handleKeyPress = (event) => {
+    console.log('also inside exerciseModal');
+
       if (event.key === 'Enter') {
         event.preventDefault()
+        if (isValid) {
+          handleSubmit(event)
+        }
       }
     }
-    document.addEventListener('keypress', handleKeyPress);
-
+    document.addEventListener('keypress', handleKeyPress)
     return () => {
-      document.removeEventListener('keypress', handleKeyPress);
-    };
-  }, [isValid]);
+      document.removeEventListener('keypress', handleKeyPress)
+    }
+  }, [isValid, handleSubmit])
 
   return (
     <div className='exercise-form'>
 
       <Grid item xs={12}>
         <Button
-          onClick={(event) => toggleModal(event)}
+          onClick={(event) => handleModal(event)}
           sx={{ p: 2, m: 2 }}
           variant='contained'
           color='success'
@@ -228,7 +264,7 @@ export default function ExerciseForm({
                         />
                       </Grid>
                     ))}
-                     {/* {structure.map((item) => (
+                    {/* {structure.map((item) => (
                       <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
                         <TextField
                           autoComplete={item.autoComplete}
@@ -261,7 +297,8 @@ export default function ExerciseForm({
                 </Box>
               </Box>
             </Container>
-            <button className='close-modal' onClick={(event) => (editExerciseModal ? handleClose(event) : toggleModal(event))}>
+            {/* <button className='close-modal' onClick={(event) => (editExerciseModal ? handleClose(event) : handleModal(event))}> */}
+            <button className='close-modal' onClick={(event) => handleModal(event)}>
               X
             </button>
           </div>

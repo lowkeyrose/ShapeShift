@@ -1,33 +1,39 @@
 const express = require('express')
-
-// controller functions
-const { loginUser, signupUser, authenticate, updateUser, getUsers, deleteUser, getUser } = require('../controllers/userController')
 const requireAuth = require('../middleware/requireAuth')
-
 const router = express.Router()
 
-// authenticate
+// Controller functions
+const { loginUser,
+  signupUser,
+  authenticate,
+  updateUser,
+  getUsers,
+  deleteUser,
+  getUser
+} = require('../controllers/userController')
+
+// Authenticate
 router.post('/authenticate', requireAuth, authenticate)
 
-// login route
+// Login route
 router.post('/login', loginUser)
 
-// signup route
+// Signup route
 router.post('/signup', signupUser)
 
-// update user
+// Update user
 router.put('/update/:id', requireAuth, updateUser)
 
 
 // Admin routes 
 
-// get all users
+// Get all users
 router.get('/users', requireAuth, getUsers)
 
-// get single user
+// Get single user
 router.get('/:id', requireAuth, getUser)
 
-// delete user
+// Delete user
 router.delete('/:id', requireAuth, deleteUser)
 
 module.exports = router

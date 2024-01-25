@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const Joi = require('joi')
 
 // Function to save the user without the password property before returning it
-const createUserWithoutPassword = (user) => ({
+const userWithoutPassword = (user) => ({
   _id: user._id,
   firstName: user.firstName,
   lastName: user.lastName,
@@ -100,9 +100,9 @@ userSchema.statics.signup = async function (firstName, lastName, email, password
     const hash = await bcrypt.hash(password, salt)
     const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType })
 
-    const userWithoutPassword = createUserWithoutPassword(user)
+    const filteredUser = userWithoutPassword(user)
 
-    return userWithoutPassword
+    return filteredUser
   } catch (error) {
     throw error
   }
@@ -126,9 +126,9 @@ userSchema.statics.login = async function (email, password) {
       throw new Error('Invalid login credentials')
     }
 
-    const userWithoutPassword = createUserWithoutPassword(user)
+    const filteredUser = userWithoutPassword(user)
 
-    return userWithoutPassword
+    return filteredUser
   } catch (error) {
     throw error
   }
@@ -136,4 +136,4 @@ userSchema.statics.login = async function (email, password) {
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = { User, createUserWithoutPassword }
+module.exports = { User, userWithoutPassword }

@@ -14,12 +14,15 @@ import Joi from 'joi'
 import { FormControl, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { GlobalContext } from '../context/GlobalContext'
 import './style/Forms.css'
+import './style/Buttons.css'
 import { useParams } from 'react-router-dom'
+import { ACTIONS } from '../context/Actions'
+import { RoleTypes } from '../components/Navbar-config'
 
 export default function EditAccount() {
   const { id } = useParams()
   const { updateUser, error } = useUpdateUser()
-  const { user, navigate, token, setLoading } = useContext(GlobalContext)
+  const { dispatch, user, navigate, token, setLoading, showToastSuccess, showToastError, setRoleType } = useContext(GlobalContext)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [genderValue, setGenderValue] = useState('');
@@ -118,7 +121,6 @@ export default function EditAccount() {
       ...formData,
       [id]: value,
     }
-    // console.log('id', id);
 
     if (id.includes('gender')) {
       setGenderValue(value)
@@ -144,6 +146,31 @@ export default function EditAccount() {
     setFormData(obj);
     setErrors(err);
   };
+
+  const handleDelete = async (id) => {
+    setLoading(true)
+    try {
+      const response = await fetch(`/api/user/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': token
+        }
+      })
+      if (!response.ok) {
+        throw new Error(`Failed to delete user: ${response.statusText}`)
+      }
+      dispatch({ type: ACTIONS.LOGOUT})
+      setRoleType(RoleTypes.none)
+      localStorage.removeItem('token')  
+      navigate('/')
+      showToastSuccess('Successfully deleted')
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      showToastError('Failed to delete user. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
 
   return (
@@ -241,6 +268,7 @@ export default function EditAccount() {
             </Button>
           </Box>
         </Box>
+        <button className='styled-button delete' onClick={() => handleDelete(id)}>Delete Account</button>
       </Container>
     </div>
   );

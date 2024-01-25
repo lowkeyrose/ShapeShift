@@ -131,12 +131,13 @@ export const GlobalContextProvider = React.memo(({ children }) => {
         localStorage.removeItem('token')
         setRoleType(RoleTypes.none)
         navigate('/')
+      } else {
+        const json = await response.json()
+        memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
+        const userRoleType = json.roleType
+        const mappedRoleType = RoleTypes[userRoleType]
+        setRoleType(mappedRoleType)
       }
-      const json = await response.json()
-      memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
-      const userRoleType = json.roleType
-      const mappedRoleType = RoleTypes[userRoleType]
-      setRoleType(mappedRoleType)
 
     } catch (error) {
       console.log("The Promise is rejected!", error)

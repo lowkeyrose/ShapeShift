@@ -1,4 +1,9 @@
 const express = require('express')
+const requireAuth = require('../middleware/requireAuth')
+const validation = require('../middleware/Validation')
+const router = express.Router()
+
+// Controller functions
 const {
   getAllWorkouts,
   getMyWorkouts,
@@ -10,10 +15,6 @@ const {
   favorite,
   unFavorite
 } = require('../controllers/workoutController')
-const requireAuth = require('../middleware/requireAuth')
-const validation = require('../middleware/Validation')
-
-const router = express.Router()
 
 // GET all workouts
 router.get('/', getAllWorkouts)
