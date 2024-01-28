@@ -5,14 +5,12 @@ import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faPenToSquare, faTrash, faThumbsUp, faLock } from '@fortawesome/free-solid-svg-icons';
 import { memo } from 'react'
-// date fns
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutContext()
   const { user, token, navigate, location, showToastSuccess, showToastError, setLoading } = useGlobalContext()
   const [isFavorited, setIsFavorited] = useState(user?.favorites?.includes(workout._id))
-
 
   const handleDelete = async () => {
     try {
@@ -103,22 +101,24 @@ const WorkoutDetails = ({ workout }) => {
           <h3>
             <strong>Exercises: </strong>{workout.exercises ? workout.exercises.length : 0}
           </h3>
-
-
-
-          {workout.createdAt && <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
-
-
+          {
+            workout.createdAt &&
+            <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>
+          }
           <button className="button" onClick={() => navigate(`/workouts/workout/${workout._id}`)}>
             View Workout
           </button>
         </figcaption>
 
-        {(location.pathname === '/workouts/myworkouts' && workout.Private) &&
+        {
+          (location.pathname === '/workouts/myworkouts' && workout.Private) &&
           <div className='private'><FontAwesomeIcon style={{ fontSize: '20px' }} icon={faLock} /></div>
         }
 
-        {workout.likes > 0 && <p className='likes'> <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faThumbsUp} /> {workout.likes}</p>}
+        {
+          workout.likes > 0 &&
+          <p className='likes'> <FontAwesomeIcon style={{ fontSize: '24px' }} icon={faThumbsUp} /> {workout.likes}</p>
+        }
 
         <img className='profilePic' src={workout.userProfilePic} alt={workout.username} />
 
