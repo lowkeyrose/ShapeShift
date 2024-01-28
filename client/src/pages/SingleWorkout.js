@@ -34,7 +34,6 @@ export default function SingleWorkout() {
 
   useEffect(() => {
     if (isValidObjectId(id)) {
-      // Proceed with fetching the workout
       fetchWorkout()
     } else {
       navigate('/errorPage')

@@ -12,12 +12,7 @@ import Joi from 'joi';
 import './style/ExerciseModal.css';
 import { useGlobalContext } from '../hooks/useGlobalContext';
 
-export default function ExerciseForm({
-  onAddExercise,
-  onEditExercise,
-  editingExercise,
-  setEditingExercise,
-}) {
+export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, setEditingExercise }) {
   const { editExerciseModal, setEditExerciseModal, exerciseFormModal, setExerciseFormModal } = useGlobalContext()
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
@@ -72,8 +67,8 @@ export default function ExerciseForm({
       resetFormData()
       setInitialExerciseData({})
       setEditingExercise(null)
-      setIsValid(false)
     }
+    setIsValid(false)
   }, [editingExercise, editExerciseModal, setEditingExercise])
 
   const handleInput = (event) => {
@@ -105,12 +100,12 @@ export default function ExerciseForm({
 
 
   const handleSubmit = useCallback(async (event) => {
+    event.preventDefault();
     try {
       if (exerciseFormData.imgUrl === '') {
         exerciseFormData.imgUrl =
           'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg';
       }
-      event.preventDefault();
 
       if (editExerciseModal) {
         await onEditExercise(exerciseFormData)
@@ -125,24 +120,11 @@ export default function ExerciseForm({
     } catch (error) {
       console.error('Error in handleSubmit:', error)
     }
-
   }, [editExerciseModal, exerciseFormData, exerciseFormModal, onAddExercise, onEditExercise, setEditExerciseModal, setEditingExercise, setExerciseFormModal])
-
-  // const handleModal = (event) => {
-  //   event.preventDefault();
-  //   if (exerciseFormModal) {
-  //     const userConfirmed = window.confirm('Are you sure you want to close?');
-  //     if (!userConfirmed) {
-  //       return;
-  //     }
-  //   }
-  //   resetFormData();
-  //   setIsValid(false);
-  //   setExerciseFormModal(!exerciseFormModal);
-  // };
 
   const handleModal = async (event) => {
     event.preventDefault()
+    // Closing the modal
     if (exerciseFormModal || editExerciseModal) {
       const userConfirmed = window.confirm('Are you sure you want to close?')
       if (!userConfirmed) {
@@ -150,43 +132,18 @@ export default function ExerciseForm({
       }
       setExerciseFormModal(false)
       setEditExerciseModal(false)
+      // Are these necessary?
       resetFormData()
       setIsValid(false)
+      setEditingExercise(null)
+    } else if (!exerciseFormModal && !editExerciseModal) {
+      setExerciseFormModal(true)
     }
-
-    if (!exerciseFormModal && !editExerciseModal) {
-      console.log('setting to true');
-
-      setExerciseFormModal(!exerciseFormModal)
-    }
+    // Open modal
+    // if (!exerciseFormModal && !editExerciseModal) {
+    //   setExerciseFormModal(true)
+    // }
   }
-  // const handleModal = (event) => {
-  //   event.preventDefault()
-  //   if (exerciseFormModal || editExerciseModal) {
-  //     const userConfirmed = window.confirm('Are you sure you want to close?')
-  //     if (!userConfirmed) {
-  //       return
-  //     }
-  //     setExerciseFormModal(false)
-  //     setEditExerciseModal(false)
-  //     resetFormData()
-  //     setIsValid(false)
-  //   } else if (!exerciseFormModal) {
-  //     setExerciseFormModal(true)
-  //   }
-  // }
-
-  // const handleClose = (event) => {
-  //   event.preventDefault();
-  //   const userConfirmed = window.confirm('Are you sure you want to close?');
-  //   if (!userConfirmed) {
-  //     return;
-  //   }
-  //   setEditExerciseModal(false);
-  //   setExerciseFormModal(false);
-  //   resetFormData();
-  //   setIsValid(false)
-  // };
 
   useEffect(() => {
     // Enter key to submit
@@ -257,25 +214,6 @@ export default function ExerciseForm({
                         />
                       </Grid>
                     ))}
-                    {/* {structure.map((item) => (
-                      <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
-                        <TextField
-                          autoComplete={item.autoComplete}
-                          error={!!errors[item.name]}
-                          helperText={errors[item.name]}
-                          onChange={handleInput}
-                          value={exerciseFormData[item.name]}
-                          name={item.name}
-                          type={item.type}
-                          required={item.required}
-                          fullWidth
-                          id={item.name}
-                          placeholder={item.placeholder}
-                          label={item.label}
-                          autoFocus={item.name === 'title' ? true : false}
-                        />
-                      </Grid>
-                    ))} */}
                   </Grid>
                   <Button
                     disabled={!isValid}
@@ -290,10 +228,7 @@ export default function ExerciseForm({
                 </Box>
               </Box>
             </Container>
-            {/* <button className='close-modal' onClick={(event) => (editExerciseModal ? handleClose(event) : handleModal(event))}> */}
-            <button className='close-modal' onClick={(event) => handleModal(event)}>
-              X
-            </button>
+            <button className='close-modal' onClick={(event) => handleModal(event)}>X</button>
           </div>
         </div>
       )}

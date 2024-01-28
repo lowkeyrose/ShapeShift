@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
@@ -15,12 +15,11 @@ import Joi from 'joi'
 import './style/Forms.css'
 import { FormControl, FormLabel, Radio, RadioGroup } from '@mui/material'
 
-
 export default function SignUp() {
   const { signup, error } = useSignup()
-  const [errors, setErrors] = useState({});
-  const [isValid, setIsValid] = useState(false);
-  const [value, setValue] = useState('');
+  const [errors, setErrors] = useState({})
+  const [isValid, setIsValid] = useState(false)
+  const [value, setValue] = useState('')
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -39,7 +38,7 @@ export default function SignUp() {
     { name: 'password', type: 'password', label: 'Password', required: true, halfWidth: false, autoComplete: "new-password" },
     { name: 'username', type: 'text', label: 'Username', required: true, halfWidth: true, autoComplete: "username" },
     { name: 'phone', type: 'tel', label: 'Phone', required: true, halfWidth: true, autoComplete: "tel" },
-    { name: 'profilePic', type: 'text', label: 'Profile Pic', required: false, halfWidth: false, autoComplete: "" },
+    { name: 'profilePic', type: 'text', label: 'Profile Pic', required: false, halfWidth: false, autoComplete: "" }
   ]
 
   const userSchema = Joi.object({
@@ -55,16 +54,23 @@ export default function SignUp() {
     profilePic: Joi.any()
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (event) => {
+    event.preventDefault()
 
-    
     if (formData.profilePic === '') {
       formData.profilePic = 'https://img.freepik.com/premium-vector/strong-arm-muscles-cartoon-illustration_584573-737.jpg?w=740'
-  }
+    }
 
-    await signup(formData.firstName, formData.lastName, formData.email, formData.password, formData.username, formData.phone, formData.gender, formData.profilePic)
-
+    await signup(
+      formData.firstName,
+      formData.lastName,
+      formData.email,
+      formData.password,
+      formData.username,
+      formData.phone,
+      formData.gender,
+      formData.profilePic
+    )
   }
 
   const handleInput = event => {
@@ -91,92 +97,91 @@ export default function SignUp() {
     }
     setFormData(obj);
     setErrors(err);
-  };
-
+  }
 
   return (
     <div className="signup-form form">
-    <Container className='form-container' component="main" maxWidth="sm">
-      <CssBaseline />
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            {
-              structure.map(item =>
-                <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
-                  <TextField
-                    autoComplete={item.autoComplete}
-                    error={
-                      (error?.includes('email') && item.name === 'email') ||
-                        (error?.includes('username') && item.name === 'username')
-                        ? error
-                        : !!errors[item.name]
-                    }
-                    helperText={
-                      (error?.includes('email') && item.name === 'email') ||
-                        (error?.includes('username') && item.name === 'username')
-                        ? error
-                        : errors[item.name]
-                    }
+      <Container className='form-container' component="main" maxWidth="sm">
+        <CssBaseline />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              {
+                structure.map(item =>
+                  <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
+                    <TextField
+                      autoComplete={item.autoComplete}
+                      error={
+                        (error?.includes('email') && item.name === 'email') ||
+                          (error?.includes('username') && item.name === 'username')
+                          ? error
+                          : !!errors[item.name]
+                      }
+                      helperText={
+                        (error?.includes('email') && item.name === 'email') ||
+                          (error?.includes('username') && item.name === 'username')
+                          ? error
+                          : errors[item.name]
+                      }
+                      onChange={handleInput}
+                      value={formData[item.name]}
+                      name={item.name}
+                      type={item.type}
+                      required={item.required}
+                      fullWidth
+                      id={item.name}
+                      label={item.label}
+                      autoFocus={item.name === "firstName" ? true : false}
+                    />
+                  </Grid>
+                )
+              }
+              <Grid item xs={12} sx={{ mt: -1 }}>
+                <FormControl>
+                  <FormLabel id="gender">Gender</FormLabel>
+                  <RadioGroup
+                    aria-labelledby="gender"
+                    name="controlled-radio-buttons-group"
+                    value={value}
                     onChange={handleInput}
-                    value={formData[item.name]}
-                    name={item.name}
-                    type={item.type}
-                    required={item.required}
-                    fullWidth
-                    id={item.name}
-                    label={item.label}
-                    autoFocus={item.name === "firstName" ? true : false}
-                  />
-                </Grid>
-              )
-            }
-            <Grid item xs={12} sx={{ mt: -1 }}>
-              <FormControl>
-                <FormLabel id="gender">Gender</FormLabel>
-                <RadioGroup
-                  aria-labelledby="gender"
-                  name="controlled-radio-buttons-group"
-                  value={value}
-                  onChange={handleInput}
-                >
-                  <FormControlLabel value="female" control={<Radio id='gender' />} label="Female" />
-                  <FormControlLabel value="male" control={<Radio id='gender' />} label="Male" />
-                </RadioGroup>
-              </FormControl>
+                  >
+                    <FormControlLabel value="female" control={<Radio id='gender' />} label="Female" />
+                    <FormControlLabel value="male" control={<Radio id='gender' />} label="Male" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
-          <Button
-            disabled={!isValid}
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign Up
-          </Button>
-          <Grid container justifyContent="center">
-            <Grid item>
-              <Link to="/login" variant="body2">
-                Already have an account? Sign in
-              </Link>
+            <Button
+              disabled={!isValid}
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign Up
+            </Button>
+            <Grid container justifyContent="center">
+              <Grid item>
+                <Link to="/login" variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
     </div>
   );
 }

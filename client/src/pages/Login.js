@@ -26,8 +26,8 @@ export default function Login() {
   const [isValid, setIsValid] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (event) => {
+    event.preventDefault()
     setFormData(formData)
     await login(formData.email, formData.password)
     if (rememberMe) {

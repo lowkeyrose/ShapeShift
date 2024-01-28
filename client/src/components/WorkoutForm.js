@@ -37,7 +37,6 @@ export default function WorkoutForm() {
     const [isValid, setIsValid] = useState(false)
     const [editingExercise, setEditingExercise] = useState(null);
     const [initialWorkoutData, setInitialWorkoutData] = useState({});
-
     const [workoutFormData, setWorkoutFormData] = useState({
         title: '',
         imgUrl: '',
@@ -126,35 +125,34 @@ export default function WorkoutForm() {
 
     const handleDeleteExercise = (ex, event) => {
         event.preventDefault()
-        const exercisesNotDeleted = workoutFormData.exercises.filter((exercise) => {
-            if (ex._id) {
-                return ex._id !== exercise._id;
-            }
-            if (ex.key) {
-                return ex.key !== exercise.key;
-            }
-            return true;
-        });
+        const exercisesNotDeleted = workoutFormData.exercises.filter((exercise) =>
+            (ex._id && ex._id !== exercise._id) ||
+            (ex.key && ex.key !== exercise.key)
+        )
 
         setWorkoutFormData((prevData) => ({
             ...prevData,
             exercises: exercisesNotDeleted,
-        }));
+        }))
 
         handleInput({ id: "exercises", value: exercisesNotDeleted })
     }
 
-
     const openEditExerciseModal = (ex, event) => {
         event.preventDefault()
-        setEditingExercise(ex);
-        setEditExerciseModal(!editExerciseModal);
-    };
+        setEditingExercise(ex)
+        setEditExerciseModal(true)
+    }
 
     const handleAddExercise = (exercise) => {
         // Generate a unique temporary key for the exercise
         const exerciseWithKey = { ...exercise, key: uuidv4() }
-        setWorkoutFormData((prevData) => ({ ...prevData, exercises: [...prevData.exercises, exerciseWithKey] }));
+
+        setWorkoutFormData((prevData) => ({
+            ...prevData,
+            exercises: [...prevData.exercises, exerciseWithKey]
+        }))
+
         handleInput({ id: "exercises", value: [...workoutFormData.exercises, exerciseWithKey] })
     }
 
@@ -166,13 +164,13 @@ export default function WorkoutForm() {
                 : exercise
         )
 
-        setWorkoutFormData((prevData) => {
-            return { ...prevData, exercises: updatedExercises };
-        })
+        setWorkoutFormData((prevData) => ({
+            ...prevData,
+            exercises: updatedExercises
+        }))
 
-        handleInput({ id: "exercises", value: [...updatedExercises] })
+        handleInput({ id: "exercises", value: updatedExercises })
     }
-
 
     const handleSubmit = useCallback(async (event) => {
         event.preventDefault()
@@ -198,8 +196,8 @@ export default function WorkoutForm() {
             const workoutData = await workoutResponse.json()
 
             if (workoutResponse.ok) {
-                // No need to dispatch an update workout action becuase we get the updated workouts after navigation
                 !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
+                // Navigate to my workouts where we fetch the updated workouts collection and update the state
                 navigate('/workouts/myworkouts')
                 showToastSuccess(id ? 'Workout updated successfully' : 'New workout added successfully')
             } else if (workoutResponse.status === 420) {
@@ -237,8 +235,8 @@ export default function WorkoutForm() {
                 <Box className='button-container'>
                     <button className='return-button' onClick={() => navigate('workouts/myworkouts')}>X</button>
                 </Box>
-
                 <CssBaseline />
+
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar sx={{ m: '10px 0', bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
                     <Typography component="h1" variant="h5" sx={{ textAlign: 'center' }}> {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
@@ -293,14 +291,10 @@ export default function WorkoutForm() {
 
                             <ExerciseForm Use role="dialog" aria-modal="true"
                                 id="exercise-form"
-                                // exerciseFormModal={exerciseFormModal}
-                                // setExerciseFormModal={setExerciseFormModal}
                                 onAddExercise={handleAddExercise}
                                 onEditExercise={handleEditExercise}
                                 editingExercise={editingExercise}
                                 setEditingExercise={setEditingExercise}
-                            // editExerciseModal={editExerciseModal}
-                            // setEditExerciseModal={setEditExerciseModal}
                             />
 
                             <Grid item xs={12} sx={{ mt: -1 }}>

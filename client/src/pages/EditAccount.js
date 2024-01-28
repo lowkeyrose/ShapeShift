@@ -22,12 +22,21 @@ import { RoleTypes } from '../components/Navbar-config'
 export default function EditAccount() {
   const { id } = useParams()
   const { updateUser, error } = useUpdateUser()
-  const { dispatch, user, navigate, token, setLoading, showToastSuccess, showToastError, setRoleType } = useContext(GlobalContext)
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [genderValue, setGenderValue] = useState('');
   const [roleValue, setRoleValue] = useState('');
   const [initialUserData, setInitialUserData] = useState({});
+  const {
+    dispatch,
+    user,
+    navigate,
+    token,
+    setLoading,
+    showToastSuccess,
+    showToastError,
+    setRoleType
+  } = useContext(GlobalContext)
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -109,9 +118,18 @@ export default function EditAccount() {
     }
   }, [user, fetchUser, id])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    await updateUser(formData.firstName, formData.lastName, formData.email, formData.username, formData.phone, formData.profilePic, genderValue, roleValue)
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    await updateUser(
+      formData.firstName,
+      formData.lastName,
+      formData.email,
+      formData.username,
+      formData.phone,
+      formData.profilePic,
+      genderValue,
+      roleValue
+    )
     setIsValid(false)
   }
 
@@ -159,9 +177,9 @@ export default function EditAccount() {
       if (!response.ok) {
         throw new Error(`Failed to delete user: ${response.statusText}`)
       }
-      dispatch({ type: ACTIONS.LOGOUT})
+      dispatch({ type: ACTIONS.LOGOUT })
       setRoleType(RoleTypes.none)
-      localStorage.removeItem('token')  
+      localStorage.removeItem('token')
       navigate('/')
       showToastSuccess('Successfully deleted')
     } catch (error) {
