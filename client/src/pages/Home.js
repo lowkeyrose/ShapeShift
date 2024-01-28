@@ -2,17 +2,17 @@ import { useCallback, useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import { memo } from 'react'
-import logo from '../assets/robots/home.png'
-import '../components/style/WorkoutDetails.css'
-import './style/Swiper.css'
-import './style/Pages.css'
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
+import logo from '../assets/robots/home.png'
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import '../components/style/WorkoutDetails.css'
+import './style/Swiper.css'
+import './style/Pages.css'
+
 
 // components
 import WorkoutDetails from '../components/WorkoutDetails'

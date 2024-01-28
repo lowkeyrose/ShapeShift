@@ -145,8 +145,6 @@ export default function ExerciseForm({
 
   const handleModal = async (event) => {
     event.preventDefault()
-    console.log('exerciseFormModal 222: ' + exerciseFormModal);
-    console.log('editExerciseModal 222: ' + editExerciseModal);
     if (exerciseFormModal || editExerciseModal) {
       const userConfirmed = window.confirm('Are you sure you want to close?')
       if (!userConfirmed) {
@@ -195,8 +193,6 @@ export default function ExerciseForm({
   useEffect(() => {
     // Enter key to submit
     const handleKeyPress = (event) => {
-    console.log('also inside exerciseModal');
-
       if (event.key === 'Enter') {
         event.preventDefault()
         if (isValid) {

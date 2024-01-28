@@ -84,6 +84,7 @@ const createWorkout = async (req, res) => {
   //   userProfilePic: req.user.profilePic,
   //   username: req.user.username,
   // }
+  
   const workoutData = req.body
   workoutData.user_id = req.user._id
   workoutData.username = req.user.username

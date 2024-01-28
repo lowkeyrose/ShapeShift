@@ -34,10 +34,8 @@ export default function MyWorkouts() {
     } = useGlobalContext()
     const { workouts, dispatch } = useWorkoutContext()
     const location = useLocation();
-    // console.log("MyWorkouts component rendered"); // Add this line
 
     const fetchWorkouts = useCallback(async () => {
-        // console.log("Fetching My-workouts...");
         setLoading(true)
         try {
             const response = await fetch('/api/workouts/myworkouts', {

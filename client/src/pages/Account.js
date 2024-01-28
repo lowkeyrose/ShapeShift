@@ -8,7 +8,6 @@ export default function Account() {
 
   return (
     <div className="account-page">
-
       <div className='account-page-container'>
         <div className='top'>
           <img src={user.profilePic} alt="img" />
@@ -17,7 +16,6 @@ export default function Account() {
             <div className="fg"> {user.username} </div>
           </div>
         </div>
-
         <div className='bottom'>
           <div className='box'>First Name: {user.firstName}</div>
           <div className='box'>Last Name: {user.lastName}</div>

@@ -1,12 +1,10 @@
-// Import necessary dependencies
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import logo from '../assets/robots/about.png'
 
-// Functional component for the About Me page
-const AboutMePage = () => {
+const About = () => {
   return (
     <div className="about-page">
       <div className='img-div'>
@@ -94,4 +92,4 @@ const AboutMePage = () => {
   );
 };
 
-export default AboutMePage;
+export default About;

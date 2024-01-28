@@ -55,7 +55,6 @@ export default function WorkoutForm() {
             const response = await fetch(`/api/workouts/workout/${id}`)
             const data = await response.json()
             setWorkoutFormData(data)
-            console.log('data: ', data);
             setInitialWorkoutData(data)
         } catch (error) {
             console.error('Error fetching workout:', error);
@@ -212,11 +211,6 @@ export default function WorkoutForm() {
         const handleKeyPress = (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault()
-                console.log('exerciseFormModal: ', exerciseFormModal);
-                console.log('editExerciseModal: ', editExerciseModal);
-                if (isValid && !exerciseFormModal && !editExerciseModal) {
-                    handleSubmit(event)
-                }
             }
         }
         document.addEventListener('keypress', handleKeyPress)
@@ -224,7 +218,7 @@ export default function WorkoutForm() {
         return () => {
             document.removeEventListener('keypress', handleKeyPress)
         }
-    }, [isValid, handleSubmit, editExerciseModal, exerciseFormModal]);
+    }, [isValid]);
 
     return (
         <div className='form'>

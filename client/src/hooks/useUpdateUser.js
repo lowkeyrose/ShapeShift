@@ -32,8 +32,6 @@ export const useUpdateUser = () => {
         })
       })
       const json = await response.json()
-      console.log('json', json);
-      console.log('response', response);
       if (!response.ok) {
         throw new Error(json.error);
       } else if (user._id === id) {

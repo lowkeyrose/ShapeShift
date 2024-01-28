@@ -20,7 +20,6 @@ export default function Router() {
       <Route path="*" element={<ErrorPage />} />
       <Route path="/errorPage" element={<ErrorPage />} />
       <Route path="/workouts/workout/:id" element={<SingleWorkout />} />
-
       <Route path="/about" element={<About />} />
     </Routes>
   )

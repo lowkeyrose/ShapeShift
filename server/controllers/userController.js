@@ -50,54 +50,100 @@ const updateUser = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'User not found' })
   }
-
+  
   try {
     const user = await User.findOne({ _id: userData._id })
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-
+    
     if (user.firstName !== userData.firstName) {
       user.firstName = userData.firstName;
     }
-
+    
     if (user.lastName !== userData.lastName) {
       user.lastName = userData.lastName;
     }
-
+    
     if (user.email !== userData.email) {
       user.email = userData.email;
     }
-
+    
     if (user.username !== userData.username) {
       user.username = userData.username;
     }
-
+    
     if (user.phone !== userData.phone) {
       user.phone = userData.phone;
     }
-
+    
     if (user.gender !== userData.gender) {
       user.gender = userData.gender;
     }
-
+    
     if ((user.roleType !== userData.roleType) && (userData.roleType !== '')) {
       user.roleType = userData.roleType;
     }
-
+    
     if (user.profilePic !== userData.profilePic) {
       user.profilePic = userData.profilePic;
     }
-
+    
     await user.save();
+    
+    const filteredUser = userWithoutPassword(user)
+    
+    res.status(200).json(filteredUser)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+  
+}
+
+// Delete user
+const deleteUser = async (req, res) => {
+  const { id } = req.params
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'Workout not found' })
+  }
+
+  if (req.user._id.toString() !== id  && req.user.roleType !== 'admin') {
+    return res.status(401).json({ error: 'Unauthorized user' })
+  }
+
+  try {
+    const user = await User.findOne({ _id: id })
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    // Save all the user's workouts
+    const userWorkouts = await Workout.find({ user_id: id });
+    // Convert to string for comparison
+    const workoutIds = userWorkouts.map((workout) => String(workout._id))
+
+    // Remove user's workouts from other users' favorites
+    await User.updateMany(
+      { favorites: { $in: workoutIds } },
+      { $pull: { favorites: { $in: workoutIds } } }
+    );
+
+    // Delete all user's workouts
+    await Workout.deleteMany({ user_id: id });
+
+    // Delete all user's exercises
+    await Exercise.deleteMany({ user_id: id });
+
+    // Delete the user
+    await User.deleteOne({ _id: id });
 
     const filteredUser = userWithoutPassword(user)
 
     res.status(200).json(filteredUser)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    console.log('error', error);
+    res.status(500).json({ success: false, error: error.message });
   }
-
 }
 
 // Admin get user
@@ -141,52 +187,6 @@ const getUsers = async (req, res) => {
   } catch (error) {
     console.error('Error fetching all users:', error)
     res.status(500).json({ success: false, error: error.message })
-  }
-}
-
-// Admin Delete user
-const deleteUser = async (req, res) => {
-  const { id } = req.params
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'Workout not found' })
-  }
-
-  if (req.user._id.toString() !== id  && req.user.roleType !== 'admin') {
-    return res.status(401).json({ error: 'Unauthorized user' })
-  }
-
-  try {
-    const user = await User.findOne({ _id: id })
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' })
-    }
-
-    // Save all the user's workouts
-    const userWorkouts = await Workout.find({ user_id: id });
-    // Convert to string for comparison
-    const workoutIds = userWorkouts.map((workout) => String(workout._id))
-
-    // Remove user's workouts from other users' favorites
-    await User.updateMany(
-      { favorites: { $in: workoutIds } },
-      { $pull: { favorites: { $in: workoutIds } } }
-    );
-
-    // Delete all user's workouts
-    await Workout.deleteMany({ user_id: id });
-
-    // Delete all user's exercises
-    await Exercise.deleteMany({ user_id: id });
-
-    // Delete the user
-    await User.deleteOne({ _id: id });
-
-    const filteredUser = userWithoutPassword(user)
-
-    res.status(200).json(filteredUser)
-  } catch (error) {
-    console.log('error', error);
-    res.status(500).json({ success: false, error: error.message });
   }
 }
 

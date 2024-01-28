@@ -21,24 +21,22 @@ export const useSignup = () => {
       if (!response.ok) {
         throw new Error(json.error);
       }
-      if (response.ok) {
-        console.log('json: ', json);
-        // save the user to local storage
-        localStorage.setItem('token', JSON.stringify(json.token))
+      
+      // Save the user to local storage
+      localStorage.setItem('token', JSON.stringify(json.token))
 
-        // update the user context
-        dispatch({ type: ACTIONS.SET_USER, payload: json })
+      // Update the user context
+      dispatch({ type: ACTIONS.SET_USER, payload: json })
 
-        const userRoleType = json.user.roleType
-        const mappedRoleType = RoleTypes[userRoleType]
-        setRoleType(mappedRoleType)
+      // Set roleType
+      const userRoleType = json.user.roleType
+      const mappedRoleType = RoleTypes[userRoleType]
+      setRoleType(mappedRoleType)
 
-        // Popup message for UX
-        showToastSuccess("Signup successful")
-        // Navigate home
-        navigate('/')
-        // update loading state
-      }
+      // Popup message for UX
+      showToastSuccess("Signup successful")
+      // Navigate home
+      navigate('/')
     } catch (error) {
       // Handle specific error cases
       if (error.message === 'email already in use') {

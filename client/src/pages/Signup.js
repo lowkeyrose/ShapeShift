@@ -21,9 +21,6 @@ export default function SignUp() {
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [value, setValue] = useState('');
-
-  console.log('error:', error);
-
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -80,7 +77,6 @@ export default function SignUp() {
     if (id === "gender") {
       setValue(value)
     }
-    console.log(obj);
 
     const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
     const err = { ...errors, [id]: undefined };
@@ -94,7 +90,6 @@ export default function SignUp() {
       setIsValid(true);
     }
     setFormData(obj);
-    console.log(schema.error);
     setErrors(err);
   };
 

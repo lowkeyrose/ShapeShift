@@ -22,14 +22,12 @@ const WorkoutDetails = ({ workout }) => {
         headers: {
           'Authorization': token
         }
-      });
+      })
 
       if (!response.ok) {
         throw new Error(`Failed to delete workout: ${response.statusText}`)
       }
 
-      const json = await response.json()
-      console.log('json', json);
       dispatch({ type: ACTIONS.REMOVE_WORKOUT, payload: { workoutId: workout._id } })
       showToastSuccess('Workout deleted successfully')
     } catch (error) {

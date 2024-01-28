@@ -48,7 +48,6 @@ export default function Workouts() {
     }, [dispatch, setLoading])
 
     useEffect(() => {
-        console.log('fetch useEffect');
         fetchWorkouts()
         return () => {
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });

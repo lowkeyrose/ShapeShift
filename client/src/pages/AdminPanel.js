@@ -8,11 +8,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useGlobalContext } from '../hooks/useGlobalContext';
-import './style/Pages.css'
-import logo from '../assets/robots/adminPanel.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { formatDistanceToNow } from 'date-fns';
+import logo from '../assets/robots/adminPanel.png'
+import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
 import './style/Buttons.css'
 
@@ -44,24 +44,23 @@ export default function AdminPanel() {
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     try {
-      console.log('inside the try: ');
       const response = await fetch('/api/user/users', {
         headers: {
           'Authorization': token
         }
       });
       const data = await response.json();
-      if (response.ok) {
-        setUsers(data)
-      } else {
+      if (!response.ok) {
         console.error('Server returned an error:', response.status, data);
       }
+      setUsers(data)
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false)
     }
   }, [token, setLoading])
+  
   useEffect(() => {
     fetchUsers()
     return () => {
@@ -123,7 +122,7 @@ export default function AdminPanel() {
           </>
           :
           <>
-          <button className='styled-button' onClick={() => setCardFormat(true)}>Card Format</button>
+            <button className='styled-button' onClick={() => setCardFormat(true)}>Card Format</button>
             <TableContainer component={Paper} sx={{ marginTop: '40px', boxShadow: '3px 3px 15px', borderRadius: '10px', width: '90%', height: '100%' }}>
               <Table sx={{ minWidth: 700, m: 'auto' }} aria-label="customized table">
                 <TableHead>

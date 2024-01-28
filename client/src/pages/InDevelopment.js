@@ -1,6 +1,6 @@
+import { useGlobalContext } from '../hooks/useGlobalContext';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { useGlobalContext } from '../hooks/useGlobalContext';
 import logo from '../assets/robots/in-progress.png'
 
 export default function InDevelopment() {
