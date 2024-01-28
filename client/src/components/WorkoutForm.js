@@ -21,12 +21,20 @@ import '../pages/style/Forms.css'
 
 export default function WorkoutForm() {
     const { id } = useParams()
-    const { token, setLoading, showToastSuccess, showToastError, navigate, isValidObjectId } = useGlobalContext()
+    const {
+        token,
+        setLoading,
+        showToastSuccess,
+        showToastError,
+        navigate,
+        isValidObjectId,
+        exerciseFormModal,
+        editExerciseModal,
+        setEditExerciseModal
+    } = useGlobalContext()
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
-    const [exerciseFormModal, setExerciseFormModal] = useState(false);
-    const [editExerciseModal, setEditExerciseModal] = useState(false);
     const [editingExercise, setEditingExercise] = useState(null);
     const [initialWorkoutData, setInitialWorkoutData] = useState({});
 
@@ -140,7 +148,7 @@ export default function WorkoutForm() {
     const openEditExerciseModal = (ex, event) => {
         event.preventDefault()
         setEditingExercise(ex);
-        setEditExerciseModal(prevState => !prevState);
+        setEditExerciseModal(!editExerciseModal);
     };
 
     const handleAddExercise = (exercise) => {
@@ -211,6 +219,9 @@ export default function WorkoutForm() {
         const handleKeyPress = (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault()
+                if (!editExerciseModal && !exerciseFormModal && isValid) {
+                    handleSubmit(event)
+                }
             }
         }
         document.addEventListener('keypress', handleKeyPress)
@@ -218,7 +229,7 @@ export default function WorkoutForm() {
         return () => {
             document.removeEventListener('keypress', handleKeyPress)
         }
-    }, [isValid]);
+    }, [isValid, editExerciseModal, exerciseFormModal, handleSubmit]);
 
     return (
         <div className='form'>
@@ -230,8 +241,8 @@ export default function WorkoutForm() {
                 <CssBaseline />
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar sx={{ m: '10px 0', bgcolor: 'secondary.main' }}> <AddCircleIcon /> </Avatar>
-                    <Typography component="h1" variant="h5" sx={{textAlign:'center'}}> {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, maxWidth:'90%' }}>
+                    <Typography component="h1" variant="h5" sx={{ textAlign: 'center' }}> {id ? 'Update A Workout' : 'Create A New Workout'} </Typography>
+                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, maxWidth: '90%' }}>
                         <Grid container spacing={2}>
                             {
                                 structure.map(item =>
@@ -280,16 +291,16 @@ export default function WorkoutForm() {
                                 </Typography>
                             </Grid>
 
-                            <ExerciseForm Use role="dialog" aria-modal="true" 
+                            <ExerciseForm Use role="dialog" aria-modal="true"
                                 id="exercise-form"
-                                exerciseFormModal={exerciseFormModal}
-                                setExerciseFormModal={setExerciseFormModal}
+                                // exerciseFormModal={exerciseFormModal}
+                                // setExerciseFormModal={setExerciseFormModal}
                                 onAddExercise={handleAddExercise}
                                 onEditExercise={handleEditExercise}
                                 editingExercise={editingExercise}
                                 setEditingExercise={setEditingExercise}
-                                editExerciseModal={editExerciseModal}
-                                setEditExerciseModal={setEditExerciseModal}
+                            // editExerciseModal={editExerciseModal}
+                            // setEditExerciseModal={setEditExerciseModal}
                             />
 
                             <Grid item xs={12} sx={{ mt: -1 }}>

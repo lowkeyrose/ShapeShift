@@ -58,7 +58,7 @@ export const WorkoutContextProvider = React.memo(({ children }) => {
     workouts: null
   })
 
-  console.log('WorkoutContext state: ', state)
+  // console.log('WorkoutContext state: ', state)
 
   return (
     <WorkoutContext.Provider value={{ ...state, dispatch }}>

@@ -28,36 +28,38 @@ export const authReducer = (state, action) => {
           ...state.user,
           favorites: state.user.favorites.filter(w => w._id !== action.payload._id)
         }
-      };
+      }
     default:
-      return state;
+      return state
   }
 };
 
 export const GlobalContextProvider = React.memo(({ children }) => {
-  const token = JSON.parse(localStorage.getItem('token'));
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [searchWord, setSearchWord] = useState('');
-  const [roleType, setRoleType] = useState(RoleTypes.none);
-  const [loading, setLoading] = useState(false);
-  const [filteredData, setFilteredData] = useState([]);
+  const token = JSON.parse(localStorage.getItem('token'))
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [exerciseFormModal, setExerciseFormModal] = useState(false)
+  const [editExerciseModal, setEditExerciseModal] = useState(false)
+  const [searchWord, setSearchWord] = useState('')
+  const [roleType, setRoleType] = useState(RoleTypes.none)
+  const [loading, setLoading] = useState(false)
+  const [filteredData, setFilteredData] = useState([])
   const [activeFilters, setActiveFilters] = useState({
     filterByLikes: null,
     filterByExercises: null,
   });
-  const [sortOption, setSortOption] = useState(null);
-  const [isActive, setIsActive] = useState(false);
+  const [sortOption, setSortOption] = useState(null)
+  const [isActive, setIsActive] = useState(false)
 
-  const openMenu = useCallback( () => {
-    setIsActive(!isActive);
+  const openMenu = useCallback(() => {
+    setIsActive(!isActive)
   }, [isActive])
 
   const handleFilterToggle = useCallback(() => {
-    setIsActive(false);
+    setIsActive(false)
   }, [])
   const handleSortByToggle = useCallback(() => {
-    setIsActive(false);
+    setIsActive(false)
   }, [])
 
   const showToastError = text => {
@@ -150,7 +152,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     }
   }, [authenticate, location.pathname, token]);
 
-  console.log('GlobalContextProvider state: ', state);
+  // console.log('GlobalContextProvider state: ', state);
 
   const memoizedValue = useMemo(() => ({
     ...state,
@@ -176,8 +178,12 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     isActive,
     openMenu,
     handleFilterToggle,
-    handleSortByToggle
-  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts, isActive, handleSortByToggle, handleFilterToggle, openMenu]);
+    handleSortByToggle,
+    exerciseFormModal,
+    setExerciseFormModal,
+    editExerciseModal,
+    setEditExerciseModal
+  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts, isActive, handleSortByToggle, handleFilterToggle, openMenu, exerciseFormModal, editExerciseModal]);
 
   return (
     <GlobalContext.Provider value={memoizedValue}>

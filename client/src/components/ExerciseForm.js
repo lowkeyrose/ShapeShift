@@ -10,17 +10,15 @@ import Container from '@mui/material/Container';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Joi from 'joi';
 import './style/ExerciseModal.css';
+import { useGlobalContext } from '../hooks/useGlobalContext';
 
 export default function ExerciseForm({
   onAddExercise,
   onEditExercise,
   editingExercise,
   setEditingExercise,
-  editExerciseModal,
-  setEditExerciseModal,
-  exerciseFormModal,
-  setExerciseFormModal
 }) {
+  const { editExerciseModal, setEditExerciseModal, exerciseFormModal, setExerciseFormModal } = useGlobalContext()
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [initialExerciseData, setInitialExerciseData] = useState({});
@@ -154,11 +152,11 @@ export default function ExerciseForm({
       setEditExerciseModal(false)
       resetFormData()
       setIsValid(false)
-    } 
-    
+    }
+
     if (!exerciseFormModal && !editExerciseModal) {
-    console.log('setting to true');
-      
+      console.log('setting to true');
+
       setExerciseFormModal(!exerciseFormModal)
     }
   }
@@ -208,7 +206,6 @@ export default function ExerciseForm({
 
   return (
     <div className='exercise-form'>
-
       <Grid item xs={12}>
         <Button
           onClick={(event) => handleModal(event)}
