@@ -124,7 +124,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
 
   const handleModal = async (event) => {
     event.preventDefault()
-    // Closing the modal
+    // Close modal
     if (exerciseFormModal || editExerciseModal) {
       const userConfirmed = window.confirm('Are you sure you want to close?')
       if (!userConfirmed) {
@@ -141,8 +141,8 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     }
   }
 
+  // Enter key to submit
   useEffect(() => {
-    // Enter key to submit
     const handleKeyPress = (event) => {
       if (event.key === 'Enter') {
         event.preventDefault()

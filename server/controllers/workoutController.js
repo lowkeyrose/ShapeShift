@@ -86,13 +86,6 @@ const createWorkout = async (req, res) => {
   }
   
   let exercisesData = workoutData.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
-    // let exercisesData = req.body.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
-
-  // why not just do instead (we don't need req.body.exercises because its the same as workoutData.exercises)
-  // let exercisesData = workoutData.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
-
-  // let exercisesData = req.body.exercises
-  // exercisesData = exercisesData.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
   try {
     // Check if a workout with the same title already exists for the current user
