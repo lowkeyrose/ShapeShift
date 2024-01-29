@@ -80,10 +80,10 @@ export default function MyWorkouts() {
     return (
         <div className='my-workouts-page'>
 
-            <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
+            <Typography variant="h1" component="h1" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 My Workouts
             </Typography>
-            <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
+            <Typography component="p" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
                 {workouts && workouts.length > 0 ? "Here are the awesome workouts you've created!" : "You current have no available workouts, Add your first one today!"}
             </Typography>

@@ -70,103 +70,103 @@ export default function Login() {
 
   return (
     <div className="login-page">
-    <Container>
-      <Grid container component="main" sx={{ minHeight: '80vh', boxShadow:'3px 3px 15px' }}>
-        <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?fitness)',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
+      <Container>
+        <Grid container component="main" sx={{ minHeight: '80vh', boxShadow: '3px 3px 15px' }}>
+          <CssBaseline />
+          <Grid
+            item
+            xs={false}
+            sm={4}
+            md={7}
             sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              backgroundImage: 'url(https://source.unsplash.com/random?fitness)',
+              backgroundRepeat: 'no-repeat',
+              backgroundColor: (t) =>
+                t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Log in
-            </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-              <TextField
-                error={Boolean(errors.email)}
-                helperText={errors.email}
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                value={formData.email}
-                autoFocus
-                onChange={handleInput}
-              />
-              <TextField
-                error={Boolean(errors.password)}
-                helperText={errors.password}
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                value={formData.password}
-                autoComplete="current-password"
-                onChange={handleInput}
-              />
-              {error && (
-                <Typography color="error" variant="body2">
-                  {error}
-                </Typography>
-              )}
-              <FormControlLabel
-                control={<Checkbox defaultValue={rememberMe} onChange={() => setRememberMe(!rememberMe)} color="primary" />}
-                label="Remember me"
-              />
-              <Button
-                disabled={!isValid}
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Log In
-              </Button>
-              <Grid container>
-                {/* <Grid item xs>
+          />
+          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Log in
+              </Typography>
+              <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                <TextField
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  value={formData.email}
+                  autoFocus
+                  onChange={handleInput}
+                />
+                <TextField
+                  error={Boolean(errors.password)}
+                  helperText={errors.password}
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  value={formData.password}
+                  autoComplete="current-password"
+                  onChange={handleInput}
+                />
+                {error && (
+                  <Typography color="error" variant="body2">
+                    {error}
+                  </Typography>
+                )}
+                <FormControlLabel
+                  control={<Checkbox defaultValue={rememberMe} onChange={() => setRememberMe(!rememberMe)} color="primary" />}
+                  label="Remember me"
+                />
+                <Button
+                  disabled={!isValid}
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Log In
+                </Button>
+                <Grid container>
+                  {/* <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid> */}
-                <Grid item>
-                  <Link to="/signup" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
+                  <Grid item sx={{ m: 'auto' }}>
+                    <Link to="/signup" variant="body2">
+                      {"Don't have an account? Sign Up"}
+                    </Link>
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Box>
             </Box>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
     </div>
   )
 }

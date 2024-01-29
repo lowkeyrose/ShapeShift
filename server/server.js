@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const userRateLimit = require('./middleware/userRateLimit'); // Import your rate-limiting middleware
 const dbConnection = require("./utils/db")
 const cors = require('cors')
 const morgan = require('morgan')
@@ -18,9 +19,7 @@ const app = express()
 
 // middleware
 app.use(express.json())
-
 app.use(morgan(':method :url status :status, :response-time ms :date[web]', { stream: accessLogStream }))
-
 app.use(cors({
   origin: true,
   credentials: true,
@@ -34,16 +33,12 @@ app.use((req, _, next) => {
   next()
 })
 
+// Apply rate limiting middleware globally
+app.use(userRateLimit);
+
 // routes
 app.use('/api/workouts', workoutRoutes)
 app.use('/api/user', userRoutes)
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.message)
-  console.error(err.stack)
-  res.status(500).send('Something went wrong!')
-})
 
 // listen for requests
 app.listen(process.env.PORT, () => {

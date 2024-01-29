@@ -132,17 +132,13 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       }
       setExerciseFormModal(false)
       setEditExerciseModal(false)
-      // Are these necessary?
       resetFormData()
       setIsValid(false)
       setEditingExercise(null)
     } else if (!exerciseFormModal && !editExerciseModal) {
+      // Open modal
       setExerciseFormModal(true)
     }
-    // Open modal
-    // if (!exerciseFormModal && !editExerciseModal) {
-    //   setExerciseFormModal(true)
-    // }
   }
 
   useEffect(() => {

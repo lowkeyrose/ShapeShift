@@ -64,10 +64,10 @@ export default function Workouts() {
 
     return (
         <div className='workouts-page'>
-            <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
+            <Typography variant="h1" component="h1" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 Workouts Page
             </Typography>
-            <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
+            <Typography component="p" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
                 {workouts && workouts.length > 0 ? "Here you can find all the public workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>

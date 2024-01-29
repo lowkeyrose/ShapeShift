@@ -43,7 +43,7 @@ module.exports = async (req, res, next) => {
 
     next();
   } catch (err) {
-    console.log(err);
+    console.error('Error in signupUser: ',err)
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }

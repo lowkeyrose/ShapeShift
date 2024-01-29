@@ -1,8 +1,11 @@
 .account-page {
-  background-image: url("../../assets/ll.png");
+  /* background-image: url("../../assets/ll.png");
   background-color: #cfcfcf0e;
-  background-position: top 33px right 0;
-  padding: 80px 0;
+  background-position: top 33px right 0; */
+  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 120px 0;
 }
 .account-page-container {
   padding: 20px;

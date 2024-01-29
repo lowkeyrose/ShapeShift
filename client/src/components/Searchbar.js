@@ -16,7 +16,7 @@ export const search = (searchWord, ...values) => {
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  color: 'black',
+  color: 'white',
   display: 'flex',
   flexDirection: 'column',
   borderRadius: theme.shape.borderRadius,

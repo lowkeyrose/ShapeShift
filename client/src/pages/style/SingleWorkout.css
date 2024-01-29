@@ -4,9 +4,12 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-image: url("../../assets/ll.png");
+  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-image: url("../../assets/ll.png");
   background-position: top 33px right 0;
-  background-color: #2ac86c43;
+  background-color: #2ac86c43; */
   padding-top: 100px;
 }
 .single-workout-page .single-workout-container {

@@ -2,27 +2,33 @@
 .my-workouts-page,
 .workouts-page,
 .home,
-.error-page {
+.error-page,
+.in-development-page {
   min-height: 100vh;
   padding-top: 80px;
   padding-bottom: 1px;
+  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .favorites-page {
   /* background-image: linear-gradient(to bottom right, #eda2bd73, #45173679); */
-  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/light_pink_purple_space_glow_galaxy_dark_background_hd_space.jpg');
+  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
 
 }
 .my-workouts-page {
-  background-image: linear-gradient(to bottom right, #86df897d, #21672472);
+  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
+  /* background-image: linear-gradient(to bottom right, #86df897d, #21672472); */
 }
 .workouts-page {
   position: relative;
-  background-image: linear-gradient(to bottom right, #7cc1e372, #104a6772);
+  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
+  /* background-image: linear-gradient(to bottom right, #7cc1e372, #104a6772); */
 }
 .home {
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/light_pink_purple_space_glow_galaxy_dark_background_hd_space.jpg');
+  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
   /* background-image: linear-gradient(to bottom right, #ff800077, #ff810374); */
 }
 .home .styled-button {
@@ -65,9 +71,12 @@
   margin: 15px auto;
 }
 .about-page {
-  background-color: #47ffff;
+  /* background-color: #47ffff;
   background-image: url("../../assets/ll.png");
-  background-position: top 33px right 0;
+  background-position: top 33px right 0; */
+  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -113,19 +122,25 @@
   padding-top: 15px;
 }
 .login-page {
-  background-image: url("../../assets/ll.png");
+  /* background-image: url("../../assets/ll.png");
   background-color: #cfcfcf0e;
-  background-position: top 33px right 0;
+  background-position: top 33px right 0; */
+  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   padding: 100px 10px;
 }
 .admin-panel {
   min-height: 75vh;
   display: flex;
   justify-content: center;
-  background-color: #cf998c;
+  /* background-color: #cf998c;
   background-image: url("../../assets/ll.png");
   background-position-x: right;
-  background-position-y: 33px;
+  background-position-y: 33px; */
+  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   padding: 120px 0;
 }
 .admin-panel .table-button {
@@ -149,16 +164,18 @@
   display: flex;
 }
 .sort-filter {
-  box-shadow: 1px 1px 10px rgba(128, 128, 128, 0.225);
+  box-shadow: 0px 0px 10px rgba(247, 247, 247, 0.511);
   position: fixed !important;
   display: flex;
   flex-direction: column;
   position: relative;
-  top: 70px;
+  top: 75px;
   left: 10px;
 }
 .sort-filter-active {
   box-shadow: 1px 1px 10px rgba(128, 128, 128, 0.225);
+  border-radius: 5px;
+  border: 1px solid white;
   position: fixed !important;
   display: flex;
   flex-direction: column;
@@ -166,7 +183,7 @@
   top: 135px;
   left: 10px;
   z-index: 999;
-  background-color: white;
+  background-color: rgb(12, 12, 12);
 }
 .sort-filter-button {
   z-index: 999;

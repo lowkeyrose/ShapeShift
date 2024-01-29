@@ -78,26 +78,21 @@ const getWorkout = async (req, res) => {
 // Create new workout
 const createWorkout = async (req, res) => {
 
-  // const workoutData = {
-  //   ...req.body,
-  //   user_id: req.user._id,
-  //   userProfilePic: req.user.profilePic,
-  //   username: req.user.username,
-  // }
+  const workoutData = {
+    ...req.body,
+    user_id: req.user._id,
+    userProfilePic: req.user.profilePic,
+    username: req.user.username,
+  }
   
-  const workoutData = req.body
-  workoutData.user_id = req.user._id
-  workoutData.username = req.user.username
-  workoutData.userProfilePic = req.user.profilePic
-
-
-  // let exercisesData = req.body.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
+  let exercisesData = workoutData.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
+    // let exercisesData = req.body.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
   // why not just do instead (we don't need req.body.exercises because its the same as workoutData.exercises)
   // let exercisesData = workoutData.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
-  let exercisesData = req.body.exercises
-  exercisesData = exercisesData.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
+  // let exercisesData = req.body.exercises
+  // exercisesData = exercisesData.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
   try {
     // Check if a workout with the same title already exists for the current user
@@ -108,7 +103,6 @@ const createWorkout = async (req, res) => {
       return res.status(420).json({ success: false, error: 'Title already in use for this user' })
     }
 
-    // Create a new workout
     const newWorkout = await Workout.create(workoutData)
 
     // Create the exercises with the workout id
@@ -117,11 +111,11 @@ const createWorkout = async (req, res) => {
     // Keep just the ids of the exercises
     newWorkout.exercises = createdExercises.map(exercise => exercise._id)
 
-    // Update the workout
     await newWorkout.save()
 
     res.status(201).json({ success: true, workout: newWorkout })
   } catch (error) {
+    console.error('Error in creating workout:', error)
     res.status(500).json({ success: false, error: error.message })
   }
 }
@@ -148,16 +142,11 @@ const deleteWorkout = async (req, res) => {
 
     // Remove workout id from users' favorites
     await Promise.all(usersToUpdate.map(async (user) => {
-      if (user && user.favorites) { // Check if user exists and has favorites
+      if (user && user.favorites) {
         user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id)
         await user.save()
       }
     }));
-    // do we really need line 152?
-    // await Promise.all(usersToUpdate.map(async (user) => {
-    //     user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id);
-    //     await user.save();
-    // }));
 
     const deletedWorkout = await Workout.findByIdAndDelete(id)
     // Delete all exercises with the corresponding workout_id
@@ -165,7 +154,7 @@ const deleteWorkout = async (req, res) => {
 
     res.status(200).json(deletedWorkout)
   } catch (error) {
-    console.log(error)
+    console.error('Error in deleting workout:', error)
     res.status(500).json({ success: false, error: error.message })
   }
 }

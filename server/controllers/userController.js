@@ -24,8 +24,8 @@ const loginUser = async (req, res) => {
     const token = createToken(user._id)
     res.status(200).json({ user, token })
   } catch (error) {
+    console.error('Error in loginUser: ',error)
     res.status(400).json({ error: error.message })
-    console.log(error);
   }
 }
 
@@ -38,6 +38,7 @@ const signupUser = async (req, res) => {
     const token = createToken(user._id)
     res.status(200).json({ user, token })
   } catch (error) {
+    console.error('Error in signupUser: ',error)
     res.status(400).json({ error: error.message })
   }
 }
@@ -95,6 +96,7 @@ const updateUser = async (req, res) => {
     
     res.status(200).json(filteredUser)
   } catch (error) {
+    console.error('Error in updateUser: ',error)
     res.status(400).json({ error: error.message })
   }
   
@@ -141,7 +143,7 @@ const deleteUser = async (req, res) => {
 
     res.status(200).json(filteredUser)
   } catch (error) {
-    console.log('error', error);
+    console.error('Error in deleteUser: ',error)
     res.status(500).json({ success: false, error: error.message });
   }
 }

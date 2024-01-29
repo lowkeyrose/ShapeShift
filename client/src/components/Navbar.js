@@ -23,29 +23,10 @@ const Navbar = () => {
   const path = useResolvedPath().pathname;
   const [navBackground, setNavBackground] = React.useState('transparent')
   React.useEffect(() => {
-    if (path.includes('/create/new') || path.includes('/edit/')) {
-      setNavBackground('white');
-    } else {
-      setNavBackground('transparent');
-    }
     const handleScroll = () => {
       const show = window.scrollY > 1
-      const backgroundColor =
-          path === '/'
-        ? '#1c0d24'
-        : path === '/workouts'
-        ? '#bad8e7'
-        : path === '/workouts/favorites'
-        ? '#e5c5d2'
-        : path === '/workouts/myworkouts'
-        ? '#b9e1ba'
-        : path === '/about'
-        ? '#47ffff'
-        : path === '/admin-panel'
-        ? '#cf998c'
-        : path.includes('/workouts/workout')
-        ? '#c7f1d8'
-        : 'white'
+      const backgroundColor = '#1c0d24'
+
       if (show) {
         setNavBackground(backgroundColor);
       } else if (!path.includes('/create/new') && !path.includes('/edit/')) {
@@ -57,6 +38,41 @@ const Navbar = () => {
       document.removeEventListener('scroll', handleScroll)
     }
   }, [path])
+  // React.useEffect(() => {
+  //   if (path.includes('/create/new') || path.includes('/edit/')) {
+  //     setNavBackground('white');
+  //   } else {
+  //     setNavBackground('transparent');
+  //   }
+  //   const handleScroll = () => {
+  //     const show = window.scrollY > 1
+  //     const backgroundColor =
+  //         path === '/'
+  //       ? '#1c0d24'
+  //       : path === '/workouts'
+  //       ? '#bad8e7'
+  //       : path === '/workouts/favorites'
+  //       ? '#e5c5d2'
+  //       : path === '/workouts/myworkouts'
+  //       ? '#b9e1ba'
+  //       : path === '/about'
+  //       ? '#47ffff'
+  //       : path === '/admin-panel'
+  //       ? '#cf998c'
+  //       : path.includes('/workouts/workout')
+  //       ? '#c7f1d8'
+  //       : 'white'
+  //     if (show) {
+  //       setNavBackground(backgroundColor);
+  //     } else if (!path.includes('/create/new') && !path.includes('/edit/')) {
+  //       setNavBackground('transparent');
+  //     }
+  //   };
+  //   document.addEventListener('scroll', handleScroll)
+  //   return () => {
+  //     document.removeEventListener('scroll', handleScroll)
+  //   }
+  // }, [path])
 
   const { user, roleType, navigate } = useGlobalContext()
   const { logout } = useLogout()
@@ -92,7 +108,7 @@ const Navbar = () => {
         <Toolbar disableGutters>
 
           {/* LOGO */}
-          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'none', lg: 'flex' }, mr: 1, color: path === '/' ? 'white' : 'black', fontSize: '30px' }} />
+          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'none', lg: 'flex' }, mr: 1, color:'white' , fontSize: '30px' }} />
           <Typography
             variant="h6"
             noWrap
@@ -104,7 +120,7 @@ const Navbar = () => {
               fontFamily: 'Kanit',
               fontWeight: 600,
               fontSize: '34px',
-              color: path === '/' ? 'white' : 'black',
+              color: 'white',
               textDecoration: 'none',
               cursor: 'pointer'
             }}
@@ -123,7 +139,7 @@ const Navbar = () => {
               onClick={handleOpenNavMenu}
               color="white"
             >
-              <MenuIcon sx={{ color: path === '/' ? 'white' : 'black' }} />
+              <MenuIcon sx={{ color:'white' }} />
             </IconButton>
             <Popper
               sx={{ mt: '55px', right: 'auto', left: 0, top: '10px !important', position: 'absolute !important' }}
@@ -165,7 +181,7 @@ const Navbar = () => {
                 display: { xs: 'none', sm: 'flex', md: 'flex', lg: 'none' },
                 mr: 1,
                 mt: 1,
-                color: path === '/' ? 'white' : 'black',
+                color: 'white' ,
               }} />
             <Typography
               variant="h5"
@@ -179,7 +195,7 @@ const Navbar = () => {
                 fontFamily: 'Kanit',
                 fontWeight: 500,
                 fontSize: '28px',
-                color: path === '/' ? 'white' : 'black',
+                color: 'white',
                 textDecoration: 'none',
               }}
             >
@@ -203,7 +219,7 @@ const Navbar = () => {
                 <Link to={page.route} key={page.route} style={{ textDecoration: 'none', color: 'initial' }}>
                   <Button
                     key={page.route}
-                    sx={{ mx: 2, color: path === '/' ? 'white' : 'black', display: 'inline-block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize' }}
+                    sx={{ mx: 2, color: 'white', display: 'inline-block', fontFamily: 'Kanit', fontSize: '17px', textTransform: 'capitalize' }}
                   >
                     {page.title}
                   </Button>

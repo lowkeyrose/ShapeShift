@@ -70,10 +70,10 @@ export default function FavoirteWorkouts() {
 
   return (
     <div className='favorites-page'>
-      <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
+      <Typography variant="h1" component="h1" sx={{ color:'white', fontFamily: "Kanit", margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
         Favorite Workouts
       </Typography>
-      <Typography component="p" sx={{ fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
+      <Typography component="p" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
         <br />
         {workouts && workouts.length > 0 ? "We've kept all you're favorite workouts ready for you!" : "You current have no available workouts, Add your first one today!"}
       </Typography>
