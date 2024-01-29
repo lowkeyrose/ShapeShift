@@ -8,7 +8,9 @@
   padding-bottom: 1px;
 }
 .favorites-page {
-  background-image: linear-gradient(to bottom right, #eda2bd73, #45173679);
+  /* background-image: linear-gradient(to bottom right, #eda2bd73, #45173679); */
+  background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/light_pink_purple_space_glow_galaxy_dark_background_hd_space.jpg');
+
 }
 .my-workouts-page {
   background-image: linear-gradient(to bottom right, #86df897d, #21672472);

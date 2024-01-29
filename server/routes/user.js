@@ -24,9 +24,6 @@ router.post('/signup', signupUser)
 // Update user
 router.put('/update/:id', requireAuth, updateUser)
 
-
-// Admin routes 
-
 // Get all users
 router.get('/users', requireAuth, getUsers)
 

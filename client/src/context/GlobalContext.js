@@ -134,13 +134,20 @@ export const GlobalContextProvider = React.memo(({ children }) => {
         setRoleType(RoleTypes.none)
         navigate('/')
       } else {
-        const json = await response.json()
-        memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
-        const userRoleType = json.roleType
-        const mappedRoleType = RoleTypes[userRoleType]
-        setRoleType(mappedRoleType)
-      }
+      // Get the new token from the response headers
+      const newToken = response.headers.get('Authorization');
 
+      // Check if a new token is present
+      if (newToken) {
+        // Update the token in your state or storage
+        localStorage.setItem('token', JSON.stringify(newToken))
+      }
+      const json = await response.json()
+      memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
+      const userRoleType = json.roleType
+      const mappedRoleType = RoleTypes[userRoleType]
+      setRoleType(mappedRoleType)
+    }
     } catch (error) {
       console.log("The Promise is rejected!", error)
     }
@@ -152,7 +159,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     }
   }, [authenticate, location.pathname, token]);
 
-  // console.log('GlobalContextProvider state: ', state);
+  console.log('GlobalContextProvider state: ', state);
 
   const memoizedValue = useMemo(() => ({
     ...state,
