@@ -110,7 +110,8 @@ export default function Login() {
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                 {structure.map(({ name, type, label, required, halfWidth, autoComplete, autoFocus }) => (
                   <TextField
-                  sx={{ m: '5px 0'}}
+                    key={name}
+                    sx={{ m: '5px 0' }}
                     autoComplete={autoComplete}
                     error={!!errors[name]}
                     helperText={errors[name]}

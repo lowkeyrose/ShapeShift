@@ -95,8 +95,7 @@ export default function AdminPanel() {
   return (
     <div className='admin-panel'>
       {
-        users && cardFormat
-          ?
+        cardFormat ?
           <>
             <button className='styled-button' onClick={() => setCardFormat(false)}>Table Format</button>
             <div className="users">

@@ -71,7 +71,7 @@ export default function EditAccount() {
 
   const fetchUser = useCallback(async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       const response = await fetch(`/api/user/${id}`, {
         headers: {
           'Authorization': token
@@ -117,7 +117,7 @@ export default function EditAccount() {
         roleType: ''
       })
     }
-  }, [user, fetchUser, id])
+  }, [fetchUser, user, id])
 
   const handleSubmit = async (event) => {
     event.preventDefault()

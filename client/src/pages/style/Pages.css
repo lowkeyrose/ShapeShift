@@ -123,7 +123,7 @@
 }
 
 .admin-panel {
-  min-height: 75vh;
+  min-height: 90vh;
   display: flex;
   justify-content: center;
   background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');

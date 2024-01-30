@@ -1,0 +1,2 @@
+POST /api/user/authenticate status 200, 259.921 ms Tue, 30 Jan 2024 15:48:30 GMT
+GET /api/workouts/myworkouts status 304, 372.295 ms Tue, 30 Jan 2024 15:48:30 GMT
