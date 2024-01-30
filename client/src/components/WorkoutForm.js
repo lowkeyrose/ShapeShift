@@ -27,7 +27,6 @@ export default function WorkoutForm() {
         showToastSuccess,
         showToastError,
         navigate,
-        isValidObjectId,
         exerciseFormModal,
         editExerciseModal,
         setEditExerciseModal
@@ -43,19 +42,24 @@ export default function WorkoutForm() {
         exercises: [],
         Private: false
     })
-
+    
     const structure = [
         { name: 'title', type: 'text', label: 'Title', required: true, halfWidth: false },
         { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false }
     ]
-
+    
     const workoutSchema = Joi.object({
         title: Joi.string().min(3).max(20).required(),
         imgUrl: Joi.string().min(0).max(2000).optional(),
         exercises: Joi.array().min(1).max(30).required(),
         Private: Joi.boolean().default(false).optional()
     })
-
+    
+    const isValidObjectId = (id) => {
+        const objectIdPattern = /^[0-9a-fA-F]{24}$/
+        return objectIdPattern.test(id)
+      }
+      
     const fetchWorkout = useCallback(async () => {
         try {
             setLoading(true)

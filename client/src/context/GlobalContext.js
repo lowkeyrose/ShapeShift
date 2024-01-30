@@ -116,11 +116,6 @@ export const GlobalContextProvider = memo(({ children }) => {
     toast.success(text)
   }
 
-  const isValidObjectId = (id) => {
-    const objectIdPattern = /^[0-9a-fA-F]{24}$/
-    return objectIdPattern.test(id)
-  }
-
   const handleFilterChange = ({ filterByLikes, filterByExercises }) => {
     setActiveFilters({
       filterByLikes,
@@ -170,7 +165,6 @@ export const GlobalContextProvider = memo(({ children }) => {
     setLoading,
     searchWord,
     setSearchWord,
-    isValidObjectId,
     handleFilterChange,
     applyFilters,
     handleSortChange,

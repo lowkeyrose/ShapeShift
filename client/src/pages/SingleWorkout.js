@@ -9,8 +9,13 @@ import './style/Buttons.css'
 
 export default function SingleWorkout() {
   const { id } = useParams()
-  const { user, setLoading, showToastError, showToastSuccess, navigate, token, isValidObjectId } = useGlobalContext()
+  const { user, setLoading, showToastError, showToastSuccess, navigate, token } = useGlobalContext()
   const { workout, dispatch } = useWorkoutContext()
+
+  const isValidObjectId = (id) => {
+    const objectIdPattern = /^[0-9a-fA-F]{24}$/
+    return objectIdPattern.test(id)
+  }
 
   const fetchWorkout = useCallback(async () => {
     try {
@@ -35,7 +40,6 @@ export default function SingleWorkout() {
     } else {
       navigate('/errorPage')
     }
-    // eslint-disable-next-line
   }, [id, fetchWorkout, navigate, dispatch])
 
   const editWorkout = () => {
