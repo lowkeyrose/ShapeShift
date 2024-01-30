@@ -174,7 +174,6 @@ const Navbar = () => {
           </Box>
           {/* User Section */}
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-            {/* Searchbar */}
             {['/workouts', '/workouts/favorites', '/workouts/myworkouts'].includes(path) && <Searchbar />}
             {user && (
               <Box sx={{ flexGrow: 0, m: 0 }}>

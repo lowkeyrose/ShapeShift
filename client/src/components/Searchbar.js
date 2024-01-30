@@ -50,18 +50,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     cursor: 'pointer',
     backgroundColor: '#ffffff00',
     [theme.breakpoints.down('lg')]: {
-      width: '0ch', // Adjust this value as needed for small screens
+      width: '0ch',
       '&:focus': {
         cursor: 'unset',
-        width: '10ch' // Adjust this value as needed for small screens
+        width: '10ch'
       }
     },
 
     [theme.breakpoints.up('lg')]: {
-      width: '0ch', // Adjust this value as needed for small screens
+      width: '0ch',
       '&:focus': {
         cursor: 'unset',
-        width: '10ch' // Adjust this value as needed for small screens
+        width: '10ch'
       }
     }
   }

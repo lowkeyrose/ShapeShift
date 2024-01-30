@@ -6,7 +6,7 @@ export default function SortBy({ onSortChange, onSortyByToggle }) {
   const [selectedOption, setSelectedOption] = useState(null)
   const handleSortOptionSelect = (option) => {
     if (selectedOption === option) {
-      // If the clicked option is already selected, remove the selection
+      // If the checked, remove the selection
       setSelectedOption(null)
       onSortChange(null)
     } else {
