@@ -35,6 +35,7 @@ export const authReducer = (state, action) => {
 }
 
 export const GlobalContextProvider = memo(({ children }) => {
+  const [stop, setStop] = useState(false)
   const token = JSON.parse(localStorage.getItem('token'))
   const navigate = useNavigate()
   const location = useLocation()
@@ -64,7 +65,6 @@ export const GlobalContextProvider = memo(({ children }) => {
           'Authorization': token
         }
       })
-
       if (!response.ok) {
         showToastError('Session expired');
         memoizedDispatch({ type: ACTIONS.LOGOUT })
@@ -73,11 +73,11 @@ export const GlobalContextProvider = memo(({ children }) => {
         navigate('/')
       } else {
         const newToken = response.headers.get('Authorization');
-        if (newToken) {
+        if (newToken && !stop) {
           // Update the token
           setTimeout(() => {
             localStorage.setItem('token', JSON.stringify(newToken))
-          }, 15 * 1000);
+          }, 5 * 1000)
         }
         const json = await response.json()
         memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
@@ -88,7 +88,7 @@ export const GlobalContextProvider = memo(({ children }) => {
     } catch (error) {
       console.log("The Promise is rejected!", error)
     }
-  }, [memoizedDispatch, navigate, token])
+  }, [memoizedDispatch, navigate, token, stop])
 
   useEffect(() => {
     if (token) {
@@ -178,8 +178,10 @@ export const GlobalContextProvider = memo(({ children }) => {
     exerciseFormModal,
     setExerciseFormModal,
     editExerciseModal,
-    setEditExerciseModal
-  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts, isActive, handleSortByToggle, handleFilterToggle, openMenu, exerciseFormModal, editExerciseModal])
+    setEditExerciseModal,
+    stop,
+    setStop
+  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts, isActive, handleSortByToggle, handleFilterToggle, openMenu, exerciseFormModal, editExerciseModal, stop])
 
   return (
     <GlobalContext.Provider value={memoizedValue}>

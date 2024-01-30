@@ -3,6 +3,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   padding: 120px 0;
+  min-height: 95vh;
 }
 
 .account-page-container {

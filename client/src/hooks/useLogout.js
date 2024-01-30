@@ -3,9 +3,10 @@ import { ACTIONS } from '../context/Actions'
 import { useGlobalContext } from './useGlobalContext'
 
 export const useLogout = () => {
-  const { dispatch, showToastSuccess, setRoleType, navigate } = useGlobalContext()
+  const { dispatch, showToastSuccess, setRoleType, navigate, setStop } = useGlobalContext()
 
   const logout = () => {
+    setStop(true)
     dispatch({ type: ACTIONS.LOGOUT })
     setRoleType(RoleTypes.none)
     showToastSuccess('user logged out')

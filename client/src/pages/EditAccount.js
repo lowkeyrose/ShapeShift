@@ -35,7 +35,8 @@ export default function EditAccount() {
     setLoading,
     showToastSuccess,
     showToastError,
-    setRoleType
+    setRoleType,
+    setStop
   } = useContext(GlobalContext)
 
   const [formData, setFormData] = useState({
@@ -178,6 +179,7 @@ export default function EditAccount() {
       if (!response.ok) {
         throw new Error(`Failed to delete user: ${response.statusText}`)
       }
+      setStop(true)
       dispatch({ type: ACTIONS.LOGOUT })
       setRoleType(RoleTypes.none)
       localStorage.removeItem('token')

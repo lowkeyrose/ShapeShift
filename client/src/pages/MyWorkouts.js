@@ -10,13 +10,11 @@ import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
 import { search } from '../components/Searchbar'
-import { useLocation } from 'react-router-dom'
 import SortBy from '../components/SortBy'
 import Filter from '../components/Filter'
 
 export default function MyWorkouts() {
     const { workouts, dispatch } = useWorkoutContext()
-    const location = useLocation()
     const { navigate,
         setLoading,
         token,
@@ -61,11 +59,6 @@ export default function MyWorkouts() {
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] })
         }
     }, [dispatch, token, fetchWorkouts])
-
-    useEffect(() => {
-        // Scroll to the top when the location changes
-        window.scrollTo(0, 0)
-    }, [location.pathname])
 
     useEffect(() => {
         if (workouts) {

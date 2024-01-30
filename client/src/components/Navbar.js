@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react'
+import React, { useState, memo, useEffect } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -44,6 +44,11 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
   }
+
+  useEffect(() => {
+    // Scroll to the top when the location changes
+    window.scrollTo(0, 0)
+}, [path])
 
   // Dynamically determine whether to show the "About" page
   const showAboutInPages = !user
