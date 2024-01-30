@@ -1,9 +1,5 @@
 ![chrome_anzfWNxJpH](https://github.com/lowkeyrose/ShapeShift/assets/134366345/d6495b99-a6ab-46f3-8b0a-b41f4536ba26)
 
-  [![NPM Version][npm-version-image]][npm-url]
-  [![NPM Install Size][npm-install-size-image]][npm-install-size-url]
-  [![NPM Downloads][npm-downloads-image]][npm-downloads-url]
-
 ## Installation
 
 Before installing, [download and install Node.js](https://nodejs.org/en/download/).
@@ -64,20 +60,3 @@ tests, triaging incoming pull requests and issues, and more!
 3. Make your changes and commit them with clear and concise commit messages.
 4. Push your branch to your fork.
 5. Create a pull request to the main branch of this repository, describing your changes and improvements.
-
-## License
-
-  [MIT](LICENSE)
-
-[appveyor-image]: https://badgen.net/appveyor/ci/dougwilson/express/master?label=windows
-[appveyor-url]: https://ci.appveyor.com/project/dougwilson/express
-[coveralls-image]: https://badgen.net/coveralls/c/github/expressjs/express/master
-[coveralls-url]: https://coveralls.io/r/expressjs/express?branch=master
-[github-actions-ci-image]: https://badgen.net/github/checks/expressjs/express/master?label=linux
-[github-actions-ci-url]: https://github.com/expressjs/express/actions/workflows/ci.yml
-[npm-downloads-image]: https://badgen.net/npm/dm/express
-[npm-downloads-url]: https://npmcharts.com/compare/express?minimal=true
-[npm-install-size-image]: https://badgen.net/packagephobia/install/express
-[npm-install-size-url]: https://packagephobia.com/result?p=express
-[npm-url]: https://npmjs.org/package/express
-[npm-version-image]: https://badgen.net/npm/v/express
