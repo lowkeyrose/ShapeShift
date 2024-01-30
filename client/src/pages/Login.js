@@ -18,55 +18,59 @@ import './style/Pages.css'
 
 export default function Login() {
   const { login, error } = useLogin()
+  const [errors, setErrors] = useState({})
+  const [isValid, setIsValid] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [formData, setFormData] = useState({
     email: localStorage.email ? JSON.parse(localStorage.email) : "",
     password: ''
   })
-  const [errors, setErrors] = useState({})
-  const [isValid, setIsValid] = useState(false)
-  const [rememberMe, setRememberMe] = useState(false)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setFormData(formData)
     await login(formData.email, formData.password)
     if (rememberMe) {
-      localStorage.email = JSON.stringify(formData.email);
+      localStorage.email = JSON.stringify(formData.email)
     } else {
-      localStorage.email = "";
+      localStorage.email = ""
     }
   }
+
+  const structure = [
+    { name: 'email', type: 'email', label: 'Email', required: true, halfWidth: false, autoComplete: "email", autoFocus: true },
+    { name: 'password', type: 'password', label: 'Password', required: true, halfWidth: false, autoComplete: "password" }
+  ]
 
   const userSchema = Joi.object({
     email: Joi.string().min(7).max(62).required().email({ tlds: false }),
     password: Joi.string().required()
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[!@%$#^&*-_*])[A-Za-z\d!@%$#^&*-_*]{8,30}$/)
       .message('user "password" must be at least 8 characters long and contain an uppercase letter, a lowercase letter, 4 numbers and one of the following characters !@#$%^&*_-')
-
   })
 
   const handleInput = event => {
-    const { id, value } = event.target;
+    const { id, value } = event.target
     let obj = {
       ...formData,
-      [id]: value,
-    };
-    const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
-    const err = { ...errors, [id]: undefined };
+      [id]: value
+    }
+    const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true })
+    const err = { ...errors, [id]: undefined }
 
     if (schema.error) {
-      const error = schema.error.details.find(e => e.context.key === id);
+      const error = schema.error.details.find(e => e.context.key === id)
 
       if (error) {
-        err[id] = error.message;
+        err[id] = error.message
       }
-      setIsValid(false);
+      setIsValid(false)
     } else {
-      setIsValid(true);
+      setIsValid(true)
     }
-    setFormData(obj);
-    setErrors(err);
-  };
+    setFormData(obj)
+    setErrors(err)
+  }
 
   return (
     <div className="login-page">
@@ -84,7 +88,7 @@ export default function Login() {
               backgroundColor: (t) =>
                 t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
               backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              backgroundPosition: 'center'
             }}
           />
           <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -94,7 +98,7 @@ export default function Login() {
                 mx: 4,
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
+                alignItems: 'center'
               }}
             >
               <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -104,34 +108,23 @@ export default function Login() {
                 Log in
               </Typography>
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                <TextField
-                  error={Boolean(errors.email)}
-                  helperText={errors.email}
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  autoFocus
-                  onChange={handleInput}
-                />
-                <TextField
-                  error={Boolean(errors.password)}
-                  helperText={errors.password}
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  value={formData.password}
-                  autoComplete="current-password"
-                  onChange={handleInput}
-                />
+                {structure.map(({ name, type, label, required, halfWidth, autoComplete, autoFocus }) => (
+                  <TextField
+                  sx={{ m: '5px 0'}}
+                    autoComplete={autoComplete}
+                    error={!!errors[name]}
+                    helperText={errors[name]}
+                    onChange={handleInput}
+                    value={formData[name]}
+                    name={name}
+                    type={type}
+                    required={required}
+                    fullWidth
+                    id={name}
+                    label={label}
+                    autoFocus={autoFocus}
+                  />
+                ))}
                 {error && (
                   <Typography color="error" variant="body2">
                     {error}
@@ -151,11 +144,6 @@ export default function Login() {
                   Log In
                 </Button>
                 <Grid container>
-                  {/* <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid> */}
                   <Grid item sx={{ m: 'auto' }}>
                     <Link to="/signup" variant="body2">
                       {"Don't have an account? Sign Up"}

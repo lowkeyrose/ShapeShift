@@ -9,8 +9,8 @@ export const useLogin = () => {
 
   const login = async (email, password) => {
     setError(null)
-    setLoading(true)
     try {
+      setLoading(true)
       const response = await fetch('/api/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -21,29 +21,20 @@ export const useLogin = () => {
       if (!response.ok) {
         setError(json.error)
       } else {
-        // save the user to local storage
         localStorage.setItem('token', JSON.stringify(json.token))
-
-        // update the user context
-
         dispatch({ type: ACTIONS.SET_USER, payload: json })
-        // set user roleType
         const userRoleType = json.user.roleType
         const mappedRoleType = RoleTypes[userRoleType]
         setRoleType(mappedRoleType)
-        
-        // Popup message for UX
         showToastSuccess("Login successful")
-        // Navigate home
         navigate('/')
       }
-        
       } catch (error) {
       console.log("The Promise is rejected!", error)
     } finally {
       setLoading(false)
     }
   }
-
+  
   return { login, error }
 }

@@ -1,16 +1,16 @@
-import { useState, useEffect, useCallback } from 'react';
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { useGlobalContext } from '../hooks/useGlobalContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { formatDistanceToNow } from 'date-fns';
+import { useState, useEffect, useCallback } from 'react'
+import { styled } from '@mui/material/styles'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell, { tableCellClasses } from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import { useGlobalContext } from '../hooks/useGlobalContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { formatDistanceToNow } from 'date-fns'
 import logo from '../assets/robots/adminPanel.png'
 import './style/Pages.css'
 import '../components/style/WorkoutDetails.css'
@@ -23,8 +23,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
-  },
-}));
+  }
+}))
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -33,34 +33,34 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0,
-  },
-}));
+  }
+}))
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([])
   const [cardFormat, setCardFormat] = useState(false)
-  const { token, navigate, showToastError, showToastSuccess, setLoading } = useGlobalContext();
+  const { token, navigate, showToastError, showToastSuccess, setLoading } = useGlobalContext()
 
   const fetchUsers = useCallback(async () => {
-    setLoading(true)
     try {
+      setLoading(true)
       const response = await fetch('/api/user/users', {
         headers: {
           'Authorization': token
         }
-      });
-      const data = await response.json();
+      })
+      const data = await response.json()
       if (!response.ok) {
-        console.error('Server returned an error:', response.status, data);
+        console.error('Server returned an error:', response.status, data)
       }
       setUsers(data)
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching users:', error)
     } finally {
       setLoading(false)
     }
   }, [token, setLoading])
-  
+
   useEffect(() => {
     fetchUsers()
     return () => {
@@ -69,8 +69,8 @@ export default function AdminPanel() {
   }, [fetchUsers])
 
   const handleDelete = async (id) => {
-    setLoading(true)
     try {
+      setLoading(true)
       const response = await fetch(`/api/user/${id}`, {
         method: 'DELETE',
         headers: {
@@ -152,12 +152,9 @@ export default function AdminPanel() {
                 </TableBody>
               </Table>
             </TableContainer>
-
           </>
       }
       <img className='bottom-left-icon' src={logo} alt="logo" />
-
     </div>
-
-  );
+  )
 }

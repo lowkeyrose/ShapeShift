@@ -2,21 +2,21 @@ import React, { useCallback, useEffect } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import Button from '@mui/material/Button'
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 import logo from '../assets/robots/myworkouts.png'
 import '../components/style/WorkoutDetails.css'
 import './style/Pages.css'
-
-// components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
-import { search } from '../components/Searchbar';
-import { useLocation } from 'react-router-dom';
-import SortBy from '../components/SortBy';
-import Filter from '../components/Filter';
+import { search } from '../components/Searchbar'
+import { useLocation } from 'react-router-dom'
+import SortBy from '../components/SortBy'
+import Filter from '../components/Filter'
 
 export default function MyWorkouts() {
+    const { workouts, dispatch } = useWorkoutContext()
+    const location = useLocation()
     const { navigate,
         setLoading,
         token,
@@ -32,12 +32,10 @@ export default function MyWorkouts() {
         handleSortByToggle,
         handleFilterToggle
     } = useGlobalContext()
-    const { workouts, dispatch } = useWorkoutContext()
-    const location = useLocation();
 
     const fetchWorkouts = useCallback(async () => {
-        setLoading(true)
         try {
+            setLoading(true)
             const response = await fetch('/api/workouts/myworkouts', {
                 headers: {
                     'Authorization': token
@@ -45,11 +43,11 @@ export default function MyWorkouts() {
             })
             const data = await response.json()
             if (!response.ok) {
-                throw new Error(`Failed to fetch workouts: ${response.statusText}`);
+                throw new Error(`Failed to fetch workouts: ${response.statusText}`)
             }
             dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
         } catch (error) {
-            console.error('Error fetching workouts:', 'error:', error, 'error.message:', error.message, 'error.stack:', error.stack);
+            console.error('Error fetching workouts:', 'error:', error, 'error.message:', error.message, 'error.stack:', error.stack)
         } finally {
             setLoading(false)
         }
@@ -60,26 +58,25 @@ export default function MyWorkouts() {
             fetchWorkouts()
         }
         return () => {
-            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] })
         }
     }, [dispatch, token, fetchWorkouts])
 
     useEffect(() => {
         // Scroll to the top when the location changes
-        window.scrollTo(0, 0);
-    }, [location.pathname]);
+        window.scrollTo(0, 0)
+    }, [location.pathname])
 
     useEffect(() => {
         if (workouts) {
-            const filteredWorkouts = applyFilters(workouts);
-            const sortedWorkouts = sortWorkouts(filteredWorkouts);
-            setFilteredData(sortedWorkouts);
+            const filteredWorkouts = applyFilters(workouts)
+            const sortedWorkouts = sortWorkouts(filteredWorkouts)
+            setFilteredData(sortedWorkouts)
         }
-    }, [applyFilters, sortWorkouts, workouts, setFilteredData]);
+    }, [applyFilters, sortWorkouts, workouts, setFilteredData])
 
     return (
         <div className='my-workouts-page'>
-
             <Typography variant="h1" component="h1" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 My Workouts
             </Typography>
@@ -91,7 +88,7 @@ export default function MyWorkouts() {
                 <>
                     <div className="workouts">
                         {filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
-                            return <WorkoutDetails key={workout._id} workout={workout} />;
+                            return <WorkoutDetails key={workout._id} workout={workout} />
                         })}
                     </div>
                     <div className='sort-filter-button'>

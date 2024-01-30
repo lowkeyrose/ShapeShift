@@ -22,11 +22,11 @@ import { RoleTypes } from '../components/Navbar-config'
 export default function EditAccount() {
   const { id } = useParams()
   const { updateUser, error } = useUpdateUser()
-  const [errors, setErrors] = useState({});
-  const [isValid, setIsValid] = useState(false);
-  const [genderValue, setGenderValue] = useState('');
-  const [roleValue, setRoleValue] = useState('');
-  const [initialUserData, setInitialUserData] = useState({});
+  const [errors, setErrors] = useState({})
+  const [isValid, setIsValid] = useState(false)
+  const [genderValue, setGenderValue] = useState('')
+  const [roleValue, setRoleValue] = useState('')
+  const [initialUserData, setInitialUserData] = useState({})
   const {
     dispatch,
     user,
@@ -67,11 +67,11 @@ export default function EditAccount() {
     profilePic: Joi.any(),
     gender: Joi.string().required(),
     roleType: Joi.string().required()
-  });
+  })
 
   const fetchUser = useCallback(async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await fetch(`/api/user/${id}`, {
         headers: {
           'Authorization': token
@@ -87,11 +87,12 @@ export default function EditAccount() {
       setInitialUserData(data)
       setGenderValue(data.gender)
       setRoleValue(data.roleType)
+
     } catch (error) {
       console.error('Error fetching user:', error)
     } finally {
       setTimeout(() => {
-        setLoading(false);
+        setLoading(false)
       }, 1000)
     }
   }, [id, setLoading, token])
@@ -137,7 +138,7 @@ export default function EditAccount() {
     const { id, value } = event.target
     let obj = {
       ...formData,
-      [id]: value,
+      [id]: value
     }
 
     if (id.includes('gender')) {
@@ -146,28 +147,28 @@ export default function EditAccount() {
     if (id.includes('role')) {
       setRoleValue(value)
     }
-    const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialUserData);
-    const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
-    const err = { ...errors, [id]: undefined };
+    const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialUserData)
+    const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true })
+    const err = { ...errors, [id]: undefined }
     if (schema.error) {
-      const error = schema.error.details.find(e => e.context.key === id);
+      const error = schema.error.details.find(e => e.context.key === id)
       if (error) {
-        err[id] = error.message;
+        err[id] = error.message
       }
-      setIsValid(false);
+      setIsValid(false)
     } else {
-      setIsValid(true);
+      setIsValid(true)
     }
     if (!hasChanges) {
-      setIsValid(false);
+      setIsValid(false)
     }
-    setFormData(obj);
-    setErrors(err);
+    setFormData(obj)
+    setErrors(err)
   };
 
   const handleDelete = async (id) => {
-    setLoading(true)
     try {
+      setLoading(true)
       const response = await fetch(`/api/user/${id}`, {
         method: 'DELETE',
         headers: {
@@ -190,7 +191,6 @@ export default function EditAccount() {
     }
   }
 
-
   return (
     <div className="form">
       <Container component="main" maxWidth="sm" className='form-container'>
@@ -202,7 +202,7 @@ export default function EditAccount() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -214,31 +214,31 @@ export default function EditAccount() {
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               {
-                structure.map(item =>
-                  <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
+                structure.map(({ name, type, label, required, halfWidth, autoComplete }) =>
+                  <Grid item xs={12} sm={halfWidth ? 6 : 12} key={name}>
                     <TextField
-                      autoComplete={item.autoComplete}
+                      autoComplete={autoComplete}
                       error={
-                        (error?.includes('email') && item.name === 'email') ||
-                          (error?.includes('username') && item.name === 'username')
+                        (error?.includes('email') && name === 'email') ||
+                          (error?.includes('username') && name === 'username')
                           ? error
-                          : !!errors[item.name]
+                          : !!errors[name]
                       }
                       helperText={
-                        (error?.includes('email') && item.name === 'email') ||
-                          (error?.includes('username') && item.name === 'username')
+                        (error?.includes('email') && name === 'email') ||
+                          (error?.includes('username') && name === 'username')
                           ? error
-                          : errors[item.name]
+                          : errors[name]
                       }
                       onChange={handleInput}
-                      value={formData[item.name]}
-                      name={item.name}
-                      type={item.type}
-                      required={item.required}
+                      value={formData[name]}
+                      name={name}
+                      type={type}
+                      required={required}
                       fullWidth
-                      id={item.name}
-                      label={item.label}
-                      autoFocus={item.name === "firstName" ? true : false}
+                      id={name}
+                      label={label}
+                      autoFocus={name === "firstName" ? true : false}
                     />
                   </Grid>
                 )
@@ -289,5 +289,5 @@ export default function EditAccount() {
         <button className='styled-button delete' onClick={() => handleDelete(id)}>Delete Account</button>
       </Container>
     </div>
-  );
+  )
 }

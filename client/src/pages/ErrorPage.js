@@ -1,6 +1,6 @@
-import { Box, Button, Container, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import { useGlobalContext } from '../hooks/useGlobalContext';
+import { Box, Button, Container, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 import logo from '../assets/robots/error.png'
 import error404 from '../assets/404.png'
 
@@ -14,7 +14,7 @@ export default function ErrorPage() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: '90vh',
+          minHeight: '90vh'
         }}
       >
         <Container maxWidth='xs' >
@@ -35,5 +35,5 @@ export default function ErrorPage() {
         </Container>
       </Box>
     </div>
-  );
+  )
 }

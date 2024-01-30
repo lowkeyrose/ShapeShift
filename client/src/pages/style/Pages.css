@@ -11,34 +11,21 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
-.favorites-page {
-  /* background-image: linear-gradient(to bottom right, #eda2bd73, #45173679); */
-  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
 
-}
-.my-workouts-page {
-  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
-  /* background-image: linear-gradient(to bottom right, #86df897d, #21672472); */
-}
 .workouts-page {
   position: relative;
-  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
-  /* background-image: linear-gradient(to bottom right, #7cc1e372, #104a6772); */
 }
-.home {
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg'); */
-  /* background-image: linear-gradient(to bottom right, #ff800077, #ff810374); */
-}
+
 .home .styled-button {
   z-index: 2;
   cursor: pointer !important;
   margin: 0 auto 40px;
 }
+
 .home .user-button {
   margin: 0 auto 10px;
 }
+
 .home .user-section {
   box-shadow: 3px 3px 15px rgb(0, 0, 0);
   padding: 40px 0;
@@ -48,6 +35,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 .home .user-section .button-section {
   margin-top: 20px;
   display: flex;
@@ -67,13 +55,12 @@
     flex-direction: column;
   }
 }
+
 .home .user-section .button-section button {
   margin: 15px auto;
 }
+
 .about-page {
-  /* background-color: #47ffff;
-  background-image: url("../../assets/ll.png");
-  background-position: top 33px right 0; */
   background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -82,13 +69,16 @@
   align-items: center;
   padding: 120px 10px;
 }
+
 .about-page img {
   width: 100%;
 }
+
 .about-page .img-div {
   display: flex;
   justify-content: center;
 }
+
 @media screen and (max-width: 888px) {
   .about-page {
     flex-direction: column;
@@ -97,6 +87,7 @@
     width: 50%;
   }
 }
+
 .home-icon {
   position: fixed;
   bottom: -6.5px;
@@ -104,6 +95,7 @@
   width: 10%;
   z-index: 0;
 }
+
 .bottom-left-icon {
   position: fixed;
   bottom: 0;
@@ -111,6 +103,7 @@
   width: 10%;
   z-index: 0;
 }
+
 .workouts,
 .users {
   display: flex;
@@ -121,33 +114,30 @@
   padding-bottom: 150px;
   padding-top: 15px;
 }
+
 .login-page {
-  /* background-image: url("../../assets/ll.png");
-  background-color: #cfcfcf0e;
-  background-position: top 33px right 0; */
   background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   padding: 100px 10px;
 }
+
 .admin-panel {
   min-height: 75vh;
   display: flex;
   justify-content: center;
-  /* background-color: #cf998c;
-  background-image: url("../../assets/ll.png");
-  background-position-x: right;
-  background-position-y: 33px; */
   background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   padding: 120px 0;
 }
+
 .admin-panel .table-button {
   margin: 0 10px;
   border: none;
   cursor: pointer;
 }
+
 .admin-panel .styled-button {
   position: absolute;
   top: 90px;
@@ -160,9 +150,11 @@
   box-shadow: rgba(255, 255, 255, 0.2) 15px 28px 25px -18px;
   color: #ffffff;
 }
+
 .sortby-filter {
   display: flex;
 }
+
 .sort-filter {
   box-shadow: 0px 0px 10px rgba(247, 247, 247, 0.511);
   position: fixed !important;
@@ -172,6 +164,7 @@
   top: 75px;
   left: 10px;
 }
+
 .sort-filter-active {
   box-shadow: 1px 1px 10px rgba(128, 128, 128, 0.225);
   border-radius: 5px;
@@ -185,6 +178,7 @@
   z-index: 999;
   background-color: rgb(12, 12, 12);
 }
+
 .sort-filter-button {
   z-index: 999;
   display: none;
@@ -192,6 +186,7 @@
   top: 80px;
   margin-left: 24px;
 }
+
 @media screen and (max-width: 1350px) {
   .sort-filter-button {
     display: flex;
@@ -216,6 +211,7 @@
   border: none;
   box-shadow: 0px 0px 0px 2px rgb(212, 209, 255);
 }
+
 .bar {
   width: 50%;
   height: 2px;
@@ -226,6 +222,7 @@
   position: relative;
   border-radius: 2px;
 }
+
 .bar::before {
   content: "";
   width: 2px;
@@ -237,15 +234,19 @@
   transition: all 0.3s;
   box-shadow: 0px 0px 5px white;
 }
+
 .bar1::before {
   transform: translateX(-4px);
 }
+
 .bar2::before {
   transform: translateX(4px);
 }
+
 .setting-btn:hover .bar1::before {
   transform: translateX(4px);
 }
+
 .setting-btn:hover .bar2::before {
   transform: translateX(-4px);
 }

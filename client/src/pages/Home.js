@@ -6,32 +6,30 @@ import logo from '../assets/robots/home.png'
 import '../components/style/WorkoutDetails.css'
 import './style/Swiper.css'
 import './style/Pages.css'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-
-// components
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/effect-coverflow'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
 import WorkoutDetails from '../components/WorkoutDetails'
 import { Typography } from '@mui/material'
 import { useGlobalContext } from '../hooks/useGlobalContext'
 
 const Home = () => {
     const { workouts, dispatch } = useWorkoutContext()
-    const { setLoading, navigate, user } = useGlobalContext()
+    const { setLoading, navigate, user, token } = useGlobalContext()
 
     const fetchWorkouts = useCallback(async () => {
-        setLoading(true)
         try {
+            setLoading(true)
             const response = await fetch('/api/workouts')
             const data = await response.json()
             if (response.ok) {
                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: data })
             }
         } catch (error) {
-            console.error('Error fetching workouts:', error);
+            console.error('Error fetching workouts:', error)
         } finally {
             setLoading(false)
         }
@@ -40,7 +38,7 @@ const Home = () => {
     useEffect(() => {
         fetchWorkouts()
         return () => {
-            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] })
         }
     }, [dispatch, fetchWorkouts])
 
@@ -69,13 +67,13 @@ const Home = () => {
                                 rotate: 0,
                                 stretch: 0,
                                 depth: 100,
-                                modifier: 2.5,
+                                modifier: 2.5
                             }}
                             pagination={{ el: '.swiper-pagination', clickable: true, dynamicBullets: true }}
                             navigation={{
                                 nextEl: '.swiper-button-next',
                                 prevEl: '.swiper-button-prev',
-                                clickable: true,
+                                clickable: true
                             }}
                             modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
                             className='swiper_container swiper-init'
@@ -102,8 +100,7 @@ const Home = () => {
                 </>
             }
 
-
-            {!user && <div className="user-section">
+            {(!user && !token) && <div className="user-section">
                 <Typography variant="h1" component="h1" sx={{ fontFamily: "Kanit", color: 'white', margin: "30px 0 0 0", fontWeight: 600, fontSize: 48, textAlign: 'center' }}>
                     JOIN THE WORLD OF FITNESS TODAY
                 </Typography>

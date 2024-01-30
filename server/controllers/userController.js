@@ -43,7 +43,7 @@ const signupUser = async (req, res) => {
   }
 }
 
-// update user
+// Update user
 const updateUser = async (req, res) => {
   const userData = req.body
 
@@ -55,42 +55,42 @@ const updateUser = async (req, res) => {
   try {
     const user = await User.findOne({ _id: userData._id })
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' })
     }
     
     if (user.firstName !== userData.firstName) {
-      user.firstName = userData.firstName;
+      user.firstName = userData.firstName
     }
     
     if (user.lastName !== userData.lastName) {
-      user.lastName = userData.lastName;
+      user.lastName = userData.lastName
     }
     
     if (user.email !== userData.email) {
-      user.email = userData.email;
+      user.email = userData.email
     }
     
     if (user.username !== userData.username) {
-      user.username = userData.username;
+      user.username = userData.username
     }
     
     if (user.phone !== userData.phone) {
-      user.phone = userData.phone;
+      user.phone = userData.phone
     }
     
     if (user.gender !== userData.gender) {
-      user.gender = userData.gender;
+      user.gender = userData.gender
     }
     
     if ((user.roleType !== userData.roleType) && (userData.roleType !== '')) {
-      user.roleType = userData.roleType;
+      user.roleType = userData.roleType
     }
     
     if (user.profilePic !== userData.profilePic) {
-      user.profilePic = userData.profilePic;
+      user.profilePic = userData.profilePic
     }
     
-    await user.save();
+    await user.save()
     
     const filteredUser = userWithoutPassword(user)
     
@@ -120,7 +120,7 @@ const deleteUser = async (req, res) => {
     }
 
     // Save all the user's workouts
-    const userWorkouts = await Workout.find({ user_id: id });
+    const userWorkouts = await Workout.find({ user_id: id })
     // Convert to string for comparison
     const workoutIds = userWorkouts.map((workout) => String(workout._id))
 
@@ -128,23 +128,18 @@ const deleteUser = async (req, res) => {
     await User.updateMany(
       { favorites: { $in: workoutIds } },
       { $pull: { favorites: { $in: workoutIds } } }
-    );
+    )
 
-    // Delete all user's workouts
-    await Workout.deleteMany({ user_id: id });
-
-    // Delete all user's exercises
-    await Exercise.deleteMany({ user_id: id });
-
-    // Delete the user
-    await User.deleteOne({ _id: id });
+    // Delete user and all it's workouts/exercises
+    await Workout.deleteMany({ user_id: id })
+    await Exercise.deleteMany({ user_id: id })
+    await User.deleteOne({ _id: id })
 
     const filteredUser = userWithoutPassword(user)
-
     res.status(200).json(filteredUser)
   } catch (error) {
     console.error('Error in deleteUser: ',error)
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: error.message })
   }
 }
 
@@ -168,23 +163,20 @@ const getUser = async (req, res) => {
     const filteredUser = userWithoutPassword(user)
     res.status(200).json(filteredUser)
   } catch (error) {
-    console.error('Error in getUser:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error in getUser:', error)
+    res.status(500).json({ error: 'Internal Server Error' })
   }
-};
+}
 
 // Admin Get all users
 const getUsers = async (req, res) => {
-
   if (!req.user.roleType === 'admin') {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
   try {
     const users = await User.find({}).sort({ createdAt: -1 })
-
     const filteredUsers = users.map((user) => userWithoutPassword(user))
-
     res.status(200).json(filteredUsers)
   } catch (error) {
     console.error('Error fetching all users:', error)

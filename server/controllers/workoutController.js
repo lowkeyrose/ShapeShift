@@ -26,7 +26,7 @@ const getMyWorkouts = async (req, res) => {
   }
 }
 
-// GET all favorite workouts
+// Get all favorite workouts
 const getFavoriteWorkouts = async (req, res) => {
   const user = req.user
   if (!user) {
@@ -35,7 +35,7 @@ const getFavoriteWorkouts = async (req, res) => {
 
   try {
     // Extract the favorites array from the user
-    const favoriteWorkoutIds = user.favorites || [];
+    const favoriteWorkoutIds = user.favorites || []
 
     // Find the workouts with the Ids from the favorites array
     const favoriteWorkouts = await Workout.find({ _id: { $in: favoriteWorkoutIds } })
@@ -67,7 +67,6 @@ const getWorkout = async (req, res) => {
 
     const exercises = await Exercise.find({ _id: { $in: workout.exercises } })
     workout.exercises = exercises
-
     res.status(200).json(workout)
   } catch (error) {
     console.error('Error in getWorkout:', error)
@@ -77,14 +76,12 @@ const getWorkout = async (req, res) => {
 
 // Create new workout
 const createWorkout = async (req, res) => {
-
   const workoutData = {
     ...req.body,
     user_id: req.user._id,
     userProfilePic: req.user.profilePic,
-    username: req.user.username,
+    username: req.user.username
   }
-  
   let exercisesData = workoutData.exercises.map(exercises => ({ ...exercises, user_id: workoutData.user_id }))
 
   try {
@@ -105,7 +102,6 @@ const createWorkout = async (req, res) => {
     newWorkout.exercises = createdExercises.map(exercise => exercise._id)
 
     await newWorkout.save()
-
     res.status(201).json({ success: true, workout: newWorkout })
   } catch (error) {
     console.error('Error in creating workout:', error)
@@ -115,7 +111,6 @@ const createWorkout = async (req, res) => {
 
 // Delete a workout
 const deleteWorkout = async (req, res) => {
-
   const { id } = req.params
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Workout not found' })
@@ -139,10 +134,10 @@ const deleteWorkout = async (req, res) => {
         user.favorites = user.favorites.filter((favorite) => favorite && favorite.toString() !== id)
         await user.save()
       }
-    }));
+    }))
 
+    // Delete workout all exercises with the corresponding workout_id
     const deletedWorkout = await Workout.findByIdAndDelete(id)
-    // Delete all exercises with the corresponding workout_id
     await Exercise.deleteMany({ workout_id: deletedWorkout._id })
 
     res.status(200).json(deletedWorkout)
@@ -180,7 +175,7 @@ const updateWorkout = async (req, res) => {
 
           if (hasChanges) {
             Object.assign(existingExercise, exercise)
-            await existingExercise.save();
+            await existingExercise.save()
             return existingExercise._id
           } else {
             return existingExercise._id
@@ -191,7 +186,7 @@ const updateWorkout = async (req, res) => {
         const newExercise = await Exercise.create({
           ...exercise,
           user_id: workoutData.user_id,
-          workout_id: workoutData._id,
+          workout_id: workoutData._id
         })
         return newExercise._id
       }
@@ -220,9 +215,7 @@ const updateWorkout = async (req, res) => {
     // Update the workout's exercises array with the new/existing exercises ids
     workout.exercises = updatedExercisesIds
 
-    // Save the updated workout
     await workout.save()
-
     res.status(200).json(workout)
   } catch (error) {
     console.error('Error updating workout:', error)
@@ -248,11 +241,8 @@ const favorite = async (req, res) => {
     }
 
     user.favorites.push(workout_id)
-
     workout.likes = (workout.likes || 0) + 1;
-
     await Promise.all([user.save(), workout.save()])
-
     res.status(200).json({ workout, message: 'Workout added to favorites successfully.' })
   } catch (error) {
     console.error('Error adding workout to favorites:', error)
@@ -260,6 +250,7 @@ const favorite = async (req, res) => {
   }
 }
 
+// Remove workout from favorites
 const unFavorite = async (req, res) => {
   const user = req.user
   const workout_id = req.params.id
@@ -277,11 +268,8 @@ const unFavorite = async (req, res) => {
     }
 
     workout.likes = Math.max((workout.likes || 0) - 1, 0)
-
     user.favorites = user.favorites.filter((favorite) => favorite.toString() !== workout_id)
-
     await Promise.all([user.save(), workout.save()])
-
     res.status(200).json({ workout, message: 'Workout removed from favorites successfully.' })
   } catch (error) {
     console.error('Error removing workout from favorites:', error)
@@ -298,5 +286,5 @@ module.exports = {
   updateWorkout,
   getFavoriteWorkouts,
   favorite,
-  unFavorite,
+  unFavorite
 }

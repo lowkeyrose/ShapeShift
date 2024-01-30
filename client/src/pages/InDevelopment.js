@@ -1,6 +1,6 @@
-import { useGlobalContext } from '../hooks/useGlobalContext';
-import { Box, Button, Container, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { useGlobalContext } from '../hooks/useGlobalContext'
+import { Box, Button, Container, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
 import logo from '../assets/robots/in-progress.png'
 import error404 from '../assets/404.png'
 
@@ -14,7 +14,7 @@ export default function InDevelopment() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: '90vh',
+          minHeight: '90vh'
         }}
       >
         <Container maxWidth='xs'>
@@ -38,5 +38,5 @@ export default function InDevelopment() {
         </Container>
       </Box>
     </div>
-  );
+  )
 }

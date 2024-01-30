@@ -1,15 +1,14 @@
-import { Route, Routes } from 'react-router-dom';
-import Login from '../pages/Login';
-import SignUp from '../pages/Signup';
-import Home from '../pages/Home';
-import ErrorPage from '../pages/ErrorPage';
-import Workouts from '../pages/Workouts';
-import SingleWorkout from '../pages/SingleWorkout';
-import About from '../pages/About';
-import InDevelopment from '../pages/InDevelopment';
+import { Route, Routes } from 'react-router-dom'
+import Login from '../pages/Login'
+import SignUp from '../pages/Signup'
+import Home from '../pages/Home'
+import ErrorPage from '../pages/ErrorPage'
+import Workouts from '../pages/Workouts'
+import SingleWorkout from '../pages/SingleWorkout'
+import About from '../pages/About'
+import InDevelopment from '../pages/InDevelopment'
 
 export default function Router() {
-
   return (
     <Routes>
       <Route path='/' element={<Home />} />

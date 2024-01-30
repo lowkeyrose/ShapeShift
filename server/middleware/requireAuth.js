@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
 const { User } = require('../models/userModel')
 
 module.exports = async (req, res, next) => {
@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
     const newToken = jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
 
     // Attach the new token to the response headers
-    res.setHeader('Authorization', newToken);
+    res.setHeader('Authorization', newToken)
 
     next()
 

@@ -1,42 +1,42 @@
-import { useEffect, useState } from 'react';
-import { Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import { useEffect, useState } from 'react'
+import { Button, Checkbox, FormControlLabel, Typography } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 
 export default function Filter({ onFilterChange, onFilterToggle }) {
-  const [filterByLikes, setFilterByLikes] = useState(null);
-  const [filterByExercises, setFilterByExercises] = useState(null);
-  const [prevFilterByLikes, setPrevFilterByLikes] = useState(null);
-  const [prevFilterByExercises, setPrevFilterByExercises] = useState(null);
+  const [filterByLikes, setFilterByLikes] = useState(null)
+  const [filterByExercises, setFilterByExercises] = useState(null)
+  const [prevFilterByLikes, setPrevFilterByLikes] = useState(null)
+  const [prevFilterByExercises, setPrevFilterByExercises] = useState(null)
 
   const handleLikesChange = (value) => {
-    setFilterByLikes(filterByLikes === value ? null : value);
-    onFilterToggle();
-  };
+    setFilterByLikes(filterByLikes === value ? null : value)
+    onFilterToggle()
+  }
 
   const handleExercisesChange = (value) => {
-    setFilterByExercises(filterByExercises === value ? null : value);
-    onFilterToggle();
-  };
+    setFilterByExercises(filterByExercises === value ? null : value)
+    onFilterToggle()
+  }
 
   const clearFilters = () => {
-    setFilterByLikes(null);
-    setFilterByExercises(null);
+    setFilterByLikes(null)
+    setFilterByExercises(null)
     onFilterChange({
       filterByLikes: null,
-      filterByExercises: null,
-    });
-  };
+      filterByExercises: null
+    })
+  }
 
   useEffect(() => {
     if (filterByLikes !== prevFilterByLikes || filterByExercises !== prevFilterByExercises) {
       onFilterChange({
         filterByLikes,
-        filterByExercises,
-      });
-      setPrevFilterByLikes(filterByLikes);
-      setPrevFilterByExercises(filterByExercises);
+        filterByExercises
+      })
+      setPrevFilterByLikes(filterByLikes)
+      setPrevFilterByExercises(filterByExercises)
     }
-  }, [filterByLikes, filterByExercises, onFilterChange, prevFilterByLikes, prevFilterByExercises]);
+  }, [filterByLikes, filterByExercises, onFilterChange, prevFilterByLikes, prevFilterByExercises])
 
 
   return (
@@ -119,5 +119,5 @@ export default function Filter({ onFilterChange, onFilterToggle }) {
         <Button sx={{ display: 'block' }} onClick={clearFilters}>Clear Filters</Button>
       </div>
     </>
-  );
+  )
 }

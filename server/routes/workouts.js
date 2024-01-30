@@ -19,7 +19,7 @@ const {
 // GET all workouts
 router.get('/', getAllWorkouts)
 
-// GET my  workouts
+// GET my workouts
 router.get('/myworkouts', requireAuth, getMyWorkouts)
 
 // GET my favorite workouts

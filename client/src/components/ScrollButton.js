@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { FaArrowCircleUp } from 'react-icons/fa'
 import './style/ScrollButton.css'
 
-const ScrollButton = () => {
-
+export default function ScrollButton() {
 	const [visible, setVisible] = useState(false)
 
 	const toggleVisible = () => {
@@ -32,5 +31,3 @@ const ScrollButton = () => {
 		</button>
 	)
 }
-
-export default ScrollButton

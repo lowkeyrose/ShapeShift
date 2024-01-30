@@ -1,20 +1,20 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
-import Home from '../pages/Home';
-import MyWorkouts from '../pages/MyWorkouts';
-import FavoriteWorkouts from '../pages/FavoriteWorkouts';
+import { Route, Routes, Navigate } from 'react-router-dom'
+import Home from '../pages/Home'
+import MyWorkouts from '../pages/MyWorkouts'
+import FavoriteWorkouts from '../pages/FavoriteWorkouts'
 import WorkoutForm from '../components/WorkoutForm'
-import ErrorPage from '../pages/ErrorPage';
-import Workouts from '../pages/Workouts';
-import SingleWorkout from '../pages/SingleWorkout';
-import { useGlobalContext } from '../hooks/useGlobalContext';
-import Account from '../pages/Account';
-import EditAccount from '../pages/EditAccount';
-import About from '../pages/About';
-import AdminPanel from '../pages/AdminPanel';
-import InDevelopment from '../pages/InDevelopment';
+import ErrorPage from '../pages/ErrorPage'
+import Workouts from '../pages/Workouts'
+import SingleWorkout from '../pages/SingleWorkout'
+import { useGlobalContext } from '../hooks/useGlobalContext'
+import Account from '../pages/Account'
+import EditAccount from '../pages/EditAccount'
+import About from '../pages/About'
+import AdminPanel from '../pages/AdminPanel'
+import InDevelopment from '../pages/InDevelopment'
 
 export default function AuthRouter() {
-  const { user } = useGlobalContext()
+  const { user, token } = useGlobalContext()
 
   return (
     <Routes>
@@ -24,7 +24,7 @@ export default function AuthRouter() {
       <Route path='/workouts' element={<Workouts />} />
       <Route path="/workouts/workout/:id" element={<SingleWorkout />} />
 
-      {user ? (
+      {(user || token) ? (
         <>
           <Route path='/workouts/myworkouts' element={<MyWorkouts />} user={user} />
           <Route path="/workouts/favorites" element={<FavoriteWorkouts />} user={user} />
@@ -40,13 +40,13 @@ export default function AuthRouter() {
       <Route path="/errorPage" element={<ErrorPage />} />
       <Route path="/about" element={<About />} />
 
-      {user.roleType === 'admin' &&
+      {user?.roleType === 'admin' &&
         <>
           <Route path="/admin-panel" element={<AdminPanel />} />
           <Route path="/admin-panel/user/:id" element={<EditAccount />} />
         </>
       }
-
+      
     </Routes>
   )
 }

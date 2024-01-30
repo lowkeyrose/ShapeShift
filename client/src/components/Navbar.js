@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState, memo } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -15,100 +15,45 @@ import { Link, useResolvedPath } from 'react-router-dom'
 import { useLogout } from '../hooks/useLogout'
 import { checkPermissions, pages, settings } from './Navbar-config'
 import { useGlobalContext } from '../hooks/useGlobalContext'
-import { memo } from 'react'
 import Searchbar from './Searchbar'
 import { ClickAwayListener, MenuList, Paper, Popper } from '@mui/material'
 
 const Navbar = () => {
-  const path = useResolvedPath().pathname;
-  const [navBackground, setNavBackground] = React.useState('transparent')
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const show = window.scrollY > 1
-      const backgroundColor = '#1c0d24'
-
-      if (show) {
-        setNavBackground(backgroundColor);
-      } else if (!path.includes('/create/new') && !path.includes('/edit/')) {
-        setNavBackground('transparent');
-      }
-    };
-    document.addEventListener('scroll', handleScroll)
-    return () => {
-      document.removeEventListener('scroll', handleScroll)
-    }
-  }, [path])
-  // React.useEffect(() => {
-  //   if (path.includes('/create/new') || path.includes('/edit/')) {
-  //     setNavBackground('white');
-  //   } else {
-  //     setNavBackground('transparent');
-  //   }
-  //   const handleScroll = () => {
-  //     const show = window.scrollY > 1
-  //     const backgroundColor =
-  //         path === '/'
-  //       ? '#1c0d24'
-  //       : path === '/workouts'
-  //       ? '#bad8e7'
-  //       : path === '/workouts/favorites'
-  //       ? '#e5c5d2'
-  //       : path === '/workouts/myworkouts'
-  //       ? '#b9e1ba'
-  //       : path === '/about'
-  //       ? '#47ffff'
-  //       : path === '/admin-panel'
-  //       ? '#cf998c'
-  //       : path.includes('/workouts/workout')
-  //       ? '#c7f1d8'
-  //       : 'white'
-  //     if (show) {
-  //       setNavBackground(backgroundColor);
-  //     } else if (!path.includes('/create/new') && !path.includes('/edit/')) {
-  //       setNavBackground('transparent');
-  //     }
-  //   };
-  //   document.addEventListener('scroll', handleScroll)
-  //   return () => {
-  //     document.removeEventListener('scroll', handleScroll)
-  //   }
-  // }, [path])
-
   const { user, roleType, navigate } = useGlobalContext()
+  const path = useResolvedPath().pathname
   const { logout } = useLogout()
   const handleLogout = (event) => {
     event.preventDefault()
     logout()
-    setAnchorElUser(null);
+    setAnchorElUser(null)
   }
-  const [anchorElNav, setAnchorElNav] = React.useState(null)
-  const [anchorElUser, setAnchorElUser] = React.useState(null)
+  const [anchorElNav, setAnchorElNav] = useState(null)
+  const [anchorElUser, setAnchorElUser] = useState(null)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
-  };
+  }
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+    setAnchorElNav(null)
+  }
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
-  };
+  }
 
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+    setAnchorElUser(null)
+  }
 
-  // Dynamically determine whether to show the "About" page in the navigation
-  const showAboutInPages = !user;
+  // Dynamically determine whether to show the "About" page
+  const showAboutInPages = !user
 
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: navBackground }}>
+    <AppBar position="fixed" sx={{ backgroundColor: '#1c0d24' }}>
       <Container maxWidth="100%" sx={{ backgroundColor: 'inherit' }}>
         <Toolbar disableGutters>
-
           {/* LOGO */}
-          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'none', lg: 'flex' }, mr: 1, color:'white' , fontSize: '30px' }} />
+          <FitnessCenterIcon sx={{ display: { xs: 'none', md: 'none', lg: 'flex' }, mr: 1, color: 'white', fontSize: '30px' }} />
           <Typography
             variant="h6"
             noWrap
@@ -127,10 +72,8 @@ const Navbar = () => {
           >
             ShapeShift
           </Typography>
-
           {/* Hamburger Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex', lg: 'none' } }}>
-
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -139,7 +82,7 @@ const Navbar = () => {
               onClick={handleOpenNavMenu}
               color="white"
             >
-              <MenuIcon sx={{ color:'white' }} />
+              <MenuIcon sx={{ color: 'white' }} />
             </IconButton>
             <Popper
               sx={{ mt: '55px', right: 'auto', left: 0, top: '10px !important', position: 'absolute !important' }}
@@ -166,9 +109,7 @@ const Navbar = () => {
               </ClickAwayListener>
             </Popper>
           </Box>
-
-
-          {/* Logo, Displays from md */}
+          {/* MediaScreen Medium */}
           <Box
             sx={{
               display: 'flex', position: 'absolute',
@@ -181,7 +122,7 @@ const Navbar = () => {
                 display: { xs: 'none', sm: 'flex', md: 'flex', lg: 'none' },
                 mr: 1,
                 mt: 1,
-                color: 'white' ,
+                color: 'white'
               }} />
             <Typography
               variant="h5"
@@ -196,13 +137,12 @@ const Navbar = () => {
                 fontWeight: 500,
                 fontSize: '28px',
                 color: 'white',
-                textDecoration: 'none',
+                textDecoration: 'none'
               }}
             >
               ShapeShift
             </Typography>
           </Box>
-
           {/* Nav Links */}
           <Box
             sx={{
@@ -226,12 +166,10 @@ const Navbar = () => {
                 </Link>
               ))}
           </Box>
-
+          {/* User Section */}
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
             {/* Searchbar */}
             {['/workouts', '/workouts/favorites', '/workouts/myworkouts'].includes(path) && <Searchbar />}
-
-            {/* User Section */}
             {user && (
               <Box sx={{ flexGrow: 0, m: 0 }}>
                 <Tooltip title="Open settings" >
@@ -239,7 +177,6 @@ const Navbar = () => {
                     <Avatar alt={user.profilePic} src={user.profilePic} sx={{ width: '50px', height: '50px' }} />
                   </IconButton>
                 </Tooltip>
-
                 <Popper
                   sx={{ mt: '45px', right: -15, top: '10px !important', position: 'absolute !important', left: 'unset !important' }}
                   id="menu-appbar"
@@ -275,6 +212,6 @@ const Navbar = () => {
         </Toolbar>
       </Container>
     </AppBar>
-  );
+  )
 }
 export default memo(Navbar)

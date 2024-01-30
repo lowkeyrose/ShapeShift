@@ -1,22 +1,22 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import Joi from 'joi';
-import './style/ExerciseModal.css';
-import { useGlobalContext } from '../hooks/useGlobalContext';
+import React, { useCallback, useEffect, useState } from 'react'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import CssBaseline from '@mui/material/CssBaseline'
+import TextField from '@mui/material/TextField'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import Joi from 'joi'
+import './style/ExerciseModal.css'
+import { useGlobalContext } from '../hooks/useGlobalContext'
 
 export default function ExerciseForm({ onAddExercise, onEditExercise, editingExercise, setEditingExercise }) {
   const { editExerciseModal, setEditExerciseModal, exerciseFormModal, setExerciseFormModal } = useGlobalContext()
-  const [errors, setErrors] = useState({});
-  const [isValid, setIsValid] = useState(false);
-  const [initialExerciseData, setInitialExerciseData] = useState({});
+  const [errors, setErrors] = useState({})
+  const [isValid, setIsValid] = useState(false)
+  const [initialExerciseData, setInitialExerciseData] = useState({})
   const [exerciseFormData, setExerciseFormData] = useState({
     title: '',
     imgUrl: '',
@@ -24,8 +24,8 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     sets: 0,
     weight: 0,
     reps: 0,
-    duration: '00:00',
-  });
+    duration: '00:00'
+  })
 
   const structure = [
     { name: 'title', type: 'text', label: 'Title', required: true, halfWidth: false },
@@ -34,8 +34,8 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     { name: 'sets', type: 'number', label: 'Sets', required: false, halfWidth: true },
     { name: 'weight', type: 'number', label: 'Weight (kg)', required: false, halfWidth: true },
     { name: 'reps', type: 'number', label: 'Reps', required: false, halfWidth: true },
-    { name: 'duration', type: 'text', label: 'Duration', required: false, halfWidth: true, placeholder: 'mm:ss' },
-  ];
+    { name: 'duration', type: 'text', label: 'Duration', required: false, halfWidth: true, placeholder: 'mm:ss' }
+  ]
 
   const exerciseSchema = Joi.object({
     title: Joi.string().min(3).max(20).required(),
@@ -44,8 +44,8 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     sets: Joi.number().min(0).max(200).optional(),
     weight: Joi.number().min(0).max(1000).optional(),
     reps: Joi.number().min(0).max(200).optional(),
-    duration: Joi.string().min(0).max(1000).optional().regex(/^[0-5]?\d:[0-5]\d$/).message('Duration must be in format mm:ss'),
-  });
+    duration: Joi.string().min(0).max(1000).optional().regex(/^[0-5]?\d:[0-5]\d$/).message('Duration must be in format mm:ss')
+  })
 
   const resetFormData = () => {
     setExerciseFormData({
@@ -55,9 +55,9 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       sets: 0,
       weight: 0,
       reps: 0,
-      duration: '00:00',
-    });
-  };
+      duration: '00:00'
+    })
+  }
 
   useEffect(() => {
     if (editExerciseModal && editingExercise) {
@@ -75,7 +75,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     const { id, value } = event.target
     let obj = {
       ...exerciseFormData,
-      [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value,
+      [id]: id === 'sets' || id === 'weight' || id === 'reps' ? parseInt(value, 10) || '' : value
     }
     const hasChanges = JSON.stringify(obj) !== JSON.stringify(initialExerciseData)
     const schema = exerciseSchema.validate(obj, { abortEarly: false, allowUnknown: true })
@@ -88,23 +88,23 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
       }
       setIsValid(false)
     } else {
-      setIsValid(true);
+      setIsValid(true)
     }
 
     if (!hasChanges) {
-      setIsValid(false);
+      setIsValid(false)
     }
-    setErrors(err);
-    setExerciseFormData(obj);
-  };
+    setErrors(err)
+    setExerciseFormData(obj)
+  }
 
 
   const handleSubmit = useCallback(async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
       if (exerciseFormData.imgUrl === '') {
         exerciseFormData.imgUrl =
-          'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg';
+          'https://t4.ftcdn.net/jpg/00/95/32/41/360_F_95324105_nanCVHMiu7r8B0qSur3k1siBWxacfmII.jpg'
       }
 
       if (editExerciseModal) {
@@ -180,7 +180,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center',
+                  alignItems: 'center'
                 }}
               >
                 <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -229,5 +229,5 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
         </div>
       )}
     </div>
-  );
+  )
 }

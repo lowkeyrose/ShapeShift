@@ -1,9 +1,7 @@
 import React, { useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
-import { useGlobalContext } from '../hooks/useGlobalContext';
+import { useGlobalContext } from '../hooks/useGlobalContext'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
-// import Button from '@mui/material/Button'
-// import DeleteIcon from '@mui/icons-material/Delete';
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
 import { ACTIONS } from '../context/Actions'
 import './style/SingleWorkout.css'
@@ -15,22 +13,21 @@ export default function SingleWorkout() {
   const { workout, dispatch } = useWorkoutContext()
 
   const fetchWorkout = useCallback(async () => {
-    setLoading(true);
     try {
-      const response = await fetch(`/api/workouts/workout/${id}`);
-      // Validate the id belongs to a workout
+      setLoading(true)
+      const response = await fetch(`/api/workouts/workout/${id}`)
       if (!response.ok) {
         navigate('/errorPage')
-        throw new Error(`Workout not found: ${response.statusText}`);
+        throw new Error(`Workout not found: ${response.statusText}`)
       }
-      const data = await response.json();
-      dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data });
+      const data = await response.json()
+      dispatch({ type: ACTIONS.SET_SINGLE_WORKOUT, payload: data })
     } catch (error) {
-      console.error('Error fetching workout:', error);
+      console.error('Error fetching workout:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [dispatch, id, setLoading, navigate]);
+  }, [dispatch, id, setLoading, navigate])
 
   useEffect(() => {
     if (isValidObjectId(id)) {
@@ -39,7 +36,7 @@ export default function SingleWorkout() {
       navigate('/errorPage')
     }
     // eslint-disable-next-line
-  }, [id, fetchWorkout, navigate, dispatch]);
+  }, [id, fetchWorkout, navigate, dispatch])
 
   const editWorkout = () => {
     navigate(`/workouts/myworkouts/edit/${workout._id}`)
@@ -73,13 +70,10 @@ export default function SingleWorkout() {
       {workout &&
         <div className='single-workout-container'>
           <div className='workout-title'>{[workout.title]}</div>
-
-
           <div className="img-container">
             <img className='workout-img' src={workout.imgUrl} alt={workout.title}>
             </img>
           </div>
-
           <br />
           <br />
           <div className='exercises-container'>
@@ -95,13 +89,10 @@ export default function SingleWorkout() {
                   <div>Duration: {exercise.duration}</div>
                   {exercise.videoUrl && <a href={exercise.videoUrl} target='blank'>Video</a>}
                 </div>
-
               </div>
             )}</div>
-
           <div>Creator: {workout.username}</div>
           {workout.createdAt && <p>Created: {formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>}
-
           {
             ((user?.roleType === 'admin') || (user?._id === workout?.user_id)) &&
             <div className='workout-buttons'>
@@ -111,8 +102,6 @@ export default function SingleWorkout() {
           }
         </div>
       }
-
-
     </div>
   )
 }

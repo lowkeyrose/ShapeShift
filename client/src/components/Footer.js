@@ -1,10 +1,9 @@
-import React from 'react';
 import './style/Footer.css'
-import { Link } from 'react-router-dom';
-import { faGithub, faLinkedin, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom'
+import { faGithub, faLinkedin, faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const Footer = () => {
+export default function Footer() {
   return (
     <div className="footer-clean">
       <footer>
@@ -42,9 +41,6 @@ const Footer = () => {
           </div>
         </div>
       </footer>
-
     </div>
-  );
-};
-
-export default Footer;
+  )
+}

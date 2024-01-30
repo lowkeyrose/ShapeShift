@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 function dbConnection() {
   mongoose.connect(process.env.MONGO_URI)
@@ -10,4 +10,4 @@ function dbConnection() {
   })
 }
 
-module.exports = dbConnection;
+module.exports = dbConnection

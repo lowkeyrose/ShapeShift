@@ -19,6 +19,7 @@
   margin: auto;
   position: relative;
 }
+
 .spinner:before {
   content: "";
   width: 48px;
@@ -31,6 +32,7 @@
   border-radius: 50%;
   animation: shadow 0.5s linear infinite;
 }
+
 .spinner:after {
   content: "";
   width: 100%;
@@ -42,6 +44,7 @@
   left: 0;
   border-radius: 4px;
 }
+
 @keyframes bxSpin {
   17% {
     border-bottom-right-radius: 3px;

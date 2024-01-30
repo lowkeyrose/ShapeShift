@@ -1,25 +1,25 @@
-import { Typography, MenuItem, Checkbox } from '@mui/material';
-import SortIcon from '@mui/icons-material/Sort';
-import { useState } from 'react';
+import { Typography, MenuItem, Checkbox } from '@mui/material'
+import SortIcon from '@mui/icons-material/Sort'
+import { useState } from 'react'
 
 export default function SortBy({ onSortChange, onSortyByToggle }) {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null)
   const handleSortOptionSelect = (option) => {
     if (selectedOption === option) {
       // If the clicked option is already selected, remove the selection
-      setSelectedOption(null);
-      onSortChange(null);
+      setSelectedOption(null)
+      onSortChange(null)
     } else {
-      setSelectedOption(option);
-      onSortChange(option);
+      setSelectedOption(option)
+      onSortChange(option)
       onSortyByToggle()
     }
-  };
+  }
 
   return (
     <div>
-      <div  style={{ paddingRight: '12px', color: 'white' }}>
-        <Typography variant="h6" sx={{ fontSize: '16px', fontWeight:'bold', m: '2px 12px' }}>
+      <div style={{ paddingRight: '12px', color: 'white' }}>
+        <Typography variant="h6" sx={{ fontSize: '16px', fontWeight: 'bold', m: '2px 12px' }}>
           <SortIcon fontSize='14px' /> Sort by
         </Typography>
         <MenuItem sx={{ p: 0, m: 0, fontSize: '16px' }} onClick={() => handleSortOptionSelect('likes-desc')}>
@@ -48,5 +48,5 @@ export default function SortBy({ onSortChange, onSortyByToggle }) {
         </MenuItem>
       </div>
     </div>
-  );
+  )
 }

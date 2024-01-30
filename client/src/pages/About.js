@@ -1,10 +1,9 @@
-import React from 'react';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import Paper from '@mui/material/Paper'
 import logo from '../assets/robots/about.png'
 
-const About = () => {
+export default function About() {
   return (
     <div className="about-page">
       <div className='img-div'>
@@ -89,7 +88,5 @@ const About = () => {
         </Paper>
       </Container>
     </div>
-  );
-};
-
-export default About;
+  )
+}

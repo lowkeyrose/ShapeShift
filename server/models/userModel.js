@@ -81,7 +81,7 @@ const userSchema = new Schema({
   }]
 })
 
-// static signup method
+// Static signup method
 userSchema.statics.signup = async function (firstName, lastName, email, password, username, phone, profilePic, gender, roleType) {
   try {
     await userValidationSchema.validateAsync({ firstName, lastName, email, password, username, phone, profilePic, gender, roleType })
@@ -99,7 +99,6 @@ userSchema.statics.signup = async function (firstName, lastName, email, password
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
     const user = await this.create({ firstName, lastName, email, password: hash, username, phone, profilePic, gender, roleType })
-
     const filteredUser = userWithoutPassword(user)
 
     return filteredUser
@@ -108,7 +107,7 @@ userSchema.statics.signup = async function (firstName, lastName, email, password
   }
 }
 
-// static login method
+// Static login method
 userSchema.statics.login = async function (email, password) {
   try {
     await Joi.object({
@@ -134,6 +133,6 @@ userSchema.statics.login = async function (email, password) {
   }
 }
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema)
 
 module.exports = { User, userWithoutPassword }

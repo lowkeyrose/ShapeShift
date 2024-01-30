@@ -1,12 +1,10 @@
 .account-page {
-  /* background-image: url("../../assets/ll.png");
-  background-color: #cfcfcf0e;
-  background-position: top 33px right 0; */
   background-image: linear-gradient(rgba(13,24,45,.49),rgba(13,24,45,.49)),url('../../assets/background.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   padding: 120px 0;
 }
+
 .account-page-container {
   padding: 20px;
   background: linear-gradient(to right, #ee5a6f, #f29263);
@@ -20,54 +18,65 @@
   width: 50%;
   position: relative;
 }
+
 @media screen and (max-width: 520px) {
   .account-page-container {
     width: 80%;
   }
 }
+
 .account-page-container .top {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .account-page-container .styled-button,
 .account-page-container .box {
   margin: 10px 0;
 }
+
 .account-page-container button:hover {
   box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px -5px;
   transform: translate3d(0, 2px, 0);
 }
+
 .account-page-container button:focus {
   box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 4px -6px;
 }
+
 .account-page-container .bottom {
   display: flex;
   align-items: center;
   justify-content: center;
   display: block;
 }
+
 .account-page-container img {
   width: 30%;
   border-radius: 50%;
 }
+
 .account-page-container .box {
   cursor: unset;
   position: unset;
   font-weight: 500;
   text-align: center;
 }
+
 :root {
   --gold: #ffb338;
   --light-shadow: #77571d;
   --dark-shadow: #3e2904;
 }
+
 .username {
   display: grid;
   grid-template-areas: "overlap";
   place-content: center;
   text-transform: uppercase;
 }
+
 .username > div {
   background-clip: text;
   -webkit-background-clip: text;
@@ -80,6 +89,7 @@
   -webkit-text-stroke: 4px transparent;
   font-size: 4em;
 }
+
 .username .bg {
   background-image: repeating-linear-gradient(
     105deg,
@@ -92,6 +102,7 @@
   transform: scaleY(1.05);
   transform-origin: top;
 }
+
 .username .fg {
   background-image: repeating-linear-gradient(
     5deg,

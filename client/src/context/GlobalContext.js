@@ -1,11 +1,11 @@
-import React, { createContext, useCallback, useEffect, useReducer, useMemo, useState } from 'react';
-import { ACTIONS } from "./Actions";
-import { RoleTypes } from '../components/Navbar-config';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Loader from '../components/Loader';
-import { Toaster, toast } from 'sonner';
+import React, { createContext, useCallback, useEffect, useReducer, useMemo, useState, memo } from 'react'
+import { ACTIONS } from "./Actions"
+import { RoleTypes } from '../components/Navbar-config'
+import { useLocation, useNavigate } from 'react-router-dom'
+import Loader from '../components/Loader'
+import { Toaster, toast } from 'sonner'
 
-export const GlobalContext = createContext();
+export const GlobalContext = createContext()
 
 export const authReducer = (state, action) => {
   switch (action.type) {
@@ -13,14 +13,14 @@ export const authReducer = (state, action) => {
       return {
         ...state,
         user: action.payload
-      };
+      }
     case ACTIONS.LOGOUT:
-      return { user: null };
+      return { user: null }
     case ACTIONS.FAVORITE:
       return {
         ...state,
         user: { ...state.user, favorites: [...state.user.favorites, action.payload._id] }
-      };
+      }
     case ACTIONS.UNFAVORITE:
       return {
         ...state,
@@ -32,91 +32,29 @@ export const authReducer = (state, action) => {
     default:
       return state
   }
-};
+}
 
-export const GlobalContextProvider = React.memo(({ children }) => {
+export const GlobalContextProvider = memo(({ children }) => {
   const token = JSON.parse(localStorage.getItem('token'))
   const navigate = useNavigate()
   const location = useLocation()
   const [exerciseFormModal, setExerciseFormModal] = useState(false)
   const [editExerciseModal, setEditExerciseModal] = useState(false)
-  const [searchWord, setSearchWord] = useState('')
   const [roleType, setRoleType] = useState(RoleTypes.none)
-  const [loading, setLoading] = useState(false)
   const [filteredData, setFilteredData] = useState([])
+  const [sortOption, setSortOption] = useState(null)
+  const [searchWord, setSearchWord] = useState('')
+  const [isActive, setIsActive] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [activeFilters, setActiveFilters] = useState({
     filterByLikes: null,
-    filterByExercises: null,
-  });
-  const [sortOption, setSortOption] = useState(null)
-  const [isActive, setIsActive] = useState(false)
-
-  const openMenu = useCallback(() => {
-    setIsActive(!isActive)
-  }, [isActive])
-
-  const handleFilterToggle = useCallback(() => {
-    setIsActive(false)
-  }, [])
-  const handleSortByToggle = useCallback(() => {
-    setIsActive(false)
-  }, [])
-
-  const showToastError = text => {
-    toast.error(text);
-  };
-  const showToastSuccess = text => {
-    toast.success(text);
-  };
+    filterByExercises: null
+  })
 
   const [state, dispatch] = useReducer(authReducer, {
     user: null
-  });
-
-  const isValidObjectId = (id) => {
-    const objectIdPattern = /^[0-9a-fA-F]{24}$/;
-    return objectIdPattern.test(id);
-  };
-
-  const handleFilterChange = ({ filterByLikes, filterByExercises }) => {
-    setActiveFilters({
-      filterByLikes,
-      filterByExercises,
-    });
-  };
-
-  const applyFilters = useCallback((workouts) => {
-    return workouts.filter((workout) =>
-      (activeFilters.filterByLikes === null ||
-        workout.likes >= activeFilters.filterByLikes) &&
-      (activeFilters.filterByExercises === null ||
-        workout.exercises.length >= activeFilters.filterByExercises)
-    );
-  }, [activeFilters])
-
-  const handleSortChange = (option) => {
-    setSortOption(option);
-  };
-
-  const sortWorkouts = useCallback((data) => {
-    if (sortOption === 'exercises-asc') {
-      return data.slice().sort((a, b) => a.exercises.length - b.exercises.length);
-    } else if (sortOption === 'exercises-desc') {
-      return data.slice().sort((a, b) => b.exercises.length - a.exercises.length);
-    } else if (sortOption === 'likes-asc') {
-      return data.slice().sort((a, b) => a.likes - b.likes);
-    } else if (sortOption === 'likes-desc') {
-      return data.slice().sort((a, b) => b.likes - a.likes);
-    } else if (sortOption === 'oldest') {
-      return data.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-    } else if (sortOption === 'newest') {
-      return data.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
-    return data;
-  }, [sortOption]);
-
-
-  const memoizedDispatch = useCallback(dispatch, [dispatch]);
+  })
+  const memoizedDispatch = useCallback(dispatch, [dispatch])
 
   const authenticate = useCallback(async () => {
     try {
@@ -125,7 +63,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
         headers: {
           'Authorization': token
         }
-      });
+      })
 
       if (!response.ok) {
         showToastError('Session expired');
@@ -134,20 +72,17 @@ export const GlobalContextProvider = React.memo(({ children }) => {
         setRoleType(RoleTypes.none)
         navigate('/')
       } else {
-      // Get the new token from the response headers
-      const newToken = response.headers.get('Authorization');
-
-      // Check if a new token is present
-      if (newToken) {
-        // Update the token in your state or storage
-        localStorage.setItem('token', JSON.stringify(newToken))
+        const newToken = response.headers.get('Authorization');
+        if (newToken) {
+          // Update the token
+          localStorage.setItem('token', JSON.stringify(newToken))
+        }
+        const json = await response.json()
+        memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
+        const userRoleType = json.roleType
+        const mappedRoleType = RoleTypes[userRoleType]
+        setRoleType(mappedRoleType)
       }
-      const json = await response.json()
-      memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })
-      const userRoleType = json.roleType
-      const mappedRoleType = RoleTypes[userRoleType]
-      setRoleType(mappedRoleType)
-    }
     } catch (error) {
       console.log("The Promise is rejected!", error)
     }
@@ -157,9 +92,67 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     if (token) {
       authenticate()
     }
-  }, [authenticate, location.pathname, token]);
+  }, [authenticate, location.pathname, token])
+  
+  const openMenu = useCallback(() => {
+    setIsActive(!isActive)
+  }, [isActive])
 
-  console.log('GlobalContextProvider state: ', state);
+  const handleFilterToggle = useCallback(() => {
+    setIsActive(false)
+  }, [])
+
+  const handleSortByToggle = useCallback(() => {
+    setIsActive(false)
+  }, [])
+
+  const showToastError = text => {
+    toast.error(text)
+  }
+
+  const showToastSuccess = text => {
+    toast.success(text)
+  }
+
+  const isValidObjectId = (id) => {
+    const objectIdPattern = /^[0-9a-fA-F]{24}$/
+    return objectIdPattern.test(id)
+  }
+
+  const handleFilterChange = ({ filterByLikes, filterByExercises }) => {
+    setActiveFilters({
+      filterByLikes,
+      filterByExercises
+    })
+  }
+
+  const applyFilters = useCallback((workouts) => {
+    return workouts.filter((workout) =>
+      (activeFilters.filterByLikes === null || workout.likes >= activeFilters.filterByLikes) &&
+      (activeFilters.filterByExercises === null || workout.exercises.length >= activeFilters.filterByExercises)
+    )
+  }, [activeFilters])
+
+  const handleSortChange = (option) => {
+    setSortOption(option)
+  }
+
+  const sortWorkouts = useCallback((data) => {
+    if (sortOption === 'exercises-asc') {
+      return data.slice().sort((a, b) => a.exercises.length - b.exercises.length)
+    } else if (sortOption === 'exercises-desc') {
+      return data.slice().sort((a, b) => b.exercises.length - a.exercises.length)
+    } else if (sortOption === 'likes-asc') {
+      return data.slice().sort((a, b) => a.likes - b.likes)
+    } else if (sortOption === 'likes-desc') {
+      return data.slice().sort((a, b) => b.likes - a.likes)
+    } else if (sortOption === 'oldest') {
+      return data.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+    } else if (sortOption === 'newest') {
+      return data.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    }
+    return data
+  }, [sortOption])
 
   const memoizedValue = useMemo(() => ({
     ...state,
@@ -190,7 +183,7 @@ export const GlobalContextProvider = React.memo(({ children }) => {
     setExerciseFormModal,
     editExerciseModal,
     setEditExerciseModal
-  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts, isActive, handleSortByToggle, handleFilterToggle, openMenu, exerciseFormModal, editExerciseModal]);
+  }), [state, token, navigate, location, roleType, loading, searchWord, applyFilters, filteredData, sortWorkouts, isActive, handleSortByToggle, handleFilterToggle, openMenu, exerciseFormModal, editExerciseModal])
 
   return (
     <GlobalContext.Provider value={memoizedValue}>
@@ -198,5 +191,5 @@ export const GlobalContextProvider = React.memo(({ children }) => {
       {loading && <Loader />}
       {children}
     </GlobalContext.Provider>
-  );
-});
+  )
+})

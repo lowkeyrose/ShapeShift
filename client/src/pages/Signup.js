@@ -52,7 +52,7 @@ export default function SignUp() {
     phone: Joi.string().regex(/^[0-9]{10,15}$/).messages({ 'string.pattern.base': `Phone number must have between 10-15 digits.` }).required(),
     gender: Joi.string().required(),
     profilePic: Joi.any()
-  });
+  })
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -77,26 +77,26 @@ export default function SignUp() {
     const { id, value } = event.target
     let obj = {
       ...formData,
-      [id]: value,
+      [id]: value
     }
 
     if (id === "gender") {
       setValue(value)
     }
 
-    const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true });
-    const err = { ...errors, [id]: undefined };
+    const schema = userSchema.validate(obj, { abortEarly: false, allowUnknown: true })
+    const err = { ...errors, [id]: undefined }
     if (schema.error) {
-      const error = schema.error.details.find(e => e.context.key === id);
+      const error = schema.error.details.find(e => e.context.key === id)
       if (error) {
-        err[id] = error.message;
+        err[id] = error.message
       }
-      setIsValid(false);
+      setIsValid(false)
     } else {
-      setIsValid(true);
+      setIsValid(true)
     }
-    setFormData(obj);
-    setErrors(err);
+    setFormData(obj)
+    setErrors(err)
   }
 
   return (
@@ -107,7 +107,7 @@ export default function SignUp() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -119,31 +119,31 @@ export default function SignUp() {
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               {
-                structure.map(item =>
-                  <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
+                structure.map(({ name, type, label, required, halfWidth, autoComplete }) =>
+                  <Grid item xs={12} sm={halfWidth ? 6 : 12} key={name}>
                     <TextField
-                      autoComplete={item.autoComplete}
+                      autoComplete={autoComplete}
                       error={
-                        (error?.includes('email') && item.name === 'email') ||
-                          (error?.includes('username') && item.name === 'username')
+                        (error?.includes('email') && name === 'email') ||
+                          (error?.includes('username') && name === 'username')
                           ? error
-                          : !!errors[item.name]
+                          : !!errors[name]
                       }
                       helperText={
-                        (error?.includes('email') && item.name === 'email') ||
-                          (error?.includes('username') && item.name === 'username')
+                        (error?.includes('email') && name === 'email') ||
+                          (error?.includes('username') && name === 'username')
                           ? error
-                          : errors[item.name]
+                          : errors[name]
                       }
                       onChange={handleInput}
-                      value={formData[item.name]}
-                      name={item.name}
-                      type={item.type}
-                      required={item.required}
+                      value={formData[name]}
+                      name={name}
+                      type={type}
+                      required={required}
                       fullWidth
-                      id={item.name}
-                      label={item.label}
-                      autoFocus={item.name === "firstName" ? true : false}
+                      id={name}
+                      label={label}
+                      autoFocus={name === "firstName" ? true : false}
                     />
                   </Grid>
                 )
@@ -183,5 +183,5 @@ export default function SignUp() {
         </Box>
       </Container>
     </div>
-  );
+  )
 }

@@ -4,8 +4,6 @@ import { ACTIONS } from '../context/Actions'
 import logo from '../assets/robots/workouts.png'
 import '../components/style/WorkoutDetails.css'
 import './style/Pages.css'
-
-// components
 import WorkoutDetails from '../components/WorkoutDetails'
 import { useGlobalContext } from '../hooks/useGlobalContext'
 import { search } from '../components/Searchbar'
@@ -30,13 +28,11 @@ export default function Workouts() {
         handleSortByToggle
     } = useGlobalContext()
 
-
     const fetchWorkouts = useCallback(async () => {
-        setLoading(true)
         try {
+            setLoading(true)
             const response = await fetch('/api/workouts')
             const json = await response.json()
-
             if (response.ok) {
                 dispatch({ type: ACTIONS.SET_WORKOUTS, payload: json })
             }
@@ -50,24 +46,24 @@ export default function Workouts() {
     useEffect(() => {
         fetchWorkouts()
         return () => {
-            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] });
+            dispatch({ type: ACTIONS.SET_WORKOUTS, payload: [] })
         }
     }, [dispatch, fetchWorkouts])
 
     useEffect(() => {
         if (workouts) {
-            const filteredWorkouts = applyFilters(workouts);
-            const sortedWorkouts = sortWorkouts(filteredWorkouts);
-            setFilteredData(sortedWorkouts);
+            const filteredWorkouts = applyFilters(workouts)
+            const sortedWorkouts = sortWorkouts(filteredWorkouts)
+            setFilteredData(sortedWorkouts)
         }
-    }, [applyFilters, sortWorkouts, workouts, setFilteredData]);
+    }, [applyFilters, sortWorkouts, workouts, setFilteredData])
 
     return (
         <div className='workouts-page'>
-            <Typography variant="h1" component="h1" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
+            <Typography variant="h1" component="h1" sx={{ color: 'white', fontFamily: "Kanit", fontWeight: 600, fontSize: 48, margin: "30px 0 0 0", textAlign: 'center' }}>
                 Workouts Page
             </Typography>
-            <Typography component="p" sx={{ color:'white', fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
+            <Typography component="p" sx={{ color: 'white', fontFamily: "Kanit", fontWeight: 500, fontSize: 16, paddingBottom: "10px", textAlign: 'center' }}>
                 <br />
                 {workouts && workouts.length > 0 ? "Here you can find all the public workouts created by our users" : "There are no workouts currently available, be the first and create the first workout!"}
             </Typography>
@@ -76,9 +72,9 @@ export default function Workouts() {
                     <div className="workouts">
                         {filteredData.filter(workout => search(searchWord, workout.title)).map((workout) => {
                             if (!workout.Private) {
-                                return <WorkoutDetails key={workout._id} workout={workout} />;
+                                return <WorkoutDetails key={workout._id} workout={workout} />
                             } else {
-                                return null;
+                                return null
                             }
                         })}
                     </div>

@@ -35,18 +35,18 @@ export default function WorkoutForm() {
     const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
-    const [editingExercise, setEditingExercise] = useState(null);
-    const [initialWorkoutData, setInitialWorkoutData] = useState({});
+    const [editingExercise, setEditingExercise] = useState(null)
+    const [initialWorkoutData, setInitialWorkoutData] = useState({})
     const [workoutFormData, setWorkoutFormData] = useState({
         title: '',
         imgUrl: '',
         exercises: [],
-        Private: false,
+        Private: false
     })
 
     const structure = [
         { name: 'title', type: 'text', label: 'Title', required: true, halfWidth: false },
-        { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false },
+        { name: 'imgUrl', type: 'text', label: 'Image Url (Optional)', required: false, halfWidth: false }
     ]
 
     const workoutSchema = Joi.object({
@@ -57,14 +57,14 @@ export default function WorkoutForm() {
     })
 
     const fetchWorkout = useCallback(async () => {
-        setLoading(true)
         try {
+            setLoading(true)
             const response = await fetch(`/api/workouts/workout/${id}`)
             const data = await response.json()
             setWorkoutFormData(data)
             setInitialWorkoutData(data)
         } catch (error) {
-            console.error('Error fetching workout:', error);
+            console.error('Error fetching workout:', error)
         } finally {
             setLoading(false)
         }
@@ -84,25 +84,25 @@ export default function WorkoutForm() {
         let obj = {}
 
         const validation = (id) => {
-            const hasChanges = id === 'exercises' ? JSON.stringify(obj.exercises) !== JSON.stringify(initialWorkoutData.exercises) : obj[id] !== initialWorkoutData[id];
-            const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true });
-            const err = { ...errors, [id]: undefined };
+            const hasChanges = id === 'exercises' ?
+                JSON.stringify(obj.exercises) !== JSON.stringify(initialWorkoutData.exercises)
+                :
+                obj[id] !== initialWorkoutData[id]
+            const schema = workoutSchema.validate(obj, { abortEarly: false, allowUnknown: true })
+            const err = { ...errors, [id]: undefined }
             if (schema.error) {
-                const error = schema.error?.details.find(e => e.context.key === id);
-
+                const error = schema.error?.details.find(e => e.context.key === id)
                 if (error) {
-                    err[id] = error.message;
+                    err[id] = error.message
                 }
-                setIsValid(false);
-
+                setIsValid(false)
             } else {
-                setIsValid(true);
+                setIsValid(true)
             }
 
             if (!hasChanges) {
-                setIsValid(false);
+                setIsValid(false)
             }
-
             setErrors(err)
         }
 
@@ -174,17 +174,14 @@ export default function WorkoutForm() {
 
     const handleSubmit = useCallback(async (event) => {
         event.preventDefault()
-        if (!token) {
-            showToastError('You must be logged in')
-            return
-        }
-        setLoading(true)
 
+        // Default image
         if (workoutFormData.imgUrl === '') {
             workoutFormData.imgUrl = 'https://hips.hearstapps.com/hmg-prod/images/fitness-man-is-sitting-in-a-gym-and-flexing-muscles-royalty-free-image-1694520015.jpg?crop=0.668xw:1.00xh;0.187xw,0&resize=1200:*'
         }
 
         try {
+            setLoading(true)
             const workoutResponse = await fetch(`/api/workouts/myworkouts/${id ? `edit/${id}` : 'create/new'}`, {
                 method: id ? 'PUT' : 'POST',
                 body: JSON.stringify(workoutFormData),
@@ -203,7 +200,7 @@ export default function WorkoutForm() {
             } else if (workoutResponse.status === 420) {
                 showToastError('Title already in use for this user')
             } else {
-                showToastError(id ? 'Failed to update workout' : 'Failed to create workout');
+                showToastError(id ? 'Failed to update workout' : 'Failed to create workout')
             }
         } catch (error) {
             console.error(id ? 'Error updating workout:' : 'Error creating workout:', error);
@@ -227,7 +224,7 @@ export default function WorkoutForm() {
         return () => {
             document.removeEventListener('keypress', handleKeyPress)
         }
-    }, [isValid, editExerciseModal, exerciseFormModal, handleSubmit]);
+    }, [isValid, editExerciseModal, exerciseFormModal, handleSubmit])
 
     return (
         <div className='form'>
@@ -243,21 +240,20 @@ export default function WorkoutForm() {
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, maxWidth: '90%' }}>
                         <Grid container spacing={2}>
                             {
-                                structure.map(item =>
-                                    <Grid item xs={12} sm={item.halfWidth ? 6 : 12} key={item.name}>
+                                structure.map(({ name, type, label, required, halfWidth }) =>
+                                    <Grid item xs={12} sm={halfWidth ? 6 : 12} key={name}>
                                         <TextField
-                                            autoComplete={item.autoComplete}
-                                            error={!!errors[item.name]}
-                                            helperText={errors[item.name]}
+                                            error={!!errors[name]}
+                                            helperText={errors[name]}
                                             onChange={handleInput}
-                                            value={workoutFormData[item.name]}
-                                            name={item.name}
-                                            type={item.type}
-                                            required={item.required}
+                                            value={workoutFormData[name]}
+                                            name={name}
+                                            type={type}
+                                            required={required}
                                             fullWidth
-                                            id={item.name}
-                                            label={item.label}
-                                            autoFocus={item.name === "title" ? true : false}
+                                            id={name}
+                                            label={label}
+                                            autoFocus={name === "title" ? true : false}
                                         />
                                     </Grid>
                                 )
@@ -309,5 +305,5 @@ export default function WorkoutForm() {
                 </Box>
             </Container>
         </div>
-    );
+    )
 }
