@@ -49,14 +49,14 @@
   color: black;
 }
 
-@media (max-width: 840px) {
+@media (max-width: 1140px) {
   .footer-clean .item {
     text-align: center;
     padding-bottom: 20px;
   }
 }
 
-@media (max-width: 840px) {
+@media (max-width: 1140px) {
   .footer-clean .item.social {
     text-align: center;
   }
