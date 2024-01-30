@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-// import { useWorkoutContext } from "../hooks/useWorkoutContext"
 import { useGlobalContext } from '../hooks/useGlobalContext'
-// import { ACTIONS } from "../context/Actions"
 import { Checkbox } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
@@ -31,7 +29,6 @@ export default function WorkoutForm() {
         editExerciseModal,
         setEditExerciseModal
     } = useGlobalContext()
-    // const { dispatch: workoutDispatch } = useWorkoutContext()
     const [errors, setErrors] = useState({})
     const [isValid, setIsValid] = useState(false)
     const [editingExercise, setEditingExercise] = useState(null)
@@ -192,10 +189,8 @@ export default function WorkoutForm() {
                     'Authorization': token
                 }
             })
-            // const workoutData = await workoutResponse.json()
 
             if (workoutResponse.ok) {
-                // !id && workoutDispatch({ type: ACTIONS.CREATE_WORKOUT, payload: workoutData })
                 // Navigate to my workouts where we fetch the updated workouts collection and update the state
                 navigate('/workouts/myworkouts')
                 showToastSuccess(id ? 'Workout updated successfully' : 'New workout added successfully')
@@ -210,7 +205,6 @@ export default function WorkoutForm() {
             setLoading(false)
         }
     }, [id, navigate, setLoading, showToastError, showToastSuccess, token, workoutFormData])
-    // }, [id, navigate, setLoading, showToastError, showToastSuccess, token, workoutDispatch, workoutFormData])
 
     useEffect(() => {
         // Enter key to submit

@@ -11,9 +11,10 @@ module.exports = async (req, res, next) => {
     const { _id, exp } = jwt.verify(token, process.env.SECRET)
     req.user = await User.findOne({ _id })
 
-    const currentTimeInSeconds = Math.floor(Date.now() / 1000); // Convert current time to seconds  
-    const timeLeftInSeconds = exp - currentTimeInSeconds;  
-    const oneHourInSeconds = 3600; // 1 hour = 60 minutes * 60 seconds  
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000) // Convert current time to seconds  
+    const timeLeftInSeconds = exp - currentTimeInSeconds
+    const oneHourInSeconds = 3600
+
     if (timeLeftInSeconds < oneHourInSeconds) {  
       // Generate a new token
       const newToken = jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
