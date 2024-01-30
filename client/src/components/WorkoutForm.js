@@ -59,7 +59,7 @@ export default function WorkoutForm() {
         const objectIdPattern = /^[0-9a-fA-F]{24}$/
         return objectIdPattern.test(id)
       }
-      
+
     const fetchWorkout = useCallback(async () => {
         try {
             setLoading(true)
@@ -77,11 +77,9 @@ export default function WorkoutForm() {
     useEffect(() => {
         if (isValidObjectId(id)) {
             fetchWorkout()
-            // if the id is new for CreateWorkout, id === undefined
         } else if (id !== undefined) {
             navigate('/errorPage')
         }
-        // eslint-disable-next-line
     }, [id, fetchWorkout, navigate])
 
     const handleInput = event => {
