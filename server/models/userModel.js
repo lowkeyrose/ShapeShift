@@ -27,7 +27,7 @@ const userValidationSchema = Joi.object({
   username: Joi.string().min(3).max(20).required(),
   email: Joi.string().min(7).max(62).required().email({ tlds: false }),
   password: Joi.string().required()
-    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[!@%$#^&*-_*])[A-Za-z\d!@%$#^&*-_*]{8,30}$/)
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*\d.*\d.*\d)(?=.*[!@#$%^&*_'-])[A-Za-z\d!@#$%^&*_'-]{8,30}$/)
     .message('user "password" must be at least 8 characters long and contain an uppercase letter, a lowercase letter, 4 numbers, and one of the following characters !@#$%^&*_-'),
   phone: Joi.string().required()
     .pattern(/^[0-9]{10,15}$/)

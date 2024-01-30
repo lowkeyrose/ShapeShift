@@ -75,9 +75,7 @@ export const GlobalContextProvider = memo(({ children }) => {
         const newToken = response.headers.get('Authorization');
         if (newToken && !stop) {
           // Update the token
-          setTimeout(() => {
             localStorage.setItem('token', JSON.stringify(newToken))
-          }, 5 * 1000)
         }
         const json = await response.json()
         memoizedDispatch({ type: ACTIONS.SET_USER, payload: json })

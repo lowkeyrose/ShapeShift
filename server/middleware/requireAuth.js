@@ -8,14 +8,19 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const { _id } = jwt.verify(token, process.env.SECRET)
+    const { _id, exp } = jwt.verify(token, process.env.SECRET)
     req.user = await User.findOne({ _id })
 
-    // Generate a new token
-    const newToken = jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
-
-    // Attach the new token to the response headers
-    res.setHeader('Authorization', newToken)
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000); // Convert current time to seconds  
+    const timeLeftInSeconds = exp - currentTimeInSeconds;  
+    const oneHourInSeconds = 3600; // 1 hour = 60 minutes * 60 seconds  
+    if (timeLeftInSeconds < oneHourInSeconds) {  
+      // Generate a new token
+      const newToken = jwt.sign({ _id }, process.env.SECRET, { expiresIn: '4h' })
+  
+      // Attach the new token to the response headers
+      res.setHeader('Authorization', newToken)
+    }
 
     next()
 

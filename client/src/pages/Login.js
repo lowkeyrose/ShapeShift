@@ -45,7 +45,7 @@ export default function Login() {
   const userSchema = Joi.object({
     email: Joi.string().min(7).max(62).required().email({ tlds: false }),
     password: Joi.string().required()
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4})(?=.*[!@%$#^&*-_*])[A-Za-z\d!@%$#^&*-_*]{8,30}$/)
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*\d.*\d.*\d)(?=.*[!@#$%^&*_'-])[A-Za-z\d!@#$%^&*_'-]{8,30}$/)
       .message('user "password" must be at least 8 characters long and contain an uppercase letter, a lowercase letter, 4 numbers and one of the following characters !@#$%^&*_-')
   })
 

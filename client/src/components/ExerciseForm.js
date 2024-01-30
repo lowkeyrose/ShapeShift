@@ -98,7 +98,6 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     setExerciseFormData(obj)
   }
 
-
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault()
     try {

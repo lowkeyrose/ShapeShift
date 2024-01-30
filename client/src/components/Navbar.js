@@ -142,7 +142,8 @@ const Navbar = () => {
                 fontWeight: 500,
                 fontSize: '28px',
                 color: 'white',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                cursor: 'pointer'
               }}
             >
               ShapeShift
