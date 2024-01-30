@@ -34,7 +34,6 @@ const Footer = () => {
               </ul>
             </div>
             <div className="item social">
-
               <Link to="https://github.com/lowkeyrose" target='blank'><FontAwesomeIcon icon={faGithub} /></Link>
               <Link to="https://www.linkedin.com/in/adam-regev-374567283/" target='blank'><FontAwesomeIcon icon={faLinkedin} /></Link>
               <Link to="https://api.whatsapp.com/send/?phone=972584201997&text&type=phone_number&app_absent=1" target='blank'><FontAwesomeIcon icon={faWhatsapp} /></Link>

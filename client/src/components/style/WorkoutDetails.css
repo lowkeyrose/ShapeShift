@@ -91,7 +91,8 @@
   left: 18.75%;
   top: 62.5%;
 }
-.card:hover .multi-button, .card .multi-button:focus-within {
+.card:hover .multi-button,
+.card .multi-button:focus-within {
   width: 10rem;
   height: 10rem;
 }
@@ -107,12 +108,10 @@
   box-shadow: 2px 2px 10px white;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: hidden;
-  margin: 30px
+  margin: 30px;
 }
-
 .figure:hover {
   box-shadow: 0px 0px 20px white;
-
 }
 .figure:hover h1 {
   opacity: 0;
@@ -162,11 +161,9 @@
   line-height: 1;
   transition: 0.25s;
 }
-
 .figure .figcaption h3 {
   margin-top: -10px;
   padding: 0;
-  
 }
 .figure .figcaption p {
   font-size: 14px;
@@ -188,7 +185,6 @@
   font-weight: 600;
   cursor: pointer;
 }
-
 .card .private {
   position: absolute;
   background-color: rgba(146, 146, 146, 0.854);
@@ -200,7 +196,6 @@
   justify-content: center;
   align-items: center;
 }
-
 .card p.likes {
   position: absolute;
   bottom: -2px;
@@ -211,11 +206,10 @@
   bottom: 10px;
   left: 10px;
   position: absolute;
-  width: 35px ;
-  height: 35px ;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
 }
-
 @media (max-width: 348px) {
   .figure {
     width: 215px;
@@ -234,7 +228,5 @@
   .figure .figcaption button {
     padding: 10px 20px;
     margin: 10px auto 28px auto;
-
   }
-
 }

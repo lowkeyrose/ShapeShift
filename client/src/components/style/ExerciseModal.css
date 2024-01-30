@@ -1,6 +1,7 @@
 .exercise-form {
   z-index: 1;
 }
+
 .btn-modal {
   padding: 10px 20px;
   display: block;
@@ -22,6 +23,7 @@
 .overlay {
   background: rgba(49, 49, 49, 0.8);
 }
+
 .modal-content {
   position: absolute;
   top: 50%;
@@ -40,7 +42,6 @@
   .modal-content {
     margin-top: 25px;
   }
-  
 }
 
 .close-modal {
