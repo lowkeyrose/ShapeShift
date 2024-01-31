@@ -34,7 +34,7 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
     { name: 'sets', type: 'number', label: 'Sets', required: false, halfWidth: true },
     { name: 'weight', type: 'number', label: 'Weight (kg)', required: false, halfWidth: true },
     { name: 'reps', type: 'number', label: 'Reps', required: false, halfWidth: true },
-    { name: 'duration', type: 'text', label: 'Duration', required: false, halfWidth: true, placeholder: 'mm:ss' }
+    { name: 'duration', type: 'text', label: 'Duration (mm:ss)', required: false, halfWidth: true}
   ]
 
   const exerciseSchema = Joi.object({
@@ -203,7 +203,6 @@ export default function ExerciseForm({ onAddExercise, onEditExercise, editingExe
                           required={required}
                           fullWidth
                           id={name}
-                          placeholder={placeholder}
                           label={label}
                           autoFocus={name === 'title'}
                         />
