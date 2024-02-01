@@ -82,7 +82,7 @@ const Home = () => {
                             {workouts.map((workout) => {
                                 if (!workout.Private) {
                                     return <SwiperSlide key={workout._id}>
-                                        <WorkoutDetails key={workout._id} workout={workout} />
+                                        <WorkoutDetails workout={workout} />
                                     </SwiperSlide>
                                 } else {
                                     return null
