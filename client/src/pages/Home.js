@@ -79,13 +79,15 @@ const Home = () => {
                             modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
                             className='swiper_container swiper-init'
                         >
-                            {
-                                workouts.map((workout) =>
-                                    <SwiperSlide key={workout._id}>
-                                        <WorkoutDetails workout={workout} />
+                            {workouts.map((workout) => {
+                                if (!workout.Private) {
+                                    return <SwiperSlide key={workout._id}>
+                                        <WorkoutDetails key={workout._id} workout={workout} />
                                     </SwiperSlide>
-                                )
-                            }
+                                } else {
+                                    return null
+                                }
+                            })}
                             <div className="slider-controler">
                                 <div className="swiper-button-prev slider-arrow">
                                     <ion-icon name="arrow-back-outline"></ion-icon>
